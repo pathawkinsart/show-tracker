@@ -12,68 +12,109 @@
         font-family: "Barlow", system-ui, sans-serif; }
       body { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
 
-      header { display: flex; align-items: center; gap: 2.5vw; padding: 1.2vh 1.5vw 1vh;
-        border-bottom: 3px solid #e85a17; flex: 0 0 auto; }
-      header h1 { font-family: "Barlow Semi Condensed", sans-serif; font-size: 3.2vw; line-height: 1;
-        margin: 0; letter-spacing: .02em; text-transform: uppercase; }
-      header h1 span { color: #e85a17; }
-      .totals { display: flex; gap: 2.5vw; margin-left: auto; align-items: baseline; }
+      header.band { background: #22262b; padding: 1vh 1.5vw 0.8vh; flex: 0 0 auto; }
+      .band-in { display: flex; align-items: center; gap: 2vw; }
+      .wordmark { font-size: 1.1vw; color: #b9c0c7; text-transform: uppercase; letter-spacing: .06em; }
+      .wordmark b { color: #f4f5f6; }
+      h1 { font-family: "Barlow Semi Condensed", sans-serif; font-size: 2.6vw; margin: 0;
+        text-transform: uppercase; letter-spacing: .02em; }
+      .totals { display: flex; gap: 2vw; margin-left: auto; align-items: baseline; }
       .totals .t { text-align: right; }
-      .totals .num { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700;
-        font-size: 3.4vw; line-height: 1; }
-      .totals .num.orange { color: #e85a17; }
-      .totals .lbl { font-size: 1.15vw; color: #b9c0c7; text-transform: uppercase; letter-spacing: .08em; }
-      .updated { font-size: 1.15vw; color: #b9c0c7; text-align: right; }
-      .updated strong { color: #f4f5f6; font-weight: 600; }
+      .totals .num { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; font-size: 2.6vw; line-height: 1; }
+      .totals .num.orange { color: #f06a24; }
+      .totals .lbl { font-size: 0.95vw; color: #b9c0c7; text-transform: uppercase; letter-spacing: .08em; }
+      .updated { font-size: 1vw; color: #b9c0c7; text-align: right; }
+      .updated strong { color: #f4f5f6; }
+      .filters { display: flex; gap: 0.6vw; margin-top: 0.8vh; }
+      .filter-btn { font-family: "Barlow Semi Condensed", sans-serif; font-size: 1.15vw; font-weight: 600;
+        text-transform: uppercase; letter-spacing: .04em; padding: 0.35vh 1vw; border-radius: 999px;
+        border: 1px solid #4a5058; background: transparent; color: #f4f5f6; cursor: pointer; }
+      .filter-btn[aria-pressed="true"] { background: #f4f5f6; color: #141619; border-color: #f4f5f6; }
 
       main { flex: 1 1 auto; display: grid; grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: repeat(3, 1fr); gap: 0.9vw; padding: 1vw; min-height: 0; }
-      .tile { background: #141619; border: 1px solid #2a2e33; border-radius: 0.6vw;
-        padding: 1.1vh 1.1vw 0.9vh; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
-      .tile.hot { border-top: 0.5vw solid #e85a17; }
-      .tile.done { border-top: 0.5vw solid #1e7d46; justify-content: center; }
-      .tile.done .check { font-size: 2.6vw; }
-      .tile h2 { font-family: "Barlow Semi Condensed", sans-serif; font-size: 1.9vw; line-height: 1.05;
-        margin: 0 0 0.4vh; text-transform: uppercase; letter-spacing: .01em; }
-      .tile .big { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700;
-        font-size: 4.6vw; line-height: 0.95; }
-      .tile .big small { font-size: 1.5vw; font-weight: 600; color: #b9c0c7; }
-      .tile .sub { font-size: 1.25vw; color: #b9c0c7; margin-top: 0.3vh; }
-      .tile .sub strong { color: #f4f5f6; }
-      .tile .oldest { margin-top: auto; font-size: 1.15vw; color: #b9c0c7; white-space: nowrap; overflow: hidden; }
-      .tile .oldest strong { color: #f4f5f6; }
-      .tile.done .big { color: #4cc38a; }
-      .tile.done .check { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700;
-        font-size: 2.2vw; line-height: 1; color: #4cc38a; text-transform: uppercase; }
+        grid-template-rows: repeat(3, 1fr); gap: 0.8vw; padding: 0.9vw; min-height: 0; }
+      .card { background: #141619; border: 1px solid #2a2e33; border-radius: 0.5vw;
+        padding: 0.9vh 0.9vw; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+      .card.hot { border-top: 4px solid #f06a24; }
+      .card.done { border-top: 4px solid #1e7d46; justify-content: center; }
+      .card-head { display: flex; align-items: center; gap: 0.6vw; }
+      .plat-logo img, .plat-logo svg { width: 2.4vw; height: 2.4vw; display: block; }
+      .plat-logo svg { fill: #f4f5f6; }
+      .card h2 { font-family: "Barlow Semi Condensed", sans-serif; font-size: 1.55vw; line-height: 1.05;
+        margin: 0; text-transform: uppercase; }
+      .chips { display: flex; flex-wrap: wrap; gap: 0.4vw; margin-top: 0.8vh; }
+      .chip { font-family: "Barlow Semi Condensed", sans-serif; font-size: 0.95vw; font-weight: 600;
+        background: #000; color: #f4f5f6; border: 1px solid #4a5058; border-radius: 0.35vw;
+        padding: 0.25vh 0.45vw; cursor: pointer; }
+      .chip:hover { border-color: #f06a24; }
+      .chip .pk { color: #b9c0c7; font-weight: 500; }
+      .gross { margin-top: 0.7vh; font-size: 1.2vw; white-space: nowrap; overflow: hidden; }
+      .gross strong { color: #4cc38a; font-family: "Barlow Semi Condensed", sans-serif; font-size: 1.45vw; }
+      .gross .win { color: #b9c0c7; font-size: 0.95vw; }
+      .oldest { margin-top: auto; font-size: 1vw; color: #b9c0c7; padding-top: 0.5vh; }
+      .oldest strong { color: #f4f5f6; }
+      .done-msg { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; color: #4cc38a;
+        font-size: 1.5vw; text-transform: uppercase; margin-top: 0.6vh; }
+      .counts { font-size: 1.1vw; color: #b9c0c7; margin-top: 0.4vh; }
+      .counts strong { color: #f4f5f6; }
 
+      footer { flex: 0 0 auto; display: flex; align-items: center; gap: 0.8vw; padding: 0.7vh 1.5vw;
+        border-top: 1px solid #2a2e33; background: #0f1113; min-height: 4.5vh; }
+      footer .lbl { font-size: 1.05vw; color: #b9c0c7; text-transform: uppercase; letter-spacing: .06em; }
+      footer .packed-chips { display: flex; flex-wrap: wrap; gap: 0.4vw; }
+      .packed-chip { font-size: 1vw; background: #1e7d46; color: #fff; border: none; border-radius: 0.35vw;
+        padding: 0.3vh 0.6vw; cursor: pointer; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600; }
       #loadError { display: none; position: fixed; inset: 0; background: #000; color: #f4f5f6;
-        align-items: center; justify-content: center; font-size: 2vw; text-align: center; padding: 5vw; }
+        align-items: center; justify-content: center; font-size: 2vw; text-align: center; padding: 5vw; z-index: 9; }
     </style>
   </head>
   <body>
-    <header>
-      <h1>Show <span>Tracker</span></h1>
-      <div class="totals">
-        <div class="t"><div class="num orange" id="totalShows">–</div><div class="lbl">Shows in house</div></div>
-        <div class="t"><div class="num" id="totalPkgs">–</div><div class="lbl">Packages</div></div>
+    <header class="band">
+      <div class="band-in">
+        <div>
+          <div class="wordmark"><b>WeTheHobby</b> &nbsp;·&nbsp; Operations</div>
+          <h1>Show Tracker</h1>
+        </div>
+        <div class="totals">
+          <div class="t"><div class="num orange" id="totalShows">–</div><div class="lbl">Shows in house</div></div>
+          <div class="t"><div class="num" id="totalPkgs">–</div><div class="lbl">Packages</div></div>
+          <div class="t"><div class="num" id="totalGross">–</div><div class="lbl">7-day gross</div></div>
+        </div>
+        <div class="updated">Last updated<br /><strong id="lastUpdated">—</strong></div>
       </div>
-      <div class="updated">Last updated<br /><strong id="lastUpdated">—</strong></div>
+      <div class="filters" id="filters" role="group" aria-label="Filter by platform">
+        <button class="filter-btn" data-f="All" aria-pressed="true">All</button>
+        <button class="filter-btn" data-f="Whatnot" aria-pressed="false">Whatnot</button>
+        <button class="filter-btn" data-f="Fanatics" aria-pressed="false">Fanatics</button>
+        <button class="filter-btn" data-f="eBay" aria-pressed="false">eBay</button>
+        <button class="filter-btn" data-f="TikTok" aria-pressed="false">TikTok</button>
+      </div>
     </header>
     <main id="grid"></main>
+    <footer>
+      <span class="lbl">Packed (<span id="packedCount">0</span>) — tap to put back</span>
+      <span class="packed-chips" id="packedChips"></span>
+    </footer>
     <div id="loadError">Could not load show-tracker-data.json.<br />Check the file is in the same folder, then this page picks it up.</div>
 
     <script>
-      // TV / wall-monitor view: every channel side by side, one screen, no scroll.
-      // Same data file as the main tracker; polls every 5 minutes.
+      // TV / wall-monitor view: same look and buttons as the main tracker,
+      // all channels side by side on one screen, no scroll.
       var CHANNELS = [
         "Whatnot Footy", "Whatnot Main", "Whatnot Galaxy", "Whatnot Card Shop",
         "Whatnot Ice", "Fanatics Baseball", "Fanatics Jamz", "Fanatics Blitz",
         "Fanatics Evolution", "Fanatics Repack", "eBay Live", "TikTok Card Shop"
       ];
+      var GROSS = {"Whatnot Footy": 170144.8, "Whatnot Main": 1816986, "Whatnot Galaxy": 110450.95, "Whatnot Card Shop": 840118.21, "Whatnot Ice": 74812.49, "Fanatics Baseball": 344958, "Fanatics Jamz": 632644, "Fanatics Blitz": 1191443, "Fanatics Evolution": 124917, "Fanatics Repack": 1017971, "eBay Live": 214914.03, "TikTok Card Shop": 180463.07};
+      var GROSS_WINDOW = "Nov 14\u201320";
       var DOW = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       var MON = ["January", "February", "March", "April", "May", "June", "July",
                  "August", "September", "October", "November", "December"];
+      var packed = {};   // show id -> show (local taps, like the main tracker)
+      var shows = [];
+      var activeFilter = "All";
 
+      function money(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
       function fmtClock(d) {
         var h = d.getHours(), m = d.getMinutes(), ap = h >= 12 ? "PM" : "AM";
         h = h % 12; if (h === 0) h = 12;
@@ -87,50 +128,111 @@
       }
       function hoursAgo(d) {
         var h = Math.floor((Date.now() - d.getTime()) / 3600000);
-        if (h < 1) return "under an hour ago";
-        return h + "h ago";
+        return h < 1 ? "under an hour ago" : h + "h ago";
+      }
+      function platformOf(chan) {
+        if (chan.indexOf("Whatnot") === 0) return "Whatnot";
+        if (chan.indexOf("Fanatics") === 0) return "Fanatics";
+        if (chan.indexOf("eBay") === 0) return "eBay";
+        if (chan.indexOf("TikTok") === 0) return "TikTok";
+        return "";
+      }
+
+      var EBAY_PATH = "M6.056 12.132v-4.92h1.2v3.026c.59-.703 1.402-.906 2.202-.906 1.34 0 2.828.904 2.828 2.855 0 .233-.015.457-.06.668.24-.953 1.274-1.305 2.896-1.344.51-.018 1.095-.018 1.56-.018v-.135c0-.885-.556-1.244-1.53-1.244-.72 0-1.245.3-1.305.81h-1.275c.136-1.29 1.5-1.62 2.686-1.62 1.064 0 1.995.27 2.415 1.02l-.436-.84h1.41l2.055 4.125 2.055-4.126H24l-3.72 7.305h-1.346l1.07-2.04-2.33-4.38c.13.255.2.555.2.93v2.46c0 .346.01.69.04 1.005H16.8a6.543 6.543 0 01-.046-.765c-.603.734-1.32.96-2.32.96-1.48 0-2.272-.78-2.272-1.695 0-.15.015-.284.037-.405-.3 1.246-1.36 2.086-2.767 2.086-.87 0-1.694-.315-2.2-.93 0 .24-.015.494-.04.734h-1.18c.02-.39.04-.855.04-1.245v-1.05h-4.83c.065 1.095.818 1.74 1.853 1.74.718 0 1.355-.3 1.568-.93h1.24c-.24 1.29-1.61 1.725-2.79 1.725C.95 15.009 0 13.822 0 12.232c0-1.754.982-2.91 3.116-2.91 1.688 0 2.93.886 2.94 2.806v.005zm9.137.183c-1.095.034-1.77.233-1.77.95 0 .465.36.97 1.305.97 1.26 0 1.935-.69 1.935-1.814v-.13c-.45 0-.99.006-1.484.022h.012zm-6.06 1.875c1.11 0 1.876-.806 1.876-2.02s-.768-2.02-1.893-2.02c-1.11 0-1.89.806-1.89 2.02s.765 2.02 1.875 2.02h.03zm-4.35-2.514c-.044-1.125-.854-1.546-1.725-1.546-.944 0-1.694.474-1.815 1.546z";
+      var TIKTOK_PATH = "M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z";
+      function logoHTML(chan) {
+        var p = platformOf(chan);
+        if (p === "Whatnot") return '<span class="plat-logo"><img src="data:image/png;base64,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" alt="Whatnot logo" width="38" height="38" /></span>';
+        if (p === "Fanatics") return '<span class="plat-logo"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAJFBMVEXW1dFBQUC4t7RhYF8gICCYmJV+fnwAAADu7enr6ub29fH+/fpDVSiRAAAAB3RSTlP+/f39/v390cW0BgAABCBJREFUeJztmYuS5CoIhr1H9P3f94Am6UvUaNSeOluyUzs9u1PhixD4IWz7Y2MLYAEsgAWwABbAAlgAC2ABLIAF8A8CKM6llAb/SM7VbwG4NFoLxhhYNADGhDayCDEOgBtyDS6YjUYfASHkbABuyLcNjgFt92/DR/xXJsw8AHJ+eAR7+rYvCGSwlmVO4QLAeaNz513C7ScDfjknkle+ADhvmZZcldNXKS41s977/chvEQARdOKiFwDjrPMeUwfTl/NPEIV+6RkzGpPN053DjeNPCJ+IwzUHhIupEyiYEFprQ4bftRAUb0++d+cNABQHMN+HcAXg+Gv2TGD0hUHezYeP4dCbHJ9HgPDfZ5B4CrQ7bwx2+/783Nx3JiYAlHCdXrIGXt/nwLbJ+6x+6N+xy3OQLETa3V/smdU8BRQENuUEwF0CkCvFco5/lqiFmV6gZ+QhpDpSBkCx8QTJSpzthtKnOluHgU0FoNCOtX/sP1Ox0pIgC8CfBCE6docqesMAJ9J+8oJE3rb5i2/qYNTDSAziX8cPoQu4TH/PA6jaIMS6SbqE1N97oBVqhqhXwOc0WUGSYRCqvIdvqPrS6ldJQXhZPyVNaG5awq44yXlR/3PUL1mhVwJQohhye2ju2+EDjyH7X0VVLFnyDGK6XUP+yMqy/FKRj1x3QM7vb70XYGP+VELnc+Yo4YY4rwBQQXqfZmGk7xoAYgg63NCsO9RzNcBkGw4QtwMyDDU/BlC0HaDRhfpAnGludgMDAVTcDtjXdsDF3UBaBAwGOLcDzr6mJthHq7sj6AV42w4kREi+CQ4BUPt2wOYGGfBiTg6E7YA4tgM21zRxyr1vFQ0AKqwHqCrRjR/OCw0b3G0AqgGU2bcDLLaDGPCycIbMUuYRAKc1gfffUrNsUNjOtQJswjeuB/AXE5PgcwCV3sGV/N/WoCaAzTQOKpAYxbsAKAgt/nODyHOAKpX+un+ovGxDHTANoxJctmEDAJSoPgKswbVXbSnFpNLLfo9OmNyF9ANsOlv1o+djKLY1NfgJgEoewTEq4IxGRp/vm+AzgE1+VyNyjiUaRFxtB5Mi926gH2D7XKIG745G0887bpHvrXrgY4PoHNO9w2ErAH+rhyAajnoUwHtFbgn1OID3DWL9wzYQgPYmRwpUNfzhAOeTgA1vwLT6AODYILYU3KEAryBUib4JAEcQqmT3FAAZyxH45P77BwDYFmFUEjwDOF6sVYxecwA2vleC/ix8Oh0HlZ54DfgzgI2KQc34PQ2A+zB//x1AeKcDfvKuuGTUFitWMPMA6O1mg/6fAKC0g/ybkB8AhGnR/SXAZqA/C/uOUNjuUtQHwKvXAJMAqCL/LQCq9M4k6AVQvaqo+znWnUnQv67vlAT/3jujBbAAFsACWAALYAEsgP8dwH9+BMY9gFdiCAAAAABJRU5ErkJggg==" alt="Fanatics logo" width="38" height="38" /></span>';
+        if (p === "eBay") return '<span class="plat-logo"><svg class="glyph-ebay" viewBox="0 0 24 24" role="img" aria-label="eBay logo"><path d="' + EBAY_PATH + '"/></svg></span>';
+        if (p === "TikTok") return '<span class="plat-logo"><svg class="glyph-tiktok" viewBox="0 0 24 24" role="img" aria-label="TikTok logo"><path d="' + TIKTOK_PATH + '"/></svg></span>';
+        return "";
+      }
+
+      function visibleChannels() {
+        return CHANNELS.filter(function (c) {
+          return activeFilter === "All" || platformOf(c) === activeFilter;
+        });
       }
 
       function render(json) {
-        var shows = json.shows || [];
         var byChannel = {};
         CHANNELS.forEach(function (c) { byChannel[c] = []; });
         shows.forEach(function (s) { if (byChannel[s.platform]) byChannel[s.platform].push(s); });
 
-        var totalShows = shows.length;
-        var totalPkgs = shows.reduce(function (a, s) { return a + (s.pkgs || 0); }, 0);
-        document.getElementById("totalShows").textContent = totalShows;
+        var inHouse = shows.filter(function (s) { return !packed[s.id]; });
+        var totalPkgs = inHouse.reduce(function (a, s) { return a + (s.pkgs || 0); }, 0);
+        document.getElementById("totalShows").textContent = inHouse.length;
         document.getElementById("totalPkgs").textContent = totalPkgs.toLocaleString("en-US");
+        var grossTotal = CHANNELS.reduce(function (a, c) { return a + (GROSS[c] || 0); }, 0);
+        document.getElementById("totalGross").textContent = money(grossTotal);
 
         var g = json.generatedAt ? new Date(json.generatedAt) : null;
         document.getElementById("lastUpdated").textContent =
           (g && !isNaN(g.getTime())) ? fmtLong(g) + " at " + fmtClock(g) : "—";
 
+        var vis = visibleChannels();
         var grid = document.getElementById("grid");
+        grid.style.gridTemplateColumns = "repeat(" + (vis.length >= 9 ? 4 : vis.length >= 5 ? 3 : 2) + ", 1fr)";
         grid.innerHTML = "";
-        CHANNELS.forEach(function (name) {
-          var list = byChannel[name];
-          var pkgs = list.reduce(function (a, s) { return a + (s.pkgs || 0); }, 0);
-          var tile = document.createElement("div");
+        vis.forEach(function (name) {
+          var list = byChannel[name].filter(function (s) { return !packed[s.id]; });
+          var allPkgs = byChannel[name].reduce(function (a, s) { return a + (s.pkgs || 0); }, 0);
+          var card = document.createElement("div");
+          var gross = GROSS[name];
           if (!list.length) {
-            tile.className = "tile done";
-            tile.innerHTML = "<h2>" + name + "</h2>" +
-              "<div class=\"check\">&#10003; All caught up</div>" +
-              "<div class=\"sub\">Nothing in house</div>";
+            card.className = "card done";
+            card.innerHTML = "<div class=\"card-head\">" + logoHTML(name) + "<h2>" + name + "</h2></div>" +
+              "<div class=\"done-msg\">&#10003; All caught up</div>" +
+              "<div class=\"counts\">Nothing in house</div>" +
+              (gross ? "<div class=\"gross\">7-day gross <strong>" + money(gross) + "</strong> <span class=\"win\">(" + GROSS_WINDOW + ")</span></div>" : "");
           } else {
+            var pkgs = list.reduce(function (a, s) { return a + (s.pkgs || 0); }, 0);
             var oldest = null;
             list.forEach(function (s) {
               var e = s.end ? new Date(s.end) : null;
               if (e && !isNaN(e.getTime()) && (!oldest || e < oldest)) oldest = e;
             });
-            tile.className = "tile hot";
-            tile.innerHTML = "<h2>" + name + "</h2>" +
-              "<div class=\"big\">" + list.length + " <small>" + (list.length === 1 ? "show" : "shows") + "</small></div>" +
-              "<div class=\"sub\"><strong>" + pkgs.toLocaleString("en-US") + "</strong> packages</div>" +
+            var chips = list.map(function (s) {
+              var d = s.date ? new Date(s.date + "T12:00:00") : null;
+              var label = (d && !isNaN(d.getTime()) ? (d.getMonth() + 1) + "/" + d.getDate() : "Show") +
+                (s.part ? " " + s.part : "");
+              return "<button class=\"chip\" data-id=\"" + s.id + "\">" + label +
+                " &middot; " + s.pkgs + "</button>";
+            }).join("");
+            card.className = "card hot";
+            card.innerHTML = "<div class=\"card-head\">" + logoHTML(name) + "<h2>" + name + "</h2></div>" +
+              "<div class=\"chips\">" + chips + "</div>" +
+              "<div class=\"counts\"><strong>" + list.length + "</strong> " + (list.length === 1 ? "show" : "shows") +
+              " in house &middot; <strong>" + pkgs.toLocaleString("en-US") + "</strong> packages</div>" +
+              (gross ? "<div class=\"gross\">7-day gross <strong>" + money(gross) + "</strong> <span class=\"win\">(" + GROSS_WINDOW + ")</span></div>" : "") +
               "<div class=\"oldest\">Oldest: <strong>" + (oldest ? fmtShort(oldest) + " (" + hoursAgo(oldest) + ")" : "—") + "</strong></div>";
           }
-          grid.appendChild(tile);
+          grid.appendChild(card);
         });
+
+        // packed footer
+        var packedIds = Object.keys(packed);
+        document.getElementById("packedCount").textContent = packedIds.length;
+        var pc = document.getElementById("packedChips");
+        pc.innerHTML = "";
+        packedIds.forEach(function (id) {
+          var s = packed[id];
+          var b = document.createElement("button");
+          b.className = "packed-chip";
+          b.textContent = s.platform + " " + (s.part || "") + " — Put back";
+          b.setAttribute("data-id", id);
+          pc.appendChild(b);
+        });
+      }
+
+      function applyData(json) {
+        shows = (json.shows || []).map(function (raw) {
+          return { id: raw.id, platform: raw.platform,
+            date: raw.date || "", end: raw.end || "", pkgs: raw.pkgs || 0,
+            part: raw.part || "" };
+        });
+        render(json);
       }
 
       function load() {
@@ -138,12 +240,40 @@
           .then(function (res) { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
           .then(function (json) {
             document.getElementById("loadError").style.display = "none";
-            render(json);
+            applyData(json);
           })
           .catch(function () {
             document.getElementById("loadError").style.display = "flex";
           });
       }
+
+      document.getElementById("grid").addEventListener("click", function (e) {
+        var chip = e.target.closest(".chip");
+        if (!chip) return;
+        var id = chip.getAttribute("data-id");
+        var s = shows.find(function (x) { return String(x.id) === String(id); });
+        if (s) { packed[id] = s; render({ generatedAt: window._genAt }); }
+      });
+      document.getElementById("packedChips").addEventListener("click", function (e) {
+        var chip = e.target.closest(".packed-chip");
+        if (!chip) return;
+        delete packed[chip.getAttribute("data-id")];
+        render({ generatedAt: window._genAt });
+      });
+      document.getElementById("filters").addEventListener("click", function (e) {
+        var btn = e.target.closest(".filter-btn");
+        if (!btn) return;
+        activeFilter = btn.getAttribute("data-f");
+        document.querySelectorAll(".filter-btn").forEach(function (b) {
+          b.setAttribute("aria-pressed", String(b === btn));
+        });
+        render({ generatedAt: window._genAt });
+      });
+
+      // keep generatedAt across re-renders
+      var _origApply = applyData;
+      applyData = function (json) { window._genAt = json.generatedAt; _origApply(json); };
+
       load();
       setInterval(load, 5 * 60 * 1000);
     </script>
