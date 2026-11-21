@@ -1,0 +1,219 @@
+{
+  "channelEnds": {
+    "Fanatics Baseball": "2026-11-17T04:13:00",
+    "Fanatics Blitz": "2026-11-16T18:01:00",
+    "Fanatics Jamz": "2026-11-20T01:28:00",
+    "TikTok Card Shop": "2026-11-19T02:39:00",
+    "Whatnot Footy": "2026-11-20T03:30:00",
+    "Whatnot Galaxy": "2026-11-19T18:08:00",
+    "Whatnot Ice": "2026-11-20T02:08:00",
+    "Whatnot Main": "2026-11-20T12:03:00"
+  },
+  "generatedAt": "2026-11-20T22:15:00-05:00",
+  "shows": [
+    {
+      "date": "2026-11-19",
+      "end": "2026-11-20T03:30:00",
+      "id": 1,
+      "note": "",
+      "pkgs": 2,
+      "platform": "Whatnot Footy"
+    },
+    {
+      "date": "2026-11-20",
+      "end": "2026-11-20T03:30:00",
+      "id": 2,
+      "note": "",
+      "pkgs": 115,
+      "platform": "Whatnot Footy"
+    },
+    {
+      "date": "2026-11-20",
+      "end": "2026-11-20T12:03:00",
+      "id": 26,
+      "note": "",
+      "part": "A",
+      "pkgs": 113,
+      "platform": "Whatnot Main"
+    },
+    {
+      "date": "2026-11-20",
+      "end": "2026-11-20T12:03:00",
+      "id": 28,
+      "note": "",
+      "part": "B",
+      "pkgs": 90,
+      "platform": "Whatnot Main"
+    },
+    {
+      "date": "2026-11-19",
+      "end": "2026-11-20T02:08:00",
+      "id": 25,
+      "note": "",
+      "pkgs": 76,
+      "platform": "Whatnot Ice"
+    },
+    {
+      "date": "2026-11-20",
+      "end": "2026-11-21T02:08:00",
+      "id": 30,
+      "note": "",
+      "pkgs": 69,
+      "platform": "Whatnot Ice"
+    },
+    {
+      "date": "2026-11-19",
+      "end": "2026-11-19T18:08:00",
+      "id": 7,
+      "note": "",
+      "part": "A",
+      "pkgs": 80,
+      "platform": "Whatnot Galaxy"
+    },
+    {
+      "date": "2026-11-19",
+      "end": "2026-11-19T18:08:00",
+      "id": 6,
+      "note": "",
+      "part": "B",
+      "pkgs": 145,
+      "platform": "Whatnot Galaxy"
+    },
+    {
+      "date": "2026-11-20",
+      "end": "2026-11-20T18:08:00",
+      "id": 29,
+      "note": "",
+      "pkgs": 88,
+      "platform": "Whatnot Galaxy"
+    },
+    {
+      "date": "2026-11-16",
+      "end": "2026-11-17T04:13:00",
+      "id": 9,
+      "note": "",
+      "pkgs": 168,
+      "platform": "Fanatics Baseball"
+    },
+    {
+      "date": "2026-11-18",
+      "end": "2026-11-19T04:13:00",
+      "id": 10,
+      "note": "",
+      "pkgs": 158,
+      "platform": "Fanatics Baseball"
+    },
+    {
+      "date": "2026-11-19",
+      "end": "2026-11-20T04:13:00",
+      "id": 11,
+      "note": "",
+      "pkgs": 192,
+      "platform": "Fanatics Baseball"
+    },
+    {
+      "date": "2026-11-19",
+      "end": "2026-11-20T01:28:00",
+      "id": 12,
+      "note": "",
+      "pkgs": 148,
+      "platform": "Fanatics Jamz"
+    },
+    {
+      "date": "2026-11-16",
+      "end": "2026-11-16T18:01:00",
+      "id": 13,
+      "note": "",
+      "pkgs": 137,
+      "platform": "Fanatics Blitz",
+      "psa": true
+    },
+    {
+      "date": "2026-11-17",
+      "end": "2026-11-17T18:01:00",
+      "id": 14,
+      "note": "",
+      "pkgs": 138,
+      "platform": "Fanatics Blitz",
+      "psa": true
+    },
+    {
+      "date": "2026-11-18",
+      "end": "2026-11-18T18:01:00",
+      "id": 15,
+      "note": "",
+      "pkgs": 211,
+      "platform": "Fanatics Blitz",
+      "psa": true
+    },
+    {
+      "date": "2026-11-19",
+      "end": "2026-11-19T18:01:00",
+      "id": 17,
+      "note": "",
+      "part": "A",
+      "pkgs": 194,
+      "platform": "Fanatics Blitz",
+      "psa": true
+    },
+    {
+      "date": "2026-11-19",
+      "end": "2026-11-19T18:01:00",
+      "id": 16,
+      "note": "",
+      "part": "B",
+      "pkgs": 298,
+      "platform": "Fanatics Blitz"
+    },
+    {
+      "date": "2026-11-20",
+      "end": "2026-11-20T18:01:00",
+      "id": 27,
+      "note": "",
+      "pkgs": 183,
+      "platform": "Fanatics Blitz",
+      "psa": true
+    },
+    {
+      "date": "2026-11-18",
+      "end": "2026-11-19T02:39:00",
+      "id": 23,
+      "note": "",
+      "pkgs": 298,
+      "platform": "TikTok Card Shop"
+    },
+    {
+      "date": "2026-11-19",
+      "end": "2026-11-20T02:39:00",
+      "id": 24,
+      "note": "",
+      "pkgs": 112,
+      "platform": "TikTok Card Shop"
+    }
+  ],
+  "slaRules": {
+    "Fanatics": {
+      "businessHours": false,
+      "hours": 72
+    },
+    "TikTok": {
+      "businessHours": false,
+      "hours": 96,
+      "labelHours": 48
+    },
+    "Whatnot": {
+      "businessHours": true,
+      "hours": 48
+    },
+    "default": {
+      "businessHours": false,
+      "hours": 72
+    },
+    "eBay": {
+      "businessHours": false,
+      "hours": 168
+    }
+  },
+  "today": "2026-11-20",
+  "version": 1
+}
