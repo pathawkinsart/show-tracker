@@ -107,6 +107,8 @@
       }
       .band-sub { color: var(--header-sub); font-size: 15.5px; margin: 0; }
       .band-sub strong { color: var(--header-ink); font-weight: 600; }
+      .band-updated { color: var(--header-sub); font-size: 13.5px; margin: 4px 0 0; }
+      .band-updated strong { color: var(--header-ink); font-weight: 600; }
 
       .howto {
         margin-top: 16px;
@@ -505,6 +507,7 @@
         <div class="wordmark"><span class="dot"></span><span><b>WeTheHobby</b> &nbsp;·&nbsp; Operations</span></div>
         <h1>Show Tracker</h1>
         <p class="band-sub">Shows still in the building — <strong id="bandDate">Friday, November 20, 2026</strong></p>
+        <p class="band-updated">Last updated <strong id="bandUpdated">—</strong></p>
         <div class="howto">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f06a24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
           <p>Finished packing a show? <strong>Tap its date</strong> in the channel's list — it comes off the in-house list. Packed the wrong one? <span class="dim">Tap <strong>Put back</strong> in the Packed list below and it returns.</span></p>
@@ -837,6 +840,11 @@
         return isNaN(dt.getTime()) ? null : dt;
       }
       function fmtLong(date) { return DOW_LONG[date.getDay()] + ", " + MON_LONG[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear(); }
+      function fmtClock(date) {
+        var h = date.getHours(), m = date.getMinutes(), ap = h >= 12 ? "PM" : "AM";
+        h = h % 12; if (h === 0) h = 12;
+        return h + ":" + (m < 10 ? "0" + m : m) + " " + ap;
+      }
       function isoDate(date) {
         var m = String(date.getMonth() + 1); if (m.length < 2) m = "0" + m;
         var dd = String(date.getDate()); if (dd.length < 2) dd = "0" + dd;
@@ -852,6 +860,11 @@
       function applyData(json) {
         var localAdds = shows.filter(function (s) { return s._local; });
         if (json.today) { var t = parseDateOnly(json.today); if (t) TODAY = t; }
+        if (json.generatedAt) {
+          var g = parseDateTime(json.generatedAt);
+          var gEl = document.getElementById("bandUpdated");
+          if (g && gEl) gEl.textContent = fmtLong(g) + " at " + fmtClock(g);
+        }
         if (json.slaRules) SLA_RULES = json.slaRules;
         CHANNEL_ENDS = {};
         if (json.channelEnds) {
