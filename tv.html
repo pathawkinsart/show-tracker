@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>Show Tracker — TV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; color: #f4f5f6;
+        font-family: "Barlow", system-ui, sans-serif; }
+      body { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
+
+      header { display: flex; align-items: center; gap: 2.5vw; padding: 1.2vh 1.5vw 1vh;
+        border-bottom: 3px solid #e85a17; flex: 0 0 auto; }
+      header h1 { font-family: "Barlow Semi Condensed", sans-serif; font-size: 3.2vw; line-height: 1;
+        margin: 0; letter-spacing: .02em; text-transform: uppercase; }
+      header h1 span { color: #e85a17; }
+      .totals { display: flex; gap: 2.5vw; margin-left: auto; align-items: baseline; }
+      .totals .t { text-align: right; }
+      .totals .num { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700;
+        font-size: 3.4vw; line-height: 1; }
+      .totals .num.orange { color: #e85a17; }
+      .totals .lbl { font-size: 1.15vw; color: #b9c0c7; text-transform: uppercase; letter-spacing: .08em; }
+      .updated { font-size: 1.15vw; color: #b9c0c7; text-align: right; }
+      .updated strong { color: #f4f5f6; font-weight: 600; }
+
+      main { flex: 1 1 auto; display: grid; grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(3, 1fr); gap: 0.9vw; padding: 1vw; min-height: 0; }
+      .tile { background: #141619; border: 1px solid #2a2e33; border-radius: 0.6vw;
+        padding: 1.1vh 1.1vw 0.9vh; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+      .tile.hot { border-top: 0.5vw solid #e85a17; }
+      .tile.done { border-top: 0.5vw solid #1e7d46; justify-content: center; }
+      .tile.done .check { font-size: 2.6vw; }
+      .tile h2 { font-family: "Barlow Semi Condensed", sans-serif; font-size: 1.9vw; line-height: 1.05;
+        margin: 0 0 0.4vh; text-transform: uppercase; letter-spacing: .01em; }
+      .tile .big { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700;
+        font-size: 4.6vw; line-height: 0.95; }
+      .tile .big small { font-size: 1.5vw; font-weight: 600; color: #b9c0c7; }
+      .tile .sub { font-size: 1.25vw; color: #b9c0c7; margin-top: 0.3vh; }
+      .tile .sub strong { color: #f4f5f6; }
+      .tile .oldest { margin-top: auto; font-size: 1.15vw; color: #b9c0c7; white-space: nowrap; overflow: hidden; }
+      .tile .oldest strong { color: #f4f5f6; }
+      .tile.done .big { color: #4cc38a; }
+      .tile.done .check { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700;
+        font-size: 2.2vw; line-height: 1; color: #4cc38a; text-transform: uppercase; }
+
+      #loadError { display: none; position: fixed; inset: 0; background: #000; color: #f4f5f6;
+        align-items: center; justify-content: center; font-size: 2vw; text-align: center; padding: 5vw; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Show <span>Tracker</span></h1>
+      <div class="totals">
+        <div class="t"><div class="num orange" id="totalShows">–</div><div class="lbl">Shows in house</div></div>
+        <div class="t"><div class="num" id="totalPkgs">–</div><div class="lbl">Packages</div></div>
+      </div>
+      <div class="updated">Last updated<br /><strong id="lastUpdated">—</strong></div>
+    </header>
+    <main id="grid"></main>
+    <div id="loadError">Could not load show-tracker-data.json.<br />Check the file is in the same folder, then this page picks it up.</div>
+
+    <script>
+      // TV / wall-monitor view: every channel side by side, one screen, no scroll.
+      // Same data file as the main tracker; polls every 5 minutes.
+      var CHANNELS = [
+        "Whatnot Footy", "Whatnot Main", "Whatnot Galaxy", "Whatnot Card Shop",
+        "Whatnot Ice", "Fanatics Baseball", "Fanatics Jamz", "Fanatics Blitz",
+        "Fanatics Evolution", "Fanatics Repack", "eBay Live", "TikTok Card Shop"
+      ];
+      var DOW = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      var MON = ["January", "February", "March", "April", "May", "June", "July",
+                 "August", "September", "October", "November", "December"];
+
+      function fmtClock(d) {
+        var h = d.getHours(), m = d.getMinutes(), ap = h >= 12 ? "PM" : "AM";
+        h = h % 12; if (h === 0) h = 12;
+        return h + ":" + (m < 10 ? "0" + m : m) + " " + ap;
+      }
+      function fmtLong(d) {
+        return DOW[d.getDay()] + ", " + MON[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+      }
+      function fmtShort(d) {
+        return DOW[d.getDay()].slice(0, 3) + " " + (d.getMonth() + 1) + "/" + d.getDate() + " " + fmtClock(d);
+      }
+      function hoursAgo(d) {
+        var h = Math.floor((Date.now() - d.getTime()) / 3600000);
+        if (h < 1) return "under an hour ago";
+        return h + "h ago";
+      }
+
+      function render(json) {
+        var shows = json.shows || [];
+        var byChannel = {};
+        CHANNELS.forEach(function (c) { byChannel[c] = []; });
+        shows.forEach(function (s) { if (byChannel[s.platform]) byChannel[s.platform].push(s); });
+
+        var totalShows = shows.length;
+        var totalPkgs = shows.reduce(function (a, s) { return a + (s.pkgs || 0); }, 0);
+        document.getElementById("totalShows").textContent = totalShows;
+        document.getElementById("totalPkgs").textContent = totalPkgs.toLocaleString("en-US");
+
+        var g = json.generatedAt ? new Date(json.generatedAt) : null;
+        document.getElementById("lastUpdated").textContent =
+          (g && !isNaN(g.getTime())) ? fmtLong(g) + " at " + fmtClock(g) : "—";
+
+        var grid = document.getElementById("grid");
+        grid.innerHTML = "";
+        CHANNELS.forEach(function (name) {
+          var list = byChannel[name];
+          var pkgs = list.reduce(function (a, s) { return a + (s.pkgs || 0); }, 0);
+          var tile = document.createElement("div");
+          if (!list.length) {
+            tile.className = "tile done";
+            tile.innerHTML = "<h2>" + name + "</h2>" +
+              "<div class=\"check\">&#10003; All caught up</div>" +
+              "<div class=\"sub\">Nothing in house</div>";
+          } else {
+            var oldest = null;
+            list.forEach(function (s) {
+              var e = s.end ? new Date(s.end) : null;
+              if (e && !isNaN(e.getTime()) && (!oldest || e < oldest)) oldest = e;
+            });
+            tile.className = "tile hot";
+            tile.innerHTML = "<h2>" + name + "</h2>" +
+              "<div class=\"big\">" + list.length + " <small>" + (list.length === 1 ? "show" : "shows") + "</small></div>" +
+              "<div class=\"sub\"><strong>" + pkgs.toLocaleString("en-US") + "</strong> packages</div>" +
+              "<div class=\"oldest\">Oldest: <strong>" + (oldest ? fmtShort(oldest) + " (" + hoursAgo(oldest) + ")" : "—") + "</strong></div>";
+          }
+          grid.appendChild(tile);
+        });
+      }
+
+      function load() {
+        fetch("show-tracker-data.json", { cache: "no-store" })
+          .then(function (res) { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+          .then(function (json) {
+            document.getElementById("loadError").style.display = "none";
+            render(json);
+          })
+          .catch(function () {
+            document.getElementById("loadError").style.display = "flex";
+          });
+      }
+      load();
+      setInterval(load, 5 * 60 * 1000);
+    </script>
+  </body>
+</html>
