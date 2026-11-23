@@ -137,8 +137,87 @@ def load_tiktok_ends(path, year):
     return ends
 
 
+def load_tiktok_ends_fallback(path, year):
+    """Fallback TikTok LIVE session ends from SHOW-END-TIMES-*.md.
+    The findings file's LIVE sessions table is only as fresh as
+    the last LIVE-page read — when a run rewrites it without the
+    table (Nov 23: Chrome closed mid-run), the ends are still in
+    the end-times file. Parses the TikTok section's table rows:
+    | star | Pacific start | duration | EST start | EST end |
+    Session | ... Returns {(channel, start datetime): end datetime}.
+    """
+    ends = {}
+    try:
+        text = open(path, encoding="utf-8").read()
+    except OSError:
+        return ends
+    # Only the TikTok section.
+    start = text.find("## TikTok (LIVE sessions")
+    if start < 0:
+        return ends
+    section = text[start:]
+    nxt = section.find("\n## ", 1)
+    if nxt > 0:
+        section = section[:nxt]
+    for line in section.splitlines():
+        if not line.strip().startswith("|"):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 5:
+            continue
+        try:
+            est_start = datetime.strptime(
+                f"{cells[3]} {year}", "%b %d, %I:%M %p %Y")
+            est_end = datetime.strptime(
+                f"{cells[4]} {year}", "%b %d, %I:%M %p %Y")
+        except (ValueError, IndexError):
+            continue
+        if est_end <= est_start:
+            est_end += timedelta(days=1)
+        ends[("TikTok Card Shop", est_start)] = est_end
+    return ends
+
+
+def load_folder_shows(repo):
+    """The Breaking folder read (breaking-folder-shows.json):
+    shows pulled the Team Break way, each with a Bins package
+    count (pkgs) when the sheet was in the 7-day window and
+    readable. Returns {(channel, date_iso, session): pkgs} and
+    {date_iso: [show dicts]}. Empty when the folder read has not
+    run/published yet — the tracker then falls back to the
+    snapshot counts alone."""
+    path = os.path.join(
+        repo, FINDINGS_DIR, "breaking-folder-shows.json")
+    if not os.path.exists(path):
+        return {}, {}
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, ValueError):
+        return {}, {}
+    by_key = {}
+    by_date = {}
+    for s in data.get("sheets", []) or []:
+        key = (s.get("channel") or "", s.get("date_iso") or "",
+               s.get("session") or "")
+        if s.get("pkgs") is not None:
+            by_key[key] = s["pkgs"]
+        by_date.setdefault(s.get("date_iso") or "", []).append(s)
+    return by_key, by_date
+
+
+def folder_end_5am(date_iso):
+    """Patrick's rule (Nov 23): when the break is over the breaker
+    takes a pic; if there is no pic, the show auto-ends at 5 AM
+    the morning after the show date. Returns a datetime."""
+    d = datetime.strptime(date_iso, "%Y-%m-%d").date()
+    return datetime.combine(
+        d + timedelta(days=1), datetime.min.time()).replace(hour=5)
+
+
 def build(repo, builder_path):
     in_house = parse_ast_list(builder_path, "IN_HOUSE")
+    folder_pkgs, _folder_by_date = load_folder_shows(repo)
     snapshot_path, run_date = snapshot_covering(repo, in_house)
     run_year = int(run_date[:4])
     # The cover table rows are locals inside the builder script, not top-level
@@ -146,6 +225,15 @@ def build(repo, builder_path):
     snap_ends = load_snapshot_ends(snapshot_path)
     tiktok_path = os.path.join(repo, FINDINGS_DIR, "TIKTOK-7DAY-FINDINGS.md")
     tiktok_ends = load_tiktok_ends(tiktok_path, run_year) if os.path.exists(tiktok_path) else {}
+    # Fallback: when the findings file's LIVE table is missing
+    # (a run rewrote it without a LIVE read), the ends still live
+    # in SHOW-END-TIMES-2026-11-20.md. Findings win on overlap.
+    end_times_path = os.path.join(
+        repo, FINDINGS_DIR, "SHOW-END-TIMES-2026-11-20.md")
+    if os.path.exists(end_times_path):
+        for key, end in load_tiktok_ends_fallback(
+                end_times_path, run_year).items():
+            tiktok_ends.setdefault(key, end)
 
     # slaRules: copy verbatim from the existing tracker JSON so it can never drift.
     existing_path = os.path.join(repo, TRACKER_JSON)
@@ -192,14 +280,24 @@ def build(repo, builder_path):
                     same_day.sort(key=lambda se: abs((se[0] - start_dt).total_seconds()))
                     end = same_day[0][1]
         if end is None:
+            # Patrick's rule (Nov 23): no pic, the show auto-ends
+            # at 5 AM the morning after the show date. This always
+            # gives an end, so no show is dropped for a missing end.
+            end = folder_end_5am(start_dt.date().isoformat())
+        if end is None:
             unmatched.append((channel, date_str, start_str, show))
             continue
+        # Package count: the Bins tab count from the Breaking
+        # folder wins when the folder read has it (one bin = one
+        # package); the snapshot count is the fallback.
+        folder_key = (channel, start_dt.date().isoformat(), letter or "")
+        bins_pkgs = folder_pkgs.get(folder_key)
         entry = {
             "date": start_dt.date().isoformat(),
             "end": end.strftime("%Y-%m-%dT%H:%M:%S"),
             "id": i,
             "note": "",
-            "pkgs": pkgs,
+            "pkgs": bins_pkgs if bins_pkgs is not None else pkgs,
             "platform": channel,
         }
         if letter:
@@ -222,6 +320,42 @@ def build(repo, builder_path):
             channel_ends[ch] = s["end"]
     channel_ends = {k: channel_ends[k] for k in sorted(channel_ends)}
 
+    # The Breaking folder (Patrick, Nov 23): the Show Tracker
+    # takes its show count from the Breaking folder, the way Team
+    # Break does. The shop app writes breaking-folder-shows.json
+    # each pass (the folder is located once in the app settings
+    # and remembered in shop.db). It updates each day with
+    # yesterday's shows: the JSON carries yesterday's sheets
+    # explicitly. The folder is the show inventory — which shows
+    # happened, with dates. Shipped still comes from Slack
+    # (Patrick): the folder never says shipped, so the builder
+    # does NOT cross-check folder sheets against the in-house
+    # list here — a folder show missing from in-house may simply
+    # be shipped (Slack-confirmed), not missed. The in-house
+    # list itself still comes from the report builder.
+    breaking = None
+    folder_path = os.path.join(
+        repo, FINDINGS_DIR, "breaking-folder-shows.json")
+    if os.path.exists(folder_path):
+        with open(folder_path, encoding="utf-8") as f:
+            folder_data = json.load(f)
+        run_d = datetime.strptime(run_date, "%Y-%m-%d").date()
+        window_start = run_d - timedelta(days=6)
+        folder_in_window = [
+            s for s in (folder_data.get("sheets") or [])
+            if window_start.isoformat() <= (s.get("date_iso") or "")
+            <= run_date]
+        breaking = {
+            "folder": folder_data.get("folder", ""),
+            "exists": bool(folder_data.get("exists")),
+            "read_at": folder_data.get("read_at", ""),
+            "sheet_count": folder_data.get("sheet_count", 0),
+            "yesterday": folder_data.get("yesterday", ""),
+            "yesterday_count": folder_data.get("yesterday_count", 0),
+            "yesterday_sheets": folder_data.get("yesterday_sheets", []),
+            "window_count": len(folder_in_window),
+        }
+
     now = datetime.now(EST)
     data = {
         "channelEnds": channel_ends,
@@ -233,6 +367,8 @@ def build(repo, builder_path):
     }
     if premier is not None:
         data["premier"] = premier
+    if breaking is not None:
+        data["breakingFolder"] = breaking
     return data, snapshot_path, run_date
 
 
