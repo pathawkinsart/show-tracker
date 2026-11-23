@@ -230,7 +230,9 @@
       .show-card.ice .current-sparks, .show-card.footy .current-sparks, .show-card.main .current-sparks, .show-card.galaxy .current-sparks, .show-card.cardshop .current-sparks, .show-card.ebay .current-sparks, .show-card.baseball .current-sparks, .show-card.jamz .current-sparks, .show-card.blitz .current-sparks, .show-card.evolution .current-sparks, .show-card.repack .current-sparks, .show-card.tiktok .current-sparks { color: #ffd97a; }
 
       /* ---------- Sudden Death: under construction ---------- */
-      .sla.under-construction { background: var(--amber); color: #ffffff; }
+      .sla.under-construction { background: var(--amber); color: #ffffff; max-width: none; }
+      .sla.under-construction .val { font-size: 18px; }
+      @media (max-width: 420px) { .sla.under-construction .val { font-size: 16px; } }
       @media (prefers-color-scheme: dark) { .sla.under-construction { background: var(--amber-soft); color: var(--amber); border: 1.5px solid var(--amber); } }
       .under-construction-banner {
         margin-top: 14px;
