@@ -206,6 +206,21 @@
       .chan-update.unavailable { color: var(--ink-3); }
       .chan-update-note { font-size: 12px; color: var(--ink-3); margin: 8px 0 0; }
 
+      /* ---------- Premier Shop status (Whatnot channels only) ----------
+         A pill in the card's top row: "Premier 97.3%" — Whatnot's own
+         per-account On-Time Scan % for the current evaluation period,
+         against the 95% Premier bar. Green at or above the bar,
+         red below it. The % comes from the data file's premier map
+         (premier.json, read from the Premier Shop page per account);
+         a channel with no entry shows nothing. */
+      .premier-badge {
+        flex: none; align-self: center;
+        font-size: 13px; font-weight: 700; white-space: nowrap;
+        border: 1.5px solid; border-radius: 999px; padding: 6px 12px;
+      }
+      .premier-badge.ok { color: var(--green); border-color: var(--green); }
+      .premier-badge.below { color: var(--red); border-color: var(--red); }
+
       /* ---------- Channel is current (nothing in house) ---------- */
       .sla.current { background: var(--green); color: #ffffff; }
       @media (prefers-color-scheme: dark) { .sla.current { background: var(--green-soft); color: var(--green); border: 1.5px solid var(--green); } }
@@ -701,6 +716,28 @@
         "eBay": { hours: 168, businessHours: false },
         "default": { hours: 72, businessHours: false }
       };
+
+      // Premier Shop status (Whatnot channels only), replaced by the
+      // file's premier map when it loads. Per-account On-Time Scan %
+      // for the current evaluation period, against the 95% bar.
+      // { period, bar, channels: { "Whatnot Footy": { onTimeScan,
+      // defectFree, status } } }. A channel with no entry shows no badge.
+      var PREMIER = null;
+      function premierBadge(chan) {
+        if (!PREMIER || !PREMIER.channels) return null;
+        var p = PREMIER.channels[chan];
+        if (!p || typeof p.onTimeScan !== "number") return null;
+        var bar = (typeof PREMIER.bar === "number") ? PREMIER.bar : 95;
+        var ok = p.onTimeScan >= bar;
+        var el = document.createElement("span");
+        el.className = "premier-badge " + (ok ? "ok" : "below");
+        el.textContent = "Premier " + p.onTimeScan.toFixed(1) + "%";
+        el.title = "Whatnot Premier Shop — On-Time Scan " + p.onTimeScan.toFixed(1) +
+          "% (bar " + bar + "%), " + (PREMIER.period || "") +
+          ". Defect-Free " + (typeof p.defectFree === "number" ? p.defectFree.toFixed(1) + "%" : "—") +
+          ". Status: " + (p.status || "—") + ".";
+        return el;
+      }
       // Channel-level end times from the file, used only as a fallback
       // for a show that carries no end time of its own.
       var CHANNEL_ENDS = {};
@@ -1002,6 +1039,7 @@
           if (g && gEl) gEl.textContent = fmtLong(g) + " at " + fmtClock(g);
         }
         if (json.slaRules) SLA_RULES = json.slaRules;
+        if (json.premier) PREMIER = json.premier;
         CHANNEL_ENDS = {};
         if (json.channelEnds) {
           Object.keys(json.channelEnds).forEach(function (k) {
@@ -1253,6 +1291,8 @@
           top.querySelector(".chan-count").textContent = gShows.length + (gShows.length === 1 ? " show" : " shows") + " · " + gPkgs.toLocaleString("en-US") + " packages in house";
           var uBtn = updateButton(chan);
           if (uBtn) top.appendChild(uBtn);
+          var pBadge = premierBadge(chan);
+          if (pBadge) top.appendChild(pBadge);
           card.appendChild(top);
           showList.appendChild(card);
           // A single row of chips — one per show. When a channel ran
