@@ -229,6 +229,28 @@
       }
       .show-card.ice .current-sparks, .show-card.footy .current-sparks, .show-card.main .current-sparks, .show-card.galaxy .current-sparks, .show-card.cardshop .current-sparks, .show-card.ebay .current-sparks, .show-card.baseball .current-sparks, .show-card.jamz .current-sparks, .show-card.blitz .current-sparks, .show-card.evolution .current-sparks, .show-card.repack .current-sparks, .show-card.tiktok .current-sparks { color: #ffd97a; }
 
+      /* ---------- Sudden Death: under construction ---------- */
+      .sla.under-construction { background: var(--amber); color: #ffffff; }
+      @media (prefers-color-scheme: dark) { .sla.under-construction { background: var(--amber-soft); color: var(--amber); border: 1.5px solid var(--amber); } }
+      .under-construction-banner {
+        margin-top: 14px;
+        display: flex; align-items: center; gap: 13px;
+        background: var(--amber-soft);
+        border: 1px solid var(--amber);
+        border-radius: 10px;
+        padding: 13px 14px;
+      }
+      .under-construction-icon {
+        flex: none; width: 42px; height: 42px; border-radius: 50%;
+        background: var(--amber); color: #ffffff;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .under-construction-title {
+        font-family: "Barlow Semi Condensed", sans-serif;
+        font-size: 21px; font-weight: 700; line-height: 1.1; margin: 0; color: var(--amber);
+      }
+      .under-construction-sub { margin: 3px 0 0; font-size: 14px; color: var(--ink-2); line-height: 1.4; }
+
       /* ---------- Channel cards with art backgrounds: Ice / Footy / Main / Galaxy / Card Shop / eBay Live / Baseball / Jamz / Blitz / Evolution / Repack / TikTok ---------- */
       .show-card.ice, .show-card.footy, .show-card.main, .show-card.galaxy, .show-card.cardshop, .show-card.ebay, .show-card.baseball, .show-card.jamz, .show-card.blitz, .show-card.evolution, .show-card.repack, .show-card.tiktok {
         background-size: cover;
@@ -1043,9 +1065,10 @@
             displayedCards++;
             var totalForChan = shows.filter(function (s) { return s.platform === chan; }).length;
             var packedForChan = done.filter(function (s) { return s.platform === chan; }).length;
+            var isUnderConstruction = chan === "Sudden Death";
             var cCard = document.createElement("article");
             cCard.className = "show-card is-current" + (chan === "Whatnot Ice" ? " ice" : chan === "Whatnot Footy" ? " footy" : chan === "Whatnot Main" ? " main" : chan === "Whatnot Galaxy" ? " galaxy" : chan === "Whatnot Card Shop" ? " cardshop" : chan === "eBay Live" ? " ebay" : chan === "Fanatics Baseball" ? " baseball" : chan === "Fanatics Jamz" ? " jamz" : chan === "Fanatics Blitz" ? " blitz" : chan === "Fanatics Evolution" ? " evolution" : chan === "Fanatics Repack" ? " repack" : chan === "TikTok Card Shop" ? " tiktok" : "");
-            cCard.setAttribute("aria-label", chan + " — all current, nothing in house");
+            cCard.setAttribute("aria-label", chan + (isUnderConstruction ? " — under construction" : " — all current, nothing in house"));
             var cTop = document.createElement("div");
             cTop.className = "show-top";
             cTop.innerHTML =
@@ -1053,17 +1076,26 @@
                 '<div class="show-head">' + logoHTML(chan) + '<h3 class="show-name"></h3></div>' +
                 '<div class="show-meta"><span class="chan-count"></span></div>' +
               '</div>' +
-              '<div class="sla current"><div class="val">Current</div><div class="lbl">All caught up</div></div>';
+              (isUnderConstruction
+                ? '<div class="sla under-construction"><div class="val">Under construction</div><div class="lbl">Coming soon</div></div>'
+                : '<div class="sla current"><div class="val">Current</div><div class="lbl">All caught up</div></div>');
             cTop.querySelector(".show-name").textContent = chan;
-            cTop.querySelector(".chan-count").textContent = packedForChan ? ("All " + totalForChan + (totalForChan === 1 ? " show" : " shows") + " packed & cleared · 0 in house") : "0 shows · 0 packages in house";
+            cTop.querySelector(".chan-count").textContent = isUnderConstruction ? "Coming soon — no shows yet" : packedForChan ? ("All " + totalForChan + (totalForChan === 1 ? " show" : " shows") + " packed & cleared · 0 in house") : "0 shows · 0 packages in house";
             cCard.appendChild(cTop);
             var banner = document.createElement("div");
-            banner.className = "current-banner";
-            banner.innerHTML =
-              '<div class="current-check"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div>' +
-              '<div class="current-text"><p class="current-title">All current — nothing in house</p><p class="current-sub"></p></div>' +
-              '<svg class="current-sparks" width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 3l1.7 5.3L18 10l-5.3 1.7L11 17l-1.7-5.3L4 10l5.3-1.7z"/><path d="M19 14l.8 2.7 2.7.8-2.7.8L19 21l-.8-2.7-2.7-.8 2.7-.8z"/></svg>';
-            banner.querySelector(".current-sub").textContent = packedForChan ? "Every show on this channel has been packed and cleared — this channel is fully up to date. Nice work." : "No shows are waiting on this channel right now — this channel is fully up to date.";
+            if (isUnderConstruction) {
+              banner.className = "under-construction-banner";
+              banner.innerHTML =
+                '<div class="under-construction-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>' +
+                '<div class="current-text"><p class="under-construction-title">Under construction</p><p class="under-construction-sub">Sudden Death is being set up — shows will appear here once it\u2019s live.</p></div>';
+            } else {
+              banner.className = "current-banner";
+              banner.innerHTML =
+                '<div class="current-check"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div>' +
+                '<div class="current-text"><p class="current-title">All current — nothing in house</p><p class="current-sub"></p></div>' +
+                '<svg class="current-sparks" width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 3l1.7 5.3L18 10l-5.3 1.7L11 17l-1.7-5.3L4 10l5.3-1.7z"/><path d="M19 14l.8 2.7 2.7.8-2.7.8L19 21l-.8-2.7-2.7-.8 2.7-.8z"/></svg>';
+              banner.querySelector(".current-sub").textContent = packedForChan ? "Every show on this channel has been packed and cleared — this channel is fully up to date. Nice work." : "No shows are waiting on this channel right now — this channel is fully up to date.";
+            }
             cCard.appendChild(banner);
             showList.appendChild(cCard);
             return;
