@@ -192,6 +192,20 @@
       }
       .show-card.leaving { opacity: 0; transform: translateX(24px); }
 
+      /* ---------- Per-channel Update button (work PC only) ---------- */
+      .chan-update {
+        flex: none; margin-left: 10px; align-self: center;
+        font-family: inherit; font-size: 13px; font-weight: 700;
+        color: var(--ink-2); background: transparent;
+        border: 1.5px solid var(--line); border-radius: 999px;
+        padding: 6px 12px; cursor: pointer; white-space: nowrap;
+      }
+      .chan-update:hover:not(:disabled) { border-color: var(--ink-2); }
+      .chan-update:disabled { opacity: .6; cursor: default; }
+      .chan-update.done { color: var(--green); border-color: var(--green); }
+      .chan-update.unavailable { color: var(--ink-3); }
+      .chan-update-note { font-size: 12px; color: var(--ink-3); margin: 8px 0 0; }
+
       /* ---------- Channel is current (nothing in house) ---------- */
       .sla.current { background: var(--green); color: #ffffff; }
       @media (prefers-color-scheme: dark) { .sla.current { background: var(--green-soft); color: var(--green); border: 1.5px solid var(--green); } }
@@ -824,6 +838,103 @@
       // keeps its card even when it has no shows in house — the card
       // celebrates that the channel is current instead of vanishing.
       var ALL_CHANNELS = ["Whatnot Footy", "Whatnot Main", "Whatnot Galaxy", "Whatnot Card Shop", "Whatnot Ice", "Fanatics Baseball", "Fanatics Jamz", "Fanatics Blitz", "Fanatics Evolution", "Fanatics Repack", "eBay Live", "TikTok Card Shop", "Sudden Death"];
+      // Jr. channel keys for the per-channel Update buttons (the
+      // shop app on the work PC runs one channel's pass). Sudden
+      // Death has no profile yet, so it gets no button.
+      var CHAN_KEY = {
+        "Whatnot Footy": "footy", "Whatnot Main": "main",
+        "Whatnot Galaxy": "galaxy", "Whatnot Card Shop": "cardshop",
+        "Whatnot Ice": "ice", "Fanatics Baseball": "baseball",
+        "Fanatics Jamz": "jamz", "Fanatics Blitz": "blitz",
+        "Fanatics Evolution": "evolution", "Fanatics Repack": "repack",
+        "eBay Live": "ebay", "TikTok Card Shop": "tiktok"
+      };
+      // The shop app runs on the work PC only (127.0.0.1:8756), so
+      // the Update buttons work only when this page is open on the
+      // work PC. Anywhere else the shop app is unreachable and the
+      // button says so instead of spinning forever.
+      var SHOP_APP = "http://127.0.0.1:8756";
+      var updatingChan = null; // channel key with a pass running
+      function requestChannelUpdate(key, btn) {
+        if (updatingChan) return; // one pass at a time
+        updatingChan = key;
+        btn.disabled = true;
+        btn.textContent = "Updating…";
+        btn.classList.remove("done", "unavailable");
+        var body = "channel=" + encodeURIComponent(key);
+        fetch(SHOP_APP + "/jr/pass/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded",
+                     "Accept": "application/json" },
+          body: body
+        }).then(function (res) {
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          return res.json();
+        }).then(function (json) {
+          if (!json.started) throw new Error("pass already running");
+          pollPassDone(btn);
+        }).catch(function () {
+          // Shop app unreachable (not on the work PC) or the pass
+          // could not start — say so plainly, don't spin.
+          updatingChan = null;
+          btn.disabled = false;
+          btn.textContent = "Update";
+          btn.classList.add("unavailable");
+          btn.title = "Works on the work PC only — the shop app isn't reachable from here.";
+        });
+      }
+      function pollPassDone(btn) {
+        fetch(SHOP_APP + "/api/jr/pass/status", {
+          headers: { "Accept": "application/json" }
+        }).then(function (res) {
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          return res.json();
+        }).then(function (st) {
+          if (st.busy) {
+            setTimeout(function () { pollPassDone(btn); }, 5000);
+            return;
+          }
+          updatingChan = null;
+          var last = st.last || {};
+          var summ = last.summary || {};
+          var failed = summ.channels_failed || {};
+          var ok = (summ.channels_ok || []).length > 0;
+          btn.disabled = false;
+          if (ok && !Object.keys(failed).length) {
+            btn.textContent = "Updated ✓";
+            btn.classList.add("done");
+            btn.title = "Updated just now — fresh numbers land after the next report build.";
+            setTimeout(function () {
+              btn.textContent = "Update";
+              btn.classList.remove("done");
+              btn.title = "";
+            }, 30000);
+            loadData(); // re-check the data file for fresh numbers
+          } else {
+            btn.textContent = "Update";
+            btn.title = last.error || "That channel's read failed — try again, or check the RUN-LOG.";
+          }
+        }).catch(function () {
+          updatingChan = null;
+          btn.disabled = false;
+          btn.textContent = "Update";
+          btn.classList.add("unavailable");
+          btn.title = "Works on the work PC only — the shop app isn't reachable from here.";
+        });
+      }
+      function updateButton(chan) {
+        var key = CHAN_KEY[chan];
+        if (!key) return null; // Sudden Death: no profile yet
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "chan-update";
+        btn.textContent = "Update";
+        btn.setAttribute("aria-label", "Update " + chan + " now (work PC only)");
+        btn.addEventListener("click", function () {
+          requestChannelUpdate(key, btn);
+        });
+        return btn;
+      }
       var shows = [];
       var nextId = 1;
       var dataLoaded = false;
@@ -1083,6 +1194,8 @@
                 : '<div class="sla current"><div class="val">Current</div><div class="lbl">All caught up</div></div>');
             cTop.querySelector(".show-name").textContent = chan;
             cTop.querySelector(".chan-count").textContent = isUnderConstruction ? "Coming soon — no shows yet" : packedForChan ? ("All " + totalForChan + (totalForChan === 1 ? " show" : " shows") + " packed & cleared · 0 in house") : "0 shows · 0 packages in house";
+            var cBtn = updateButton(chan);
+            if (cBtn) cTop.appendChild(cBtn);
             cCard.appendChild(cTop);
             var banner = document.createElement("div");
             if (isUnderConstruction) {
@@ -1138,6 +1251,8 @@
             nameEl.appendChild(chanBadge);
           }
           top.querySelector(".chan-count").textContent = gShows.length + (gShows.length === 1 ? " show" : " shows") + " · " + gPkgs.toLocaleString("en-US") + " packages in house";
+          var uBtn = updateButton(chan);
+          if (uBtn) top.appendChild(uBtn);
           card.appendChild(top);
           showList.appendChild(card);
           // A single row of chips — one per show. When a channel ran
