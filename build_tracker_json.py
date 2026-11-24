@@ -237,13 +237,16 @@ def folder_end_5am(date_iso):
 # channel per day, visible at the bottom of the tracker page
 # and exportable as Excel. Same computation as the sibling
 # section in the daily report (build_report.py) — Whatnot =
-# delta of cumulative shipped (Shipping + Delivered) per show
-# between daily SLA snapshots (the weekly-template method);
-# non-Whatnot = Slack packed posts by post date
-# (slack_packed.py + Jr.'s per-day slack-packed JSON files).
-# A day with no usable snapshot / no Slack file is blank
-# (null in the JSON), never invented. Days after the run date
-# are blank — they have not happened yet.
+# Shipped per day = PACKED counts from the Slack packed posts
+# in #breaking-shipping-updates, by post date = ship date
+# (slack_packed.py + the per-day slack-packed JSON files) —
+# for ALL channels, Whatnot included (Patrick, Nov 24: Slack
+# is the single source for the tracker's shipped numbers, no
+# dashboard/snapshot reads). Packed is not carrier-scanned:
+# a show packed today may scan tomorrow, so these numbers
+# differ from the old snapshot deltas by design. A day with
+# no Slack file is blank (null in the JSON), never invented.
+# Days after the run date are blank — they have not happened yet.
 SHIPPED_CHANNELS = [
     "Whatnot Footy", "Whatnot Main", "Whatnot Galaxy",
     "Whatnot Card Shop", "Whatnot Ice",
@@ -251,9 +254,9 @@ SHIPPED_CHANNELS = [
     "Fanatics Evolution", "Fanatics Repack",
     "eBay Live", "TikTok Card Shop",
 ]
-# Slack template column -> tracker channel (non-Whatnot only;
-# Whatnot columns come from the snapshot delta, never Slack,
-# so they cannot double-count).
+# Slack packed-post column -> tracker channel, ALL channels
+# (Patrick, Nov 24: the shipped table comes from Slack
+# consistently, packed counts, Whatnot included).
 SLACK_COL_TO_CHANNEL = {
     "FMLB": "Fanatics Baseball",
     "FNBA": "Fanatics Jamz",
@@ -262,104 +265,18 @@ SLACK_COL_TO_CHANNEL = {
     "FNFLR": "Fanatics Repack",
     "E-Bay live": "eBay Live",
     "Tik Tok": "TikTok Card Shop",
+    "Footy": "Whatnot Footy",
+    "Galaxy": "Whatnot Galaxy",
+    "Card Shop": "Whatnot Card Shop",
+    "WN OG": "Whatnot Main",
+    "ICE": "Whatnot Ice",
 }
 
 
-def _read_snapshot_shipped(path):
-    """Per-show shipped (shipping + delivered) keyed by
-    channel|show_start|title."""
-    out = {}
-    with open(path, newline="", encoding="utf-8") as fh:
-        for row in csv.DictReader(fh):
-            channel = (row.get("channel") or "").strip()
-            if not channel.startswith("Whatnot"):
-                continue
-            shipped = int(row.get("shipping") or 0) + int(row.get("delivered") or 0)
-            key = "%s|%s|%s" % (channel, (row.get("show_start") or "").strip(),
-                                (row.get("show_title") or "").strip())
-            out[key] = shipped
-    return out
-
-
-def _snapshots_with_coverage(repo):
-    """Snapshot CSVs with Whatnot coverage, as (date, name, path)
-    sorted by date then name. A partial snapshot (no Whatnot
-    rows) is skipped, never used as a delta baseline."""
-    snap_dir = os.path.join(repo, SNAP_DIR)
-    out = []
-    try:
-        names = sorted(os.listdir(snap_dir))
-    except OSError:
-        return out
-    for name in names:
-        if not name.endswith(".csv"):
-            continue
-        m = re.match(r"(\d{4}-\d{2}-\d{2})", name)
-        if not m:
-            continue
-        path = os.path.join(snap_dir, name)
-        try:
-            with open(path, newline="", encoding="utf-8") as fh:
-                has = any((r.get("channel") or "").startswith("Whatnot")
-                          for r in csv.DictReader(fh))
-        except Exception:
-            has = False
-        if has:
-            out.append((m.group(1), name, path))
-    out.sort()
-    return out
-
-
-def _whatnot_daily_deltas(repo, week_days):
-    """Per-day Whatnot shipped deltas. For each day, the delta
-    is the latest snapshot on that day minus the latest
-    snapshot before that day (both with Whatnot coverage).
-    Returns ({day: {channel: pkgs}}, {day: reason},
-    {day: (prev_date, cur_date)}). A channel present in the
-    day's snapshot with no increase reads 0 (a real zero); a
-    channel absent from the snapshot is not in the dict at all
-    (no data)."""
-    snaps = _snapshots_with_coverage(repo)
-    by_date = {}
-    for dstr, name, path in snaps:
-        by_date[dstr] = path
-    ordered = sorted(by_date.items())
-    deltas = {}
-    blank = {}
-    intervals = {}
-    for day in week_days:
-        dstr = day.isoformat()
-        if dstr not in by_date:
-            blank[day] = "no snapshot for %s" % day.strftime("%a %b %d")
-            continue
-        prev = None
-        for pd, pp in ordered:
-            if pd < dstr:
-                prev = (pd, pp)
-            else:
-                break
-        if prev is None:
-            blank[day] = "no earlier snapshot to delta against"
-            continue
-        cur = _read_snapshot_shipped(by_date[dstr])
-        prv = _read_snapshot_shipped(prev[1])
-        present = set(k.split("|", 1)[0] for k in cur)
-        day_delta = {ch: 0 for ch in present}
-        for key, shipped in cur.items():
-            d = shipped - prv.get(key, 0)
-            if d < 0:
-                d = 0
-            if d:
-                ch = key.split("|", 1)[0]
-                day_delta[ch] = day_delta.get(ch, 0) + d
-        deltas[day] = day_delta
-        intervals[day] = (prev[0], dstr)
-    return deltas, blank, intervals
-
-
 def _slack_daily_totals(repo, week_days):
-    """Per-day non-Whatnot shipped from Jr.'s slack-packed JSON
-    files. Returns ({day: {channel: pkgs}}, {day: reason})."""
+    """Per-day shipped (packed) from the slack-packed JSON
+    files, all channels. Returns ({day: {channel: pkgs}},
+    {day: reason})."""
     totals = {}
     blank = {}
     slack_dir = os.path.join(repo, FINDINGS_DIR, "slack-packed")
@@ -399,43 +316,25 @@ def shipped_per_day(repo, run_date):
     dict: weekStart/weekEnd, days (["Mon 11/23", ...]),
     channels ({channel: [Mon..Sun] with ints or null}),
     totals ([Mon..Sun] ints or null), notes ([str]).
-    Days after run_date are null — they have not happened yet."""
+    Days after run_date are null — they have not happened yet.
+    Source is Slack packed posts for EVERY channel (packed
+    counts, not carrier scans). A channel with no packed post
+    on a day is blank, never zero."""
     monday = run_date - timedelta(days=run_date.weekday())
     week_days = [monday + timedelta(days=i) for i in range(7)]
-    wn, wn_blank, wn_intervals = _whatnot_daily_deltas(repo, week_days)
     sl, sl_blank = _slack_daily_totals(repo, week_days)
-    notes = []
-    for day in week_days:
-        if day > run_date:
-            continue
-        if day in wn_intervals:
-            prev_d, cur_d = wn_intervals[day]
-            notes.append(
-                "%s Whatnot: delta between the %s snapshot and the "
-                "%s snapshot."
-                % (day.strftime("%a %b %d"),
-                   datetime.strptime(prev_d, "%Y-%m-%d").strftime("%a %b %d"),
-                   datetime.strptime(cur_d, "%Y-%m-%d").strftime("%a %b %d")))
-    for day in week_days:
-        if day > run_date:
-            continue
-        if day in wn:
-            present = set(wn[day].keys())
-            missing = [c for c in SHIPPED_CHANNELS
-                       if c.startswith("Whatnot") and c not in present]
-            if missing:
-                notes.append(
-                    "%s: %s not re-read in the snapshot, so no figure "
-                    "for %s (blank, not zero)."
-                    % (day.strftime("%a %b %d"), ", ".join(missing),
-                       ", ".join(missing)))
+    notes = [
+        "Shipped = packages packed, from the #breaking-shipping-updates "
+        "Slack posts (post date = ship date), for every channel. "
+        "Packed is not carrier-scanned — a show packed today may "
+        "scan tomorrow.",
+    ]
     for day in week_days:
         if day > run_date:
             continue
         if day in sl_blank:
             notes.append(
-                "%s: %s, so Fanatics / eBay / TikTok shipped per day "
-                "is blank (never invented)."
+                "%s: %s, so shipped per day is blank (never invented)."
                 % (day.strftime("%a %b %d"), sl_blank[day]))
     channels = {}
     for ch in SHIPPED_CHANNELS:
@@ -444,10 +343,7 @@ def shipped_per_day(repo, run_date):
             if day > run_date:
                 vals.append(None)
                 continue
-            if ch.startswith("Whatnot"):
-                vals.append(wn.get(day, {}).get(ch))
-            else:
-                vals.append(sl.get(day, {}).get(ch))
+            vals.append(sl.get(day, {}).get(ch))
         channels[ch] = vals
     totals = []
     for i, day in enumerate(week_days):

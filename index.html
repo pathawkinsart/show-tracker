@@ -192,7 +192,7 @@
       }
       .show-card.leaving { opacity: 0; transform: translateX(24px); }
 
-      /* ---------- Per-channel Update button (work PC only) ---------- */
+      /* ---------- Per-channel Update button (cloud) ---------- */
       .chan-update {
         flex: none; margin-left: 10px; align-self: center;
         font-family: inherit; font-size: 13px; font-weight: 700;
@@ -966,9 +966,8 @@
       // Channels still being set up: they get the caution-tape
       // "Under construction" card (no shows, no Update button).
       var UNDER_CONSTRUCTION = ["Sudden Death", "Rumble"];
-      // Jr. channel keys for the per-channel Update buttons (the
-      // shop app on the work PC runs one channel's pass). Sudden
-      // Death has no profile yet, so it gets no button.
+      // Channel keys for the per-channel Update buttons.
+      // Sudden Death has no profile yet, so it gets no button.
       var CHAN_KEY = {
         "Whatnot Footy": "footy", "Whatnot Main": "main",
         "Whatnot Galaxy": "galaxy", "Whatnot Card Shop": "cardshop",
@@ -977,78 +976,47 @@
         "Fanatics Evolution": "evolution", "Fanatics Repack": "repack",
         "eBay Live": "ebay", "TikTok Card Shop": "tiktok"
       };
-      // The shop app runs on the work PC only (127.0.0.1:8756), so
-      // the Update buttons work only when this page is open on the
-      // work PC. Anywhere else the shop app is unreachable and the
-      // button says so instead of spinning forever.
-      var SHOP_APP = "http://127.0.0.1:8756";
-      var updatingChan = null; // channel key with a pass running
-      function requestChannelUpdate(key, btn) {
-        if (updatingChan) return; // one pass at a time
-        updatingChan = key;
-        btn.disabled = true;
-        btn.textContent = "Updating…";
-        btn.classList.remove("done", "unavailable");
-        var body = "channel=" + encodeURIComponent(key);
-        fetch(SHOP_APP + "/jr/pass/run", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded",
-                     "Accept": "application/json" },
-          body: body
-        }).then(function (res) {
-          if (!res.ok) throw new Error("HTTP " + res.status);
-          return res.json();
-        }).then(function (json) {
-          if (!json.started) throw new Error("pass already running");
-          pollPassDone(btn);
-        }).catch(function () {
-          // Shop app unreachable (not on the work PC) or the pass
-          // could not start — say so plainly, don't spin.
-          updatingChan = null;
-          btn.disabled = false;
-          btn.textContent = "Update";
+      // The Update button works from ANY device. Tapping it opens
+      // a pre-filled GitHub issue on the show-tracker repo
+      // ("tracker-update" label) — tap Submit there to send it.
+      // A cloud cron picks it up, re-reads the day's Slack packed
+      // posts, rebuilds the tracker data and pushes it, then
+      // closes the issue. Nothing to do with the work PC. The
+      // refresh covers shipped (packed) numbers from Slack for
+      // every channel; it does NOT re-read any seller dashboard
+      // and does NOT change the show list or package totals
+      // (those come from the Breaking folder).
+      var ISSUE_NEW = "https://github.com/pathawkinsart/show-tracker/issues/new";
+      function requestChannelUpdate(key, chan, btn) {
+        var title = "Update: " + chan;
+        var body = "Channel: " + key + "\n"
+          + "Source: Show Tracker Update button\n"
+          + "Requested: " + new Date().toISOString() + "\n"
+          + "Cloud refresh: re-read the day's Slack packed posts, "
+          + "rebuild the tracker data, push.";
+        var url = ISSUE_NEW
+          + "?labels=" + encodeURIComponent("tracker-update")
+          + "&title=" + encodeURIComponent(title)
+          + "&body=" + encodeURIComponent(body);
+        var w = null;
+        try { w = window.open(url, "_blank"); } catch (e) { w = null; }
+        if (!w) {
+          // Popup blocked — say so plainly, don't spin.
           btn.classList.add("unavailable");
-          btn.title = "Works on the work PC only — the shop app isn't reachable from here.";
-        });
-      }
-      function pollPassDone(btn) {
-        fetch(SHOP_APP + "/api/jr/pass/status", {
-          headers: { "Accept": "application/json" }
-        }).then(function (res) {
-          if (!res.ok) throw new Error("HTTP " + res.status);
-          return res.json();
-        }).then(function (st) {
-          if (st.busy) {
-            setTimeout(function () { pollPassDone(btn); }, 5000);
-            return;
-          }
-          updatingChan = null;
-          var last = st.last || {};
-          var summ = last.summary || {};
-          var failed = summ.channels_failed || {};
-          var ok = (summ.channels_ok || []).length > 0;
-          btn.disabled = false;
-          if (ok && !Object.keys(failed).length) {
-            btn.textContent = "Updated ✓";
-            btn.classList.add("done");
-            btn.title = "Updated just now — fresh numbers land after the next report build.";
-            setTimeout(function () {
-              btn.textContent = "Update";
-              btn.classList.remove("done");
-              btn.title = "";
-            }, 30000);
-            loadData(); // re-check the data file for fresh numbers
-          } else {
-            btn.textContent = "Update";
-            btn.title = last.error || "That channel's read failed — try again, or check the RUN-LOG.";
-          }
-        }).catch(function () {
-          updatingChan = null;
-          btn.disabled = false;
+          btn.title = "Popup blocked — allow popups for this site, then tap Update again.";
+          showToast("Popup blocked — allow popups for this site, then tap Update again.", true);
+          return;
+        }
+        btn.classList.remove("unavailable");
+        btn.classList.add("done");
+        btn.textContent = "Request opened";
+        btn.title = "Update request opened on GitHub — tap Submit there to send it. Cloud refreshes shipped (packed) numbers from Slack for every channel and rebuilds the tracker (about 15 min). No dashboard re-read; show list and package totals unchanged.";
+        showToast("Update request opened on GitHub — tap Submit there to send it.", true);
+        setTimeout(function () {
           btn.textContent = "Update";
-          btn.classList.add("unavailable");
-          btn.title = "Works on the work PC only — the shop app isn't reachable from here.";
-        });
+          btn.classList.remove("done");
+          btn.title = "";
+        }, 30000);
       }
       function updateButton(chan) {
         var key = CHAN_KEY[chan];
@@ -1057,9 +1025,9 @@
         btn.type = "button";
         btn.className = "chan-update";
         btn.textContent = "Update";
-        btn.setAttribute("aria-label", "Update " + chan + " now (work PC only)");
+        btn.setAttribute("aria-label", "Update " + chan + " now");
         btn.addEventListener("click", function () {
-          requestChannelUpdate(key, btn);
+          requestChannelUpdate(key, chan, btn);
         });
         return btn;
       }

@@ -12,7 +12,7 @@
     "Whatnot Main": "2026-11-21T17:40:00",
     "eBay Live": "2026-11-21T01:03:00"
   },
-  "generatedAt": "2026-11-24T08:02:47-05:00",
+  "generatedAt": "2026-11-24T08:18:56-05:00",
   "premier": {
     "bar": 95,
     "channels": {
@@ -102,7 +102,7 @@
         null
       ],
       "Whatnot Card Shop": [
-        131,
+        248,
         null,
         null,
         null,
@@ -111,7 +111,7 @@
         null
       ],
       "Whatnot Footy": [
-        null,
+        254,
         null,
         null,
         null,
@@ -129,7 +129,7 @@
         null
       ],
       "Whatnot Ice": [
-        0,
+        null,
         null,
         null,
         null,
@@ -138,7 +138,7 @@
         null
       ],
       "Whatnot Main": [
-        359,
+        null,
         null,
         null,
         null,
@@ -166,11 +166,10 @@
       "Sun 11/29"
     ],
     "notes": [
-      "Mon Nov 23 Whatnot: delta between the Sun Nov 22 snapshot and the Mon Nov 23 snapshot.",
-      "Mon Nov 23: Whatnot Footy not re-read in the snapshot, so no figure for Whatnot Footy (blank, not zero)."
+      "Shipped = packages packed, from the #breaking-shipping-updates Slack posts (post date = ship date), for every channel. Packed is not carrier-scanned \u2014 a show packed today may scan tomorrow."
     ],
     "totals": [
-      1340,
+      1352,
       null,
       null,
       null,
