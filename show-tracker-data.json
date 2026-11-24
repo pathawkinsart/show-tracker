@@ -13,7 +13,7 @@
     "Whatnot Main": "2026-11-23T00:27:52",
     "eBay Live": "2026-11-24T01:54:41"
   },
-  "generatedAt": "2026-11-24T17:06:32-05:00",
+  "generatedAt": "2026-11-24T17:34:35-05:00",
   "premier": {
     "bar": 95,
     "channels": {
@@ -417,9 +417,9 @@
       "end": "2026-11-22T03:00:54",
       "id": 25,
       "note": "",
-      "pkgs": 189,
+      "pkgs": 99,
       "platform": "TikTok Card Shop",
-      "shipped": 0,
+      "shipped": 90,
       "total": 189
     },
     {
@@ -427,9 +427,9 @@
       "end": "2026-11-23T05:00:00",
       "id": 26,
       "note": "",
-      "pkgs": 148,
+      "pkgs": 68,
       "platform": "TikTok Card Shop",
-      "shipped": 0,
+      "shipped": 80,
       "total": 148
     },
     {
@@ -455,9 +455,9 @@
       "end": "2026-11-23T02:32:00",
       "id": 29,
       "note": "",
-      "pkgs": 102,
+      "pkgs": 1,
       "platform": "Whatnot Card Shop",
-      "shipped": 0,
+      "shipped": 101,
       "total": 102
     },
     {
