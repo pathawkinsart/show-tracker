@@ -12,7 +12,7 @@
     "Whatnot Main": "2026-11-21T17:40:00",
     "eBay Live": "2026-11-21T01:03:00"
   },
-  "generatedAt": "2026-11-23T19:12:02-05:00",
+  "generatedAt": "2026-11-24T07:32:13-05:00",
   "premier": {
     "bar": 95,
     "channels": {
@@ -44,6 +44,143 @@
     },
     "period": "Sep 1 \u2013 Nov 30, 2026",
     "source": "Whatnot Premier Shop page per account, read Nov 20, 2026 (DETAILED-FINDINGS-2026-11-20.md). Premier is evaluated monthly on a rolling 3-month window; the next judgement is Dec 1, 2026. Update this file when Claude re-reads the Premier Shop page (monthly / per detailed report) and rebuild the tracker data."
+  },
+  "shippedPerDay": {
+    "channels": {
+      "Fanatics Baseball": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Fanatics Blitz": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Fanatics Evolution": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Fanatics Jamz": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Fanatics Repack": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "TikTok Card Shop": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Whatnot Card Shop": [
+        131,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Whatnot Footy": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Whatnot Galaxy": [
+        49,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Whatnot Ice": [
+        0,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Whatnot Main": [
+        359,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "eBay Live": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    "days": [
+      "Mon 11/23",
+      "Tue 11/24",
+      "Wed 11/25",
+      "Thu 11/26",
+      "Fri 11/27",
+      "Sat 11/28",
+      "Sun 11/29"
+    ],
+    "notes": [
+      "Mon Nov 23 Whatnot: delta between the Sun Nov 22 snapshot and the Mon Nov 23 snapshot.",
+      "Mon Nov 23: Whatnot Footy not re-read in the snapshot, so no figure for Whatnot Footy (blank, not zero).",
+      "Mon Nov 23: no Slack packed file for Mon Nov 23, so Fanatics / eBay / TikTok shipped per day is blank (never invented)."
+    ],
+    "totals": [
+      539,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "weekEnd": "2026-11-29",
+    "weekStart": "2026-11-23"
   },
   "shows": [
     {

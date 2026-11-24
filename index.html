@@ -258,29 +258,50 @@
       }
       .show-card.ice .current-sparks, .show-card.footy .current-sparks, .show-card.main .current-sparks, .show-card.galaxy .current-sparks, .show-card.cardshop .current-sparks, .show-card.ebay .current-sparks, .show-card.baseball .current-sparks, .show-card.jamz .current-sparks, .show-card.blitz .current-sparks, .show-card.evolution .current-sparks, .show-card.repack .current-sparks, .show-card.tiktok .current-sparks { color: #ffd97a; }
 
-      /* ---------- Sudden Death: under construction ---------- */
-      .sla.under-construction { background: var(--amber); color: #ffffff; max-width: none; }
-      .sla.under-construction .val { font-size: 18px; }
-      @media (max-width: 420px) { .sla.under-construction .val { font-size: 16px; } }
-      @media (prefers-color-scheme: dark) { .sla.under-construction { background: var(--amber-soft); color: var(--amber); border: 1.5px solid var(--amber); } }
+      /* ---------- Sudden Death / Rumble: under construction (caution tape) ---------- */
+      .sla.under-construction {
+        background:
+          repeating-linear-gradient(-45deg, #111 0 7px, #FFD500 7px 14px) top / 100% 7px no-repeat,
+          repeating-linear-gradient(-45deg, #111 0 7px, #FFD500 7px 14px) bottom / 100% 7px no-repeat,
+          #FFD500;
+        color: #111; max-width: none;
+        border: 1px solid #111;
+        transform: rotate(-1.5deg);
+        box-shadow: 0 2px 6px rgba(0,0,0,.35);
+      }
+      .sla.under-construction .val { font-size: 15px; font-weight: 800; letter-spacing: .03em; white-space: normal; }
+      .sla.under-construction .lbl { color: #111; }
+      @media (max-width: 420px) { .sla.under-construction .val { font-size: 14px; } }
+      @media (prefers-color-scheme: dark) {
+        .sla.under-construction {
+          background:
+            repeating-linear-gradient(-45deg, #111 0 7px, #FFD500 7px 14px) top / 100% 7px no-repeat,
+            repeating-linear-gradient(-45deg, #111 0 7px, #FFD500 7px 14px) bottom / 100% 7px no-repeat,
+            #FFD500;
+          color: #111; border: 1px solid #111;
+        }
+      }
       .under-construction-banner {
         margin-top: 14px;
-        display: flex; align-items: center; gap: 13px;
-        background: var(--amber-soft);
-        border: 1px solid var(--amber);
         border-radius: 10px;
-        padding: 13px 14px;
+        overflow: hidden;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
       }
-      .under-construction-icon {
-        flex: none; width: 42px; height: 42px; border-radius: 50%;
-        background: var(--amber); color: #ffffff;
-        display: flex; align-items: center; justify-content: center;
-      }
-      .under-construction-title {
+      .under-construction-tape {
+        background:
+          repeating-linear-gradient(-45deg, #111 0 8px, #FFD500 8px 16px) top / 100% 8px no-repeat,
+          repeating-linear-gradient(-45deg, #111 0 8px, #FFD500 8px 16px) bottom / 100% 8px no-repeat,
+          #FFD500;
+        color: #111;
+        text-align: center;
+        padding: 10px 12px;
         font-family: "Barlow Semi Condensed", sans-serif;
-        font-size: 21px; font-weight: 700; line-height: 1.1; margin: 0; color: var(--amber);
+        font-size: 22px; font-weight: 800; letter-spacing: .06em; line-height: 1.1;
+        text-transform: uppercase;
+        transform: rotate(-.6deg);
       }
-      .under-construction-sub { margin: 3px 0 0; font-size: 14px; color: var(--ink-2); line-height: 1.4; }
+      .under-construction-sub { margin: 11px 13px 13px; font-size: 14px; color: var(--ink-2); line-height: 1.4; text-align: center; }
 
       /* ---------- Channel cards with art backgrounds: Ice / Footy / Main / Galaxy / Card Shop / eBay Live / Baseball / Jamz / Blitz / Evolution / Repack / TikTok ---------- */
       .show-card.ice, .show-card.footy, .show-card.main, .show-card.galaxy, .show-card.cardshop, .show-card.ebay, .show-card.baseball, .show-card.jamz, .show-card.blitz, .show-card.evolution, .show-card.repack, .show-card.tiktok {
@@ -504,6 +525,25 @@
       }
       .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
       .btn:active { transform: scale(.98); }
+      .btn[disabled] { opacity: .55; cursor: wait; }
+
+      /* ---------- Shipped per day ---------- */
+      .shipped-wrap {
+        overflow-x: auto; background: var(--surface); border: 1px solid var(--line);
+        border-radius: 12px; box-shadow: var(--shadow); margin-top: 26px;
+      }
+      .shipped-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 620px; }
+      .shipped-table th, .shipped-table td {
+        padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--line);
+        white-space: nowrap; font-variant-numeric: tabular-nums;
+      }
+      .shipped-table th:first-child, .shipped-table td:first-child { text-align: left; font-weight: 700; }
+      .shipped-table thead th {
+        font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3);
+      }
+      .shipped-table tfoot td { font-weight: 800; border-bottom: none; background: var(--surface-2); }
+      .shipped-notes { margin: 10px 14px 13px; font-size: 12.5px; color: var(--ink-3); line-height: 1.55; }
+      .shipped-notes div { margin-top: 2px; }
 
       details.add-box {
         margin-top: 18px; background: var(--surface); border: 1px solid var(--line);
@@ -634,6 +674,10 @@
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           Copy worksheet summary
         </button>
+        <button class="btn" id="exportShipped" type="button">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export shipped (Excel)
+        </button>
       </div>
 
       <!-- Add a show -->
@@ -659,6 +703,7 @@
               <option>eBay Live</option>
               <option>TikTok Card Shop</option>
 <option>Sudden Death</option>
+              <option>Rumble</option>
             </select>
           </div>
           <div>
@@ -678,6 +723,20 @@
           </div>
         </form>
       </details>
+
+      <!-- Shipped per day -->
+      <div class="section-head">
+        <h2>Shipped packages per channel per day</h2>
+        <span class="count" id="shippedWeek"></span>
+      </div>
+      <div class="shipped-wrap" id="shippedWrap">
+        <table class="shipped-table" id="shippedTable"></table>
+        <div class="shipped-notes" id="shippedNotes"></div>
+      </div>
+      <div class="empty hidden" id="noShipped">
+        <p class="big">No shipped data yet</p>
+        <p>Shipped packages per day will appear here once the data is in.</p>
+      </div>
 
       <footer class="foot">WeTheHobby · Show Tracker · <span id="footDate">Friday, November 20, 2026</span></footer>
     </div>
@@ -903,7 +962,10 @@
       // Every channel the tracker covers, in card order. A channel
       // keeps its card even when it has no shows in house — the card
       // celebrates that the channel is current instead of vanishing.
-      var ALL_CHANNELS = ["Whatnot Footy", "Whatnot Main", "Whatnot Galaxy", "Whatnot Card Shop", "Whatnot Ice", "Fanatics Baseball", "Fanatics Jamz", "Fanatics Blitz", "Fanatics Evolution", "Fanatics Repack", "eBay Live", "TikTok Card Shop", "Sudden Death"];
+      var ALL_CHANNELS = ["Whatnot Footy", "Whatnot Main", "Whatnot Galaxy", "Whatnot Card Shop", "Whatnot Ice", "Fanatics Baseball", "Fanatics Jamz", "Fanatics Blitz", "Fanatics Evolution", "Fanatics Repack", "eBay Live", "TikTok Card Shop", "Sudden Death", "Rumble"];
+      // Channels still being set up: they get the caution-tape
+      // "Under construction" card (no shows, no Update button).
+      var UNDER_CONSTRUCTION = ["Sudden Death", "Rumble"];
       // Jr. channel keys for the per-channel Update buttons (the
       // shop app on the work PC runs one channel's pass). Sudden
       // Death has no profile yet, so it gets no button.
@@ -1186,6 +1248,54 @@
         return true;
       }
 
+      // Shipped per day — visible table at the bottom of the page,
+      // from lastGoodData.shippedPerDay (same data the Excel
+      // export uses). Re-renders with every data refresh, so it
+      // stays current on the 5-minute re-check. Blank cells are
+      // missing data, never invented numbers.
+      function renderShipped() {
+        var spd = lastGoodData && lastGoodData.shippedPerDay;
+        var wrap = document.getElementById("shippedWrap");
+        var none = document.getElementById("noShipped");
+        var weekEl = document.getElementById("shippedWeek");
+        if (!spd || !spd.days || !spd.channels) {
+          if (wrap) wrap.classList.add("hidden");
+          if (none) none.classList.remove("hidden");
+          if (weekEl) weekEl.textContent = "";
+          return;
+        }
+        if (wrap) wrap.classList.remove("hidden");
+        if (none) none.classList.add("hidden");
+        if (weekEl) weekEl.textContent = spd.days[0] + " – " + spd.days[spd.days.length - 1];
+        var fmt = function (v) { return (v === null || v === undefined) ? "" : Number(v).toLocaleString("en-US"); };
+        var html = "<thead><tr><th>Channel</th>";
+        spd.days.forEach(function (d) { html += "<th>" + d + "</th>"; });
+        html += "<th>Total</th></tr></thead><tbody>";
+        ALL_CHANNELS.forEach(function (ch) {
+          var vals = spd.channels[ch];
+          if (!vals) return;
+          var total = 0, any = false;
+          html += "<tr><td>" + ch + "</td>";
+          vals.forEach(function (v) {
+            html += "<td>" + fmt(v) + "</td>";
+            if (v !== null && v !== undefined) { total += v; any = true; }
+          });
+          html += "<td>" + (any ? fmt(total) : "") + "</td></tr>";
+        });
+        html += "</tbody><tfoot><tr><td>TOTAL</td>";
+        (spd.totals || []).forEach(function (v) { html += "<td>" + fmt(v) + "</td>"; });
+        var grand = 0, anyG = false;
+        (spd.totals || []).forEach(function (v) { if (v !== null && v !== undefined) { grand += v; anyG = true; } });
+        html += "<td>" + (anyG ? fmt(grand) : "") + "</td></tr></tfoot>";
+        document.getElementById("shippedTable").innerHTML = html;
+        var notesEl = document.getElementById("shippedNotes");
+        if (notesEl) {
+          notesEl.innerHTML = (spd.notes || []).map(function (n) {
+            return "<div>" + n.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</div>";
+          }).join("");
+        }
+      }
+
       function render() {
         // Header / footer carry the worksheet date from the data file
         document.getElementById("bandDate").textContent = fmtLong(TODAY);
@@ -1195,6 +1305,7 @@
         document.getElementById("dataError").classList.toggle("hidden", !(!dataLoaded && dataLoadFailed));
         document.getElementById("dataStale").classList.toggle("hidden", !(dataLoaded && dataLoadFailed));
         renderFilters();
+        renderShipped();
         var inHouse = shows.filter(function (s) { return !packed[s.id]; });
         var done = shows.filter(function (s) { return packed[s.id]; });
 
@@ -1245,7 +1356,7 @@
             displayedCards++;
             var totalForChan = shows.filter(function (s) { return s.platform === chan; }).length;
             var packedForChan = done.filter(function (s) { return s.platform === chan; }).length;
-            var isUnderConstruction = chan === "Sudden Death";
+            var isUnderConstruction = UNDER_CONSTRUCTION.indexOf(chan) !== -1;
             var cCard = document.createElement("article");
             cCard.className = "show-card is-current" + (chan === "Whatnot Ice" ? " ice" : chan === "Whatnot Footy" ? " footy" : chan === "Whatnot Main" ? " main" : chan === "Whatnot Galaxy" ? " galaxy" : chan === "Whatnot Card Shop" ? " cardshop" : chan === "eBay Live" ? " ebay" : chan === "Fanatics Baseball" ? " baseball" : chan === "Fanatics Jamz" ? " jamz" : chan === "Fanatics Blitz" ? " blitz" : chan === "Fanatics Evolution" ? " evolution" : chan === "Fanatics Repack" ? " repack" : chan === "TikTok Card Shop" ? " tiktok" : "");
             cCard.setAttribute("aria-label", chan + (isUnderConstruction ? " — under construction" : " — all current, nothing in house"));
@@ -1268,8 +1379,8 @@
             if (isUnderConstruction) {
               banner.className = "under-construction-banner";
               banner.innerHTML =
-                '<div class="under-construction-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>' +
-                '<div class="current-text"><p class="under-construction-title">Under construction</p><p class="under-construction-sub">Sudden Death is being set up — shows will appear here once it\u2019s live.</p></div>';
+                '<div class="under-construction-tape">Under construction</div>' +
+                '<p class="under-construction-sub">' + chan + ' is being set up — shows will appear here once it\u2019s live.</p>';
             } else {
               banner.className = "current-banner";
               banner.innerHTML =
@@ -1514,6 +1625,59 @@
         a.click();
         document.body.removeChild(a);
         setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+      });
+
+      // Export shipped per day (Excel) — the same table as the
+      // visible section, built client-side from
+      // lastGoodData.shippedPerDay. SheetJS loads on demand the
+      // first time the button is tapped; if the CDN is
+      // unreachable the button says so plainly instead of failing
+      // silently.
+      document.getElementById("exportShipped").addEventListener("click", function () {
+        var spd = lastGoodData && lastGoodData.shippedPerDay;
+        if (!spd || !spd.days || !spd.channels) { showToast("No shipped data yet — nothing to export.", true); return; }
+        var btn = this;
+        function buildXlsx() {
+          var header = ["Channel"].concat(spd.days).concat(["Total"]);
+          var rows = [header];
+          ALL_CHANNELS.forEach(function (ch) {
+            var vals = spd.channels[ch];
+            if (!vals) return;
+            var row = [ch], total = 0, any = false;
+            vals.forEach(function (v) {
+              if (v === null || v === undefined) { row.push(null); }
+              else { row.push(v); total += v; any = true; }
+            });
+            row.push(any ? total : null);
+            rows.push(row);
+          });
+          var tot = ["TOTAL"];
+          (spd.totals || []).forEach(function (v) { tot.push((v === null || v === undefined) ? null : v); });
+          var grand = 0, anyG = false;
+          (spd.totals || []).forEach(function (v) { if (v !== null && v !== undefined) { grand += v; anyG = true; } });
+          tot.push(anyG ? grand : null);
+          rows.push(tot);
+          var ws = XLSX.utils.aoa_to_sheet(rows);
+          var wb = XLSX.utils.book_new();
+          var title = "Shipped " + spd.weekStart.slice(5) + " to " + spd.weekEnd.slice(5);
+          XLSX.utils.book_append_sheet(wb, ws, title);
+          XLSX.writeFile(wb, "shipped-" + spd.weekStart + "-to-" + spd.weekEnd + ".xlsx");
+          showToast("Shipped Excel downloaded.", true);
+        }
+        if (window.XLSX) { buildXlsx(); return; }
+        btn.disabled = true;
+        var s = document.createElement("script");
+        s.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+        s.onload = function () {
+          btn.disabled = false;
+          if (window.XLSX) buildXlsx();
+          else showToast("Could not load the Excel library — check your connection and try again.", true);
+        };
+        s.onerror = function () {
+          btn.disabled = false;
+          showToast("Could not load the Excel library — check your connection and try again.", true);
+        };
+        document.head.appendChild(s);
       });
 
       // Copy a plain-text summary of the worksheet as it stands

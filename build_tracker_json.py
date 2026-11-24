@@ -10,7 +10,7 @@ Pages site reads (same keys, same platform names, same slaRules, version 1).
 Rules are NOT re-derived here: the in-house list is the report builder's
 IN_HOUSE (already settled-rule filtered by the report build). This script
 only converts that list into the tracker schema and verifies it reconciles
-to the report's totals (34 shows / 4,240 pkgs for the Nov 22 5 PM run).
+to the report's totals.
 
 Usage:
     python3 build_tracker_json.py [--repo DIR] [--builder PATH] [--out PATH]
@@ -52,20 +52,26 @@ def parse_ast_list(path, name):
 
 def parse_report_dt(date_str, start_str, year):
     """'Nov 21' + '8:02 PM' -> datetime. Year from the run; nudged if the
-    result lands more than 10 days from the run date (Dec/Jan boundary)."""
+    result lands more than 10 days from the run date (Dec/Jan boundary).
+    'evening' (TikTok sessions whose times were not read) parses as 6:00 PM
+    for date purposes only - the tracker never shows a start time, and the
+    end still falls back to the 5 AM rule."""
+    if start_str.strip().lower() == "evening":
+        start_str = "6:00 PM"
     dt = datetime.strptime(f"{date_str} {year} {start_str}", "%b %d %Y %I:%M %p")
     return dt
 
 
 def latest_snapshot(repo):
-    """Newest sla/snapshots/*.csv by the date in its filename (YYYY-MM-DD-am|pm)."""
+    """Newest sla/snapshots/*.csv by the date in its filename (YYYY-MM-DD-am|pm[N]).
+    The suffix number breaks same-day ties: pm2 is newer than pm."""
     d = os.path.join(repo, SNAP_DIR)
     snaps = []
     for fn in os.listdir(d):
-        m = re.match(r"(\d{4}-\d{2}-\d{2})-(am|pm)\.csv$", fn)
+        m = re.match(r"(\d{4}-\d{2}-\d{2})-(am|pm)(\d*)\.csv$", fn)
         if not m:
             continue
-        key = (m.group(1), 0 if m.group(2) == "am" else 1)
+        key = (m.group(1), 0 if m.group(2) == "am" else 1, int(m.group(3) or 0))
         snaps.append((key, os.path.join(d, fn), m.group(1)))
     if not snaps:
         raise ValueError(f"no SLA snapshot found in {d}")
@@ -73,38 +79,49 @@ def latest_snapshot(repo):
     return snaps  # newest first: [(key, path, run_date)]
 
 
-def snapshot_covering(repo, in_house):
-    """Newest snapshot whose rows hold an end time for every IN_HOUSE
-    show. A partial snapshot (e.g. the eBay-only 2026-11-23-pm proof
-    pass) must never break the tracker build — fall back to the newest
-    snapshot that covers the whole in-house list. Each candidate is
-    judged on its own run date (its own year anchor for the starts)."""
-    for _key, path, run_date in latest_snapshot(repo):
+def load_all_snapshot_ends(repo):
+    """Merged (channel, show_start) -> show_end across all snapshots,
+    newest first (a re-read wins). A channel missing from the newest
+    snapshot (e.g. Footy, not re-read this run) keeps its last read ends
+    instead of breaking the build."""
+    ends = {}
+    for _key, path, _run_date in latest_snapshot(repo):
         try:
-            ends = load_snapshot_ends(path)
+            for k, v in load_snapshot_ends(path).items():
+                ends.setdefault(k, v)
         except (KeyError, ValueError):
-            # Old-format snapshot (no show_end column) — cannot cover
-            # the list; skip it and keep looking.
+            # Old-format snapshot (no show_end column) - skip it.
             continue
-        run_year = int(run_date[:4])
-        run_dt = datetime.strptime(run_date, "%Y-%m-%d")
-        missing = False
-        for (channel, date_str, _letter, _show, start_str, _pkgs) in in_house:
-            # TikTok end times come from TIKTOK-7DAY-FINDINGS.md, not the
-            # snapshot — never let a TikTok show reject a snapshot.
-            if channel == "TikTok Card Shop":
-                continue
-            start_dt = parse_report_dt(date_str, start_str, run_year)
-            if (run_dt - start_dt).days > 8:
-                start_dt = start_dt.replace(year=run_year + 1)
-            if (run_dt - start_dt).days < -1:
-                start_dt = start_dt.replace(year=run_year - 1)
-            if (channel, start_dt) not in ends:
-                missing = True
-                break
-        if not missing:
-            return path, run_date
-    raise ValueError("no SLA snapshot covers the full in-house list")
+    return ends
+
+
+def snapshot_covering(repo, in_house):
+    """Newest snapshot date, verified against the MERGED ends across all
+    snapshots: a channel missing from the newest snapshot (e.g. Footy,
+    not re-read) is covered by its last read instead of rejecting the
+    whole build. A partial snapshot (e.g. the eBay-only 2026-11-23-pm
+    proof pass) must never break the tracker build. TikTok end times
+    come from TIKTOK-7DAY-FINDINGS.md, not the snapshot - never let a
+    TikTok show reject a snapshot."""
+    snaps = latest_snapshot(repo)
+    newest_path, run_date = snaps[0][1], snaps[0][2]
+    ends = load_all_snapshot_ends(repo)
+    run_year = int(run_date[:4])
+    run_dt = datetime.strptime(run_date, "%Y-%m-%d")
+    for (channel, date_str, _letter, _show, start_str, _pkgs) in in_house:
+        # TikTok end times come from TIKTOK-7DAY-FINDINGS.md, not the
+        # snapshot — never let a TikTok show reject a snapshot.
+        if channel == "TikTok Card Shop":
+            continue
+        start_dt = parse_report_dt(date_str, start_str, run_year)
+        if (run_dt - start_dt).days > 8:
+            start_dt = start_dt.replace(year=run_year + 1)
+        if (run_dt - start_dt).days < -1:
+            start_dt = start_dt.replace(year=run_year - 1)
+        if (channel, start_dt) not in ends:
+            raise ValueError(
+                f"no SLA snapshot covers {channel} show starting {start_dt}")
+    return newest_path, run_date
 
 
 def load_snapshot_ends(path):
@@ -215,6 +232,246 @@ def folder_end_5am(date_iso):
         d + timedelta(days=1), datetime.min.time()).replace(hour=5)
 
 
+# ---------- SHIPPED PACKAGES PER CHANNEL PER DAY ----------
+# Patrick (Nov 24): a Mon-Sun table of shipped packages per
+# channel per day, visible at the bottom of the tracker page
+# and exportable as Excel. Same computation as the sibling
+# section in the daily report (build_report.py) — Whatnot =
+# delta of cumulative shipped (Shipping + Delivered) per show
+# between daily SLA snapshots (the weekly-template method);
+# non-Whatnot = Slack packed posts by post date
+# (slack_packed.py + Jr.'s per-day slack-packed JSON files).
+# A day with no usable snapshot / no Slack file is blank
+# (null in the JSON), never invented. Days after the run date
+# are blank — they have not happened yet.
+SHIPPED_CHANNELS = [
+    "Whatnot Footy", "Whatnot Main", "Whatnot Galaxy",
+    "Whatnot Card Shop", "Whatnot Ice",
+    "Fanatics Baseball", "Fanatics Jamz", "Fanatics Blitz",
+    "Fanatics Evolution", "Fanatics Repack",
+    "eBay Live", "TikTok Card Shop",
+]
+# Slack template column -> tracker channel (non-Whatnot only;
+# Whatnot columns come from the snapshot delta, never Slack,
+# so they cannot double-count).
+SLACK_COL_TO_CHANNEL = {
+    "FMLB": "Fanatics Baseball",
+    "FNBA": "Fanatics Jamz",
+    "FNFLB": "Fanatics Blitz",
+    "Fpoke": "Fanatics Evolution",
+    "FNFLR": "Fanatics Repack",
+    "E-Bay live": "eBay Live",
+    "Tik Tok": "TikTok Card Shop",
+}
+
+
+def _read_snapshot_shipped(path):
+    """Per-show shipped (shipping + delivered) keyed by
+    channel|show_start|title."""
+    out = {}
+    with open(path, newline="", encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            channel = (row.get("channel") or "").strip()
+            if not channel.startswith("Whatnot"):
+                continue
+            shipped = int(row.get("shipping") or 0) + int(row.get("delivered") or 0)
+            key = "%s|%s|%s" % (channel, (row.get("show_start") or "").strip(),
+                                (row.get("show_title") or "").strip())
+            out[key] = shipped
+    return out
+
+
+def _snapshots_with_coverage(repo):
+    """Snapshot CSVs with Whatnot coverage, as (date, name, path)
+    sorted by date then name. A partial snapshot (no Whatnot
+    rows) is skipped, never used as a delta baseline."""
+    snap_dir = os.path.join(repo, SNAP_DIR)
+    out = []
+    try:
+        names = sorted(os.listdir(snap_dir))
+    except OSError:
+        return out
+    for name in names:
+        if not name.endswith(".csv"):
+            continue
+        m = re.match(r"(\d{4}-\d{2}-\d{2})", name)
+        if not m:
+            continue
+        path = os.path.join(snap_dir, name)
+        try:
+            with open(path, newline="", encoding="utf-8") as fh:
+                has = any((r.get("channel") or "").startswith("Whatnot")
+                          for r in csv.DictReader(fh))
+        except Exception:
+            has = False
+        if has:
+            out.append((m.group(1), name, path))
+    out.sort()
+    return out
+
+
+def _whatnot_daily_deltas(repo, week_days):
+    """Per-day Whatnot shipped deltas. For each day, the delta
+    is the latest snapshot on that day minus the latest
+    snapshot before that day (both with Whatnot coverage).
+    Returns ({day: {channel: pkgs}}, {day: reason},
+    {day: (prev_date, cur_date)}). A channel present in the
+    day's snapshot with no increase reads 0 (a real zero); a
+    channel absent from the snapshot is not in the dict at all
+    (no data)."""
+    snaps = _snapshots_with_coverage(repo)
+    by_date = {}
+    for dstr, name, path in snaps:
+        by_date[dstr] = path
+    ordered = sorted(by_date.items())
+    deltas = {}
+    blank = {}
+    intervals = {}
+    for day in week_days:
+        dstr = day.isoformat()
+        if dstr not in by_date:
+            blank[day] = "no snapshot for %s" % day.strftime("%a %b %d")
+            continue
+        prev = None
+        for pd, pp in ordered:
+            if pd < dstr:
+                prev = (pd, pp)
+            else:
+                break
+        if prev is None:
+            blank[day] = "no earlier snapshot to delta against"
+            continue
+        cur = _read_snapshot_shipped(by_date[dstr])
+        prv = _read_snapshot_shipped(prev[1])
+        present = set(k.split("|", 1)[0] for k in cur)
+        day_delta = {ch: 0 for ch in present}
+        for key, shipped in cur.items():
+            d = shipped - prv.get(key, 0)
+            if d < 0:
+                d = 0
+            if d:
+                ch = key.split("|", 1)[0]
+                day_delta[ch] = day_delta.get(ch, 0) + d
+        deltas[day] = day_delta
+        intervals[day] = (prev[0], dstr)
+    return deltas, blank, intervals
+
+
+def _slack_daily_totals(repo, week_days):
+    """Per-day non-Whatnot shipped from Jr.'s slack-packed JSON
+    files. Returns ({day: {channel: pkgs}}, {day: reason})."""
+    totals = {}
+    blank = {}
+    slack_dir = os.path.join(repo, FINDINGS_DIR, "slack-packed")
+    try:
+        sys.path.insert(0, os.path.join(repo, "shipping-report"))
+        import slack_packed
+    except Exception:
+        for day in week_days:
+            blank[day] = "Slack parser unavailable"
+        return totals, blank
+    for day in week_days:
+        path = os.path.join(slack_dir, day.isoformat() + ".json")
+        if not os.path.exists(path):
+            blank[day] = "no Slack packed file for %s" % day.strftime("%a %b %d")
+            continue
+        try:
+            data = json.load(open(path, encoding="utf-8"))
+        except Exception:
+            blank[day] = "Slack file for %s unreadable" % day.strftime("%a %b %d")
+            continue
+        messages = [(day, m.get("text", "")) for m in data.get("messages", [])]
+        parsed = slack_packed.daily_totals(messages)
+        day_tot = {}
+        for col, pkgs in parsed.get(day, {}).items():
+            if col.startswith("UNKNOWN"):
+                continue
+            ch = SLACK_COL_TO_CHANNEL.get(col)
+            if ch:
+                day_tot[ch] = day_tot.get(ch, 0) + pkgs
+        totals[day] = day_tot
+    return totals, blank
+
+
+def shipped_per_day(repo, run_date):
+    """Build the Mon-Sun shipped-per-day table for the week
+    containing run_date (a datetime.date). Returns a JSON-ready
+    dict: weekStart/weekEnd, days (["Mon 11/23", ...]),
+    channels ({channel: [Mon..Sun] with ints or null}),
+    totals ([Mon..Sun] ints or null), notes ([str]).
+    Days after run_date are null — they have not happened yet."""
+    monday = run_date - timedelta(days=run_date.weekday())
+    week_days = [monday + timedelta(days=i) for i in range(7)]
+    wn, wn_blank, wn_intervals = _whatnot_daily_deltas(repo, week_days)
+    sl, sl_blank = _slack_daily_totals(repo, week_days)
+    notes = []
+    for day in week_days:
+        if day > run_date:
+            continue
+        if day in wn_intervals:
+            prev_d, cur_d = wn_intervals[day]
+            notes.append(
+                "%s Whatnot: delta between the %s snapshot and the "
+                "%s snapshot."
+                % (day.strftime("%a %b %d"),
+                   datetime.strptime(prev_d, "%Y-%m-%d").strftime("%a %b %d"),
+                   datetime.strptime(cur_d, "%Y-%m-%d").strftime("%a %b %d")))
+    for day in week_days:
+        if day > run_date:
+            continue
+        if day in wn:
+            present = set(wn[day].keys())
+            missing = [c for c in SHIPPED_CHANNELS
+                       if c.startswith("Whatnot") and c not in present]
+            if missing:
+                notes.append(
+                    "%s: %s not re-read in the snapshot, so no figure "
+                    "for %s (blank, not zero)."
+                    % (day.strftime("%a %b %d"), ", ".join(missing),
+                       ", ".join(missing)))
+    for day in week_days:
+        if day > run_date:
+            continue
+        if day in sl_blank:
+            notes.append(
+                "%s: %s, so Fanatics / eBay / TikTok shipped per day "
+                "is blank (never invented)."
+                % (day.strftime("%a %b %d"), sl_blank[day]))
+    channels = {}
+    for ch in SHIPPED_CHANNELS:
+        vals = []
+        for day in week_days:
+            if day > run_date:
+                vals.append(None)
+                continue
+            if ch.startswith("Whatnot"):
+                vals.append(wn.get(day, {}).get(ch))
+            else:
+                vals.append(sl.get(day, {}).get(ch))
+        channels[ch] = vals
+    totals = []
+    for i, day in enumerate(week_days):
+        if day > run_date:
+            totals.append(None)
+            continue
+        s = 0
+        any_val = False
+        for ch in SHIPPED_CHANNELS:
+            v = channels[ch][i]
+            if v is not None:
+                s += v
+                any_val = True
+        totals.append(s if any_val else None)
+    return {
+        "weekStart": week_days[0].isoformat(),
+        "weekEnd": week_days[6].isoformat(),
+        "days": [d.strftime("%a %m/%d") for d in week_days],
+        "channels": channels,
+        "totals": totals,
+        "notes": notes,
+    }
+
+
 def build(repo, builder_path):
     in_house = parse_ast_list(builder_path, "IN_HOUSE")
     folder_pkgs, _folder_by_date = load_folder_shows(repo)
@@ -222,7 +479,7 @@ def build(repo, builder_path):
     run_year = int(run_date[:4])
     # The cover table rows are locals inside the builder script, not top-level
     # names; totals are verified against IN_HOUSE itself in verify().
-    snap_ends = load_snapshot_ends(snapshot_path)
+    snap_ends = load_all_snapshot_ends(repo)
     tiktok_path = os.path.join(repo, FINDINGS_DIR, "TIKTOK-7DAY-FINDINGS.md")
     tiktok_ends = load_tiktok_ends(tiktok_path, run_year) if os.path.exists(tiktok_path) else {}
     # Fallback: when the findings file's LIVE table is missing
@@ -357,10 +614,12 @@ def build(repo, builder_path):
         }
 
     now = datetime.now(EST)
+    run_d = datetime.strptime(run_date, "%Y-%m-%d").date()
     data = {
         "channelEnds": channel_ends,
         "generatedAt": now.strftime("%Y-%m-%dT%H:%M:%S-05:00"),
         "shows": shows,
+        "shippedPerDay": shipped_per_day(repo, run_d),
         "slaRules": sla_rules,
         "today": run_date,
         "version": 1,
