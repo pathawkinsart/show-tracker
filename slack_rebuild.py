@@ -6,8 +6,13 @@ The event-driven counterpart to the Nov 24 manual rebuild
 This script parses the two channels' fetched history and applies
 the same in-house math:
 
-  * a show that ended (has a #breaking-ops pic post) AND has been
-    fully packed (Slack packed total >= its total) comes off;
+  * a show Patrick confirmed complete comes off, even when its
+    packed count is below its stored total — see completed-shows.json
+    (Patrick, 2026-11-24). The stored/snapshot total is NOT the
+    test (snapshot totals are unreliable — eBay showed 184/198/90
+    vs packed 49/54/36 for shows he confirmed complete). A packed
+    post on its own does NOT remove a show — only a packed count
+    that reaches the total, or Patrick's confirmation, does;
   * a partially packed show stays with pkgs reduced by shipped;
   * a newly ended show (ops post, not already in the tracker) is
     added with pkgs = null (unknown total — Slack has no totals);
@@ -358,7 +363,8 @@ def snapshot_total_for(by_start, platform, date, end, group):
     return None
 
 
-def rebuild(current, packed, ops_shows, now, snapshot_totals=None):
+def rebuild(current, packed, ops_shows, now, snapshot_totals=None,
+            completed=None):
     """Apply the in-house math. Returns (new_data, report_lines).
 
     IDEMPOTENCY: each show carries a stored `total` (its original
@@ -372,10 +378,13 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None):
          output whose pkgs is already reduced — the state the
          Action first sees after the Nov 24 manual rebuild).
     A show with total=None (unknown total) is never reduced.
-    Date-level packed totals are a pool shared by every show of
-    that (platform, date): allocated to the earliest-ending show
-    first, capped by each show's total."""
+    Shows in `completed` (Patrick-confirmed, completed-shows.json)
+    come off regardless of remaining. Date-level packed totals are
+    a pool shared by every show of that (platform, date):
+    allocated to the earliest-ending show first, capped by each
+    show's total."""
     snapshot_totals = snapshot_totals or {}
+    completed = completed or set()
     report = []
     old_shows = current["shows"]
 
@@ -459,6 +468,13 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None):
     for s in sorted(old_shows,
                     key=lambda x: (x["platform"], x["date"], x["end"])):
         platform, date = s["platform"], s["date"]
+        if (platform, date) in completed:
+            # Patrick-confirmed complete (completed-shows.json): the
+            # packed post is the completion signal; the stored /
+            # snapshot total is not the test.
+            removed.append((platform, date, s.get("total"),
+                            s.get("shipped", 0)))
+            continue
         if s.get("pkgs") is None and s.get("total") is None:
             # Unknown total — Slack cannot prove it shipped. Keep as-is.
             kept.append(dict(s))
@@ -512,6 +528,12 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None):
                               f"part={part or '-'} -> {end}")
             continue
         if key in existing_keys:
+            continue
+        if (platform, date) in completed:
+            # Patrick-confirmed complete — do not resurrect it as a
+            # pkgs=null entry.
+            report.append(f"SKIP (confirmed complete): {platform} {date} "
+                          f"part={part or '-'}")
             continue
         entry = {
             "date": date,
@@ -624,7 +646,26 @@ def main():
     snapshot_totals = load_snapshot_totals(snap_paths) if snap_paths else {}
     if snap_paths:
         print(f"snapshot totals: {len(snapshot_totals)} show rows")
-    data, report = rebuild(current, packed, ops_shows, now, snapshot_totals)
+
+    # Patrick-confirmed completions (completed-shows.json, next to the
+    # --in file or in the working directory). A listed (platform,
+    # date) comes off even when its packed count is below its stored
+    # total — the packed post is the completion signal and the
+    # snapshot total is not the test.
+    completed = set()
+    for cand in (os.path.join(
+                     os.path.dirname(os.path.abspath(args.in_path)),
+                     "completed-shows.json"),
+                 "completed-shows.json"):
+        if os.path.exists(cand):
+            with open(cand, encoding="utf-8") as f:
+                completed = {(e["platform"], e["date"])
+                             for e in json.load(f)}
+            print(f"confirmed completions: {len(completed)} from {cand}")
+            break
+
+    data, report = rebuild(current, packed, ops_shows, now,
+                           snapshot_totals, completed)
     for line in report:
         print("  " + line)
     known = sum(s["pkgs"] for s in data["shows"] if s["pkgs"] is not None)
