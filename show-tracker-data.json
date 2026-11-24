@@ -13,7 +13,7 @@
   "Whatnot Main": "2026-11-21T17:40:00",
   "eBay Live": "2026-11-21T01:03:00"
  },
- "generatedAt": "2026-11-24T08:54:14-05:00",
+ "generatedAt": "2026-11-24T09:53:24-05:00",
  "premier": {
   "bar": 95,
   "channels": {
@@ -400,7 +400,7 @@
    "end": "2026-11-21T05:00:00",
    "id": 26,
    "note": "",
-   "pkgs": 27,
+   "pkgs": 123,
    "platform": "TikTok Card Shop"
   },
   {
@@ -599,6 +599,30 @@
    "note": "",
    "pkgs": null,
    "platform": "eBay Live"
+  },
+  {
+   "id": 51,
+   "platform": "Whatnot Footy",
+   "date": "2026-11-19",
+   "end": "2026-11-20T03:30:00",
+   "pkgs": 10,
+   "note": ""
+  },
+  {
+   "id": 52,
+   "platform": "Whatnot Card Shop",
+   "date": "2026-11-21",
+   "end": "2026-11-22T02:36:00",
+   "pkgs": 1,
+   "note": ""
+  },
+  {
+   "id": 53,
+   "platform": "eBay Live",
+   "date": "2026-11-22",
+   "end": "2026-11-23T01:09:00",
+   "pkgs": 54,
+   "note": ""
   }
  ],
  "slaRules": {
