@@ -980,47 +980,57 @@
         "Fanatics Evolution": "evolution", "Fanatics Repack": "repack",
         "eBay Live": "ebay", "TikTok Card Shop": "tiktok"
       };
-      // The Update button works from ANY device. Tapping it opens
-      // a pre-filled GitHub issue on the show-tracker repo
-      // ("tracker-update" label) — tap Submit there to send it.
-      // A cloud cron picks it up, re-reads the day's Slack packed
-      // posts, rebuilds the tracker data and pushes it, then
-      // closes the issue. Nothing to do with the work PC. The
+      // The Update button works from ANY device. One tap POSTs the
+      // channel to the Show Tracker Worker, which triggers the cloud
+      // rebuild directly — no GitHub issue, no sign-in. The Worker
+      // re-reads the day's Slack packed posts, rebuilds the tracker
+      // data and pushes it. Nothing to do with the work PC. The
       // refresh covers shipped (packed) numbers from Slack for
       // every channel; it does NOT re-read any seller dashboard
       // and does NOT change the show list or package totals
-      // (those come from the Breaking folder).
-      var ISSUE_NEW = "https://github.com/pathawkinsart/show-tracker/issues/new";
+      // (those come from the Breaking folder). Tapping Update on
+      // several channels in a row is safe: the Worker only starts
+      // one rebuild every 5 minutes (a rebuild covers every
+      // channel anyway) and answers "Already updating" in between.
+      var WORKER_UPDATE_URL = "https://show-tracker-slack.phawkins0001.workers.dev/update";
       function requestChannelUpdate(key, chan, btn) {
-        var title = "Update: " + chan;
-        var body = "Channel: " + key + "\n"
-          + "Source: Show Tracker Update button\n"
-          + "Requested: " + new Date().toISOString() + "\n"
-          + "Cloud refresh: re-read the day's Slack packed posts, "
-          + "rebuild the tracker data, push.";
-        var url = ISSUE_NEW
-          + "?labels=" + encodeURIComponent("tracker-update")
-          + "&title=" + encodeURIComponent(title)
-          + "&body=" + encodeURIComponent(body);
-        var w = null;
-        try { w = window.open(url, "_blank"); } catch (e) { w = null; }
-        if (!w) {
-          // Popup blocked — say so plainly, don't spin.
-          btn.classList.add("unavailable");
-          btn.title = "Popup blocked — allow popups for this site, then tap Update again.";
-          showToast("Popup blocked — allow popups for this site, then tap Update again.", true);
-          return;
-        }
-        btn.classList.remove("unavailable");
-        btn.classList.add("done");
-        btn.textContent = "Request opened";
-        btn.title = "Update request opened on GitHub — tap Submit there to send it. Cloud refreshes shipped (packed) numbers from Slack for every channel and rebuilds the tracker (about 15 min). No dashboard re-read; show list and package totals unchanged.";
-        showToast("Update request opened on GitHub — tap Submit there to send it.", true);
-        setTimeout(function () {
+        if (btn.disabled) return;
+        btn.disabled = true;
+        btn.textContent = "Updating…";
+        btn.title = "Asking the cloud to rebuild the tracker…";
+        fetch(WORKER_UPDATE_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ channel: key })
+        }).then(function (res) {
+          return res.json().catch(function () { return {}; }).then(function (data) {
+            return { status: res.status, data: data };
+          });
+        }).then(function (out) {
+          if (out.status === 202 || (out.data && out.data.ok)) {
+            btn.classList.add("done");
+            btn.textContent = "Update sent";
+            btn.title = "Cloud is rebuilding the tracker from Slack (about 15 min). The page refreshes itself when the new data lands.";
+            showToast("Update sent — the cloud is rebuilding the tracker.", true);
+          } else if (out.status === 429) {
+            btn.textContent = "Already updating";
+            btn.title = "A rebuild was already started a few minutes ago — try again shortly.";
+            showToast("Already updating — a rebuild was started a few minutes ago.", true);
+          } else {
+            throw new Error("update failed: " + out.status);
+          }
+          setTimeout(function () {
+            btn.disabled = false;
+            btn.textContent = "Update";
+            btn.classList.remove("done");
+            btn.title = "";
+          }, 30000);
+        }).catch(function () {
+          btn.disabled = false;
           btn.textContent = "Update";
-          btn.classList.remove("done");
-          btn.title = "";
-        }, 30000);
+          btn.title = "Couldn't reach the cloud — check your connection and tap Update again.";
+          showToast("Couldn't reach the cloud — tap Update again.", true);
+        });
       }
       function updateButton(chan) {
         var key = CHAN_KEY[chan];

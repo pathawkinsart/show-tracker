@@ -1,0 +1,95 @@
+# Show Tracker — rebuild from Slack on every new channel post.
+#
+# Triggered by the Cloudflare Worker (repository_dispatch from Slack
+# Events API, or from the tracker page's one-tap Update button via
+# POST /update), or manually from the Actions tab.
+# The Action re-reads both channels with the Slack bot token, runs the
+# Slack-only rebuild, and commits show-tracker-data.json if it changed.
+# It never writes an invalid file: the rebuild script validates before
+# writing, and the commit step re-validates the JSON.
+#
+# The packed-post parser (slack_packed.py) is vendored in vendor/ so
+# this repo is self-contained — no checkout of the private shared repo.
+# Snapshot totals are optional: without --snapshot-dir the rebuild
+# falls back to pkgs + shipped for original totals (TikTok is never
+# in a snapshot anyway).
+#
+# Concurrency: runs are serialized, never cancelled — if the Update
+# button is tapped on many channels at once, the dispatches queue
+# up and run one at a time instead of racing the same push.
+#
+# Required repository secret (Settings > Secrets > Actions):
+#   SLACK_BOT_TOKEN — the installed Slack app's bot token (xoxb-...).
+#   The bot must be invited to both channels or conversations.history
+#   fails and this workflow fails loudly (nothing is committed).
+name: slack-rebuild
+
+on:
+  repository_dispatch:
+    types: [slack-channel-update]
+  workflow_dispatch:
+
+concurrency:
+  group: slack-rebuild
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out show-tracker
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch both Slack channels
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        run: |
+          python3 slack_fetch.py --out-dir slack-data --days 8
+
+      - name: Rebuild tracker data from Slack
+        run: |
+          python3 slack_rebuild.py \
+            --data-dir slack-data \
+            --in show-tracker-data.json \
+            --out show-tracker-data.json \
+            --slack-parser-dir vendor
+
+      - name: Validate the rebuilt JSON
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+          d = json.load(open('show-tracker-data.json'))
+          shows = d.get('shows')
+          assert isinstance(shows, list) and 1 <= len(shows) <= 200, \
+              f"bad show count: {len(shows) if isinstance(shows, list) else shows!r}"
+          assert d.get('slaRules'), "slaRules missing"
+          for s in shows:
+              assert s.get('date') and s.get('end') and s.get('platform'), \
+                  f"show missing date/end/platform: {s!r}"
+              p = s.get('pkgs')
+              assert p is None or (isinstance(p, int) and p >= 0), \
+                  f"bad pkgs {p!r} on {s!r}"
+          known = sum(s['pkgs'] for s in shows if s['pkgs'] is not None)
+          print(f"VALID: {len(shows)} shows / {known} known pkgs, "
+                f"generatedAt {d.get('generatedAt')}")
+          EOF
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- show-tracker-data.json; then
+            echo "No change — nothing to commit."
+            exit 0
+          fi
+          git config user.name "show-tracker-slack"
+          git config user.email "show-tracker-slack@users.noreply.github.com"
+          git add show-tracker-data.json
+          git commit -m "Slack push: rebuild in-house from #breaking-ops + #breaking-shipping-updates (event ${{ github.event.client_payload.event_id }}, channel ${{ github.event.client_payload.channel_id }})"
+          git push
