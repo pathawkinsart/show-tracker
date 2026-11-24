@@ -13,7 +13,7 @@
   "Whatnot Main": "2026-11-21T17:40:00",
   "eBay Live": "2026-11-21T01:03:00"
  },
- "generatedAt": "2026-11-24T10:01:22-05:00",
+ "generatedAt": "2026-11-24T15:38:59-05:00",
  "premier": {
   "bar": 95,
   "channels": {
@@ -58,7 +58,7 @@
     null
    ],
    "Fanatics Blitz": [
-    268,
+    675,
     null,
     null,
     null,
@@ -67,7 +67,7 @@
     null
    ],
    "Fanatics Evolution": [
-    null,
+    84,
     null,
     null,
     null,
@@ -168,10 +168,11 @@
   ],
   "notes": [
    "Mon Nov 23 Whatnot: delta between the Sun Nov 22 snapshot and the Mon Nov 23 snapshot.",
-   "Mon Nov 23 Whatnot Footy 254: from the Nov 23 Slack packed post (Caleb Jordan 5:30 PM) \u2014 89+89+76."
+   "Mon Nov 23 Whatnot Footy 254: from the Nov 23 Slack packed post (Caleb Jordan 5:30 PM) \u2014 89+89+76.",
+   "Mon Nov 23 Fanatics Blitz 675 / Evolution 84: full Slack re-read (Natalie FL-FB A/B + Isaiah FL-POKE posts added to the Nov 23 file) - Blitz was 268 from the partial morning read."
   ],
   "totals": [
-   1594,
+   2085,
    null,
    null,
    null,
