@@ -589,6 +589,13 @@ def main():
 
     def load(name):
         path = os.path.join(args.data_dir, name)
+        if not os.path.exists(path):
+            # Token-less mode: the VM browser-read crons sync slack-data/
+            # into the repo; a channel whose read failed simply has no
+            # file yet. Treat it as "no messages" — never crash the
+            # rebuild and never invent posts.
+            print(f"WARN: {path} missing — treating {name} as empty")
+            return []
         with open(path, encoding="utf-8") as f:
             return json.load(f)["messages"]
 

@@ -3,10 +3,29 @@
 # Triggered by the Cloudflare Worker (repository_dispatch from Slack
 # Events API, or from the tracker page's one-tap Update button via
 # POST /update), or manually from the Actions tab.
-# The Action re-reads both channels with the Slack bot token, runs the
-# Slack-only rebuild, and commits show-tracker-data.json if it changed.
-# It never writes an invalid file: the rebuild script validates before
-# writing, and the commit step re-validates the JSON.
+#
+# TWO MODES (Nov 24 — the workspace admin refused the Slack app
+# install, so there is no bot token and never will be):
+#   * WITH a token (SLACK_BOT_TOKEN set): fetch both channels fresh
+#     with slack_fetch.py, then rebuild. The fetched slack-data/ is
+#     committed too, so the repo copy stays fresh.
+#   * WITHOUT a token (normal now): skip the fetch and rebuild from
+#     the slack-data/ committed in this repo. The VM browser-read
+#     cron (tracker-update-requests, every 15 min) keeps slack-data/
+#     fresh by reading both channels in the cloud browser with
+#     Patrick's own signed-in session — no app, no token, no admin.
+#     The rebuild never fails for a missing token or missing data:
+#     if slack-data/ is absent it logs and exits cleanly.
+#
+# DATA INVARIANT (do not break it): slack-data/ only ever grows
+# FORWARD. The VM cron merges each new read into the 8-day rolling
+# window and never adds older posts after the fact. The rebuild
+# derives each show's original total as pkgs + shipped-from-the-
+# data, which is only correct while the window grows forward. If
+# older posts are ever backfilled into slack-data/, delete the
+# stored total/shipped fields from show-tracker-data.json first
+# (or let the next folder rebuild regenerate the file) so the
+# totals are re-derived from the complete data.
 #
 # The packed-post parser (slack_packed.py) is vendored in vendor/ so
 # this repo is self-contained — no checkout of the private shared repo.
@@ -17,11 +36,8 @@
 # Concurrency: runs are serialized, never cancelled — if the Update
 # button is tapped on many channels at once, the dispatches queue
 # up and run one at a time instead of racing the same push.
-#
-# Required repository secret (Settings > Secrets > Actions):
-#   SLACK_BOT_TOKEN — the installed Slack app's bot token (xoxb-...).
-#   The bot must be invited to both channels or conversations.history
-#   fails and this workflow fails loudly (nothing is committed).
+# The VM crons also push show-tracker-data.json, so the commit step
+# pulls (rebase) before pushing and retries once on a race.
 name: slack-rebuild
 
 on:
@@ -49,13 +65,23 @@ jobs:
           python-version: "3.12"
 
       - name: Fetch both Slack channels
+        if: ${{ secrets.SLACK_BOT_TOKEN != '' }}
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         run: |
           python3 slack_fetch.py --out-dir slack-data --days 8
 
+      - name: Note token-less mode
+        if: ${{ secrets.SLACK_BOT_TOKEN == '' }}
+        run: |
+          echo "No SLACK_BOT_TOKEN — rebuilding from repo slack-data/ (kept fresh by the VM browser-read cron)."
+
       - name: Rebuild tracker data from Slack
         run: |
+          if [ ! -f slack-data/ops.json ] && [ ! -f slack-data/packed.json ]; then
+            echo "No Slack data in repo (slack-data/ missing) — nothing to rebuild from. Skipping."
+            exit 0
+          fi
           python3 slack_rebuild.py \
             --data-dir slack-data \
             --in show-tracker-data.json \
@@ -84,12 +110,15 @@ jobs:
 
       - name: Commit if changed
         run: |
-          if git diff --quiet -- show-tracker-data.json; then
-            echo "No change — nothing to commit."
-            exit 0
-          fi
           git config user.name "show-tracker-slack"
           git config user.email "show-tracker-slack@users.noreply.github.com"
           git add show-tracker-data.json
+          [ -d slack-data ] && git add slack-data
+          if git diff --cached --quiet; then
+            echo "No change — nothing to commit."
+            exit 0
+          fi
           git commit -m "Slack push: rebuild in-house from #breaking-ops + #breaking-shipping-updates (event ${{ github.event.client_payload.event_id }}, channel ${{ github.event.client_payload.channel_id }})"
-          git push
+          # The VM crons also push this repo; rebase onto their push if any.
+          git pull --rebase || { git rebase --abort; echo "Concurrent update won — skipping push; next run picks it up."; exit 0; }
+          git push || { git pull --rebase && git push; }
