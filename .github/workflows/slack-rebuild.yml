@@ -64,17 +64,15 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Fetch both Slack channels
-        if: ${{ secrets.SLACK_BOT_TOKEN != '' }}
+      - name: Fetch both Slack channels (or skip without a token)
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         run: |
+          if [ -z "$SLACK_BOT_TOKEN" ]; then
+            echo "No SLACK_BOT_TOKEN — skipping fetch; rebuilding from repo slack-data/ (kept fresh by the VM browser-read cron)."
+            exit 0
+          fi
           python3 slack_fetch.py --out-dir slack-data --days 8
-
-      - name: Note token-less mode
-        if: ${{ secrets.SLACK_BOT_TOKEN == '' }}
-        run: |
-          echo "No SLACK_BOT_TOKEN — rebuilding from repo slack-data/ (kept fresh by the VM browser-read cron)."
 
       - name: Rebuild tracker data from Slack
         run: |
