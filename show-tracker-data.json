@@ -1,644 +1,643 @@
 {
- "channelEnds": {
-  "Fanatics Baseball": "2026-11-17T04:13:00",
-  "Fanatics Blitz": "2026-11-17T18:52:00",
-  "Fanatics Evolution": "2026-11-22T01:10:00",
-  "Fanatics Jamz": "2026-11-23T01:45:00",
-  "Fanatics Repack": "2026-11-21T00:18:00",
-  "TikTok Card Shop": "2026-11-20T00:58:00",
-  "Whatnot Card Shop": "2026-11-22T02:36:00",
-  "Whatnot Footy": "2026-11-20T03:30:00",
-  "Whatnot Galaxy": "2026-11-23T18:11:08",
-  "Whatnot Ice": "2026-11-20T02:08:00",
-  "Whatnot Main": "2026-11-21T17:40:00",
-  "eBay Live": "2026-11-21T01:03:00"
- },
- "generatedAt": "2026-11-24T15:48:32-05:00",
- "premier": {
-  "bar": 95,
-  "channels": {
-   "Whatnot Card Shop": {
-    "defectFree": 99.5,
-    "onTimeScan": 99.3,
-    "status": "earned"
-   },
-   "Whatnot Footy": {
-    "defectFree": 99.8,
-    "onTimeScan": 97.3,
-    "status": "earned"
-   },
-   "Whatnot Galaxy": {
-    "defectFree": 99.8,
-    "onTimeScan": 94.3,
-    "status": "not qualifying"
-   },
-   "Whatnot Ice": {
-    "defectFree": 99.9,
-    "onTimeScan": 53.8,
-    "status": "not qualifying"
-   },
-   "Whatnot Main": {
-    "defectFree": 99.9,
-    "onTimeScan": 99.8,
-    "status": "earned"
-   }
+  "channelEnds": {
+    "Fanatics Baseball": "2026-11-17T04:13:00",
+    "Fanatics Blitz": "2026-11-19T18:08:00",
+    "Fanatics Evolution": "2026-11-23T18:06:49",
+    "Fanatics Jamz": "2026-11-23T19:08:02",
+    "Fanatics Repack": "2026-11-21T00:18:00",
+    "TikTok Card Shop": "2026-11-20T00:58:00",
+    "Whatnot Card Shop": "2026-11-22T02:36:00",
+    "Whatnot Footy": "2026-11-20T03:30:00",
+    "Whatnot Galaxy": "2026-11-23T02:43:39",
+    "Whatnot Ice": "2026-11-20T17:05:00",
+    "Whatnot Main": "2026-11-23T00:27:52",
+    "eBay Live": "2026-11-24T01:54:41"
   },
-  "period": "Sep 1 \u2013 Nov 30, 2026",
-  "source": "Whatnot Premier Shop page per account, read Nov 20, 2026 (DETAILED-FINDINGS-2026-11-20.md). Premier is evaluated monthly on a rolling 3-month window; the next judgement is Dec 1, 2026. Update this file when Claude re-reads the Premier Shop page (monthly / per detailed report) and rebuild the tracker data."
- },
- "shippedPerDay": {
-  "channels": {
-   "Fanatics Baseball": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "Fanatics Blitz": [
-    675,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "Fanatics Evolution": [
-    84,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "Fanatics Jamz": [
-    298,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "Fanatics Repack": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "TikTok Card Shop": [
-    96,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "Whatnot Card Shop": [
-    131,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "Whatnot Footy": [
-    254,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "Whatnot Galaxy": [
-    49,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "Whatnot Ice": [
-    0,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "Whatnot Main": [
-    359,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "eBay Live": [
-    139,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ]
+  "generatedAt": "2026-11-24T16:47:49-05:00",
+  "premier": {
+    "bar": 95,
+    "channels": {
+      "Whatnot Card Shop": {
+        "defectFree": 99.5,
+        "onTimeScan": 99.3,
+        "status": "earned"
+      },
+      "Whatnot Footy": {
+        "defectFree": 99.8,
+        "onTimeScan": 97.3,
+        "status": "earned"
+      },
+      "Whatnot Galaxy": {
+        "defectFree": 99.8,
+        "onTimeScan": 94.3,
+        "status": "not qualifying"
+      },
+      "Whatnot Ice": {
+        "defectFree": 99.9,
+        "onTimeScan": 53.8,
+        "status": "not qualifying"
+      },
+      "Whatnot Main": {
+        "defectFree": 99.9,
+        "onTimeScan": 99.8,
+        "status": "earned"
+      }
+    },
+    "period": "Sep 1 \u2013 Nov 30, 2026",
+    "source": "Whatnot Premier Shop page per account, read Nov 20, 2026 (DETAILED-FINDINGS-2026-11-20.md). Premier is evaluated monthly on a rolling 3-month window; the next judgement is Dec 1, 2026. Update this file when Claude re-reads the Premier Shop page (monthly / per detailed report) and rebuild the tracker data."
   },
-  "days": [
-   "Mon 11/23",
-   "Tue 11/24",
-   "Wed 11/25",
-   "Thu 11/26",
-   "Fri 11/27",
-   "Sat 11/28",
-   "Sun 11/29"
+  "shippedPerDay": {
+    "channels": {
+      "Fanatics Baseball": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Fanatics Blitz": [
+        675,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Fanatics Evolution": [
+        84,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Fanatics Jamz": [
+        298,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Fanatics Repack": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "TikTok Card Shop": [
+        96,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Whatnot Card Shop": [
+        131,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Whatnot Footy": [
+        254,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Whatnot Galaxy": [
+        49,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Whatnot Ice": [
+        0,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "Whatnot Main": [
+        359,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "eBay Live": [
+        139,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    "days": [
+      "Mon 11/23",
+      "Tue 11/24",
+      "Wed 11/25",
+      "Thu 11/26",
+      "Fri 11/27",
+      "Sat 11/28",
+      "Sun 11/29"
+    ],
+    "notes": [
+      "Mon Nov 23 Whatnot: delta between the Sun Nov 22 snapshot and the Mon Nov 23 snapshot.",
+      "Mon Nov 23 Whatnot Footy 254: from the Nov 23 Slack packed post (Caleb Jordan 5:30 PM) \u2014 89+89+76.",
+      "Mon Nov 23 Fanatics Blitz 675 / Evolution 84: full Slack re-read (Natalie FL-FB A/B + Isaiah FL-POKE posts added to the Nov 23 file) - Blitz was 268 from the partial morning read."
+    ],
+    "totals": [
+      2085,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "weekEnd": "2026-11-29",
+    "weekStart": "2026-11-23"
+  },
+  "shows": [
+    {
+      "date": "2026-11-16",
+      "end": "2026-11-17T04:13:00",
+      "id": 1,
+      "note": "",
+      "pkgs": 168,
+      "platform": "Fanatics Baseball",
+      "shipped": 0,
+      "total": 168
+    },
+    {
+      "date": "2026-11-21",
+      "end": "2026-11-22T01:24:00",
+      "id": 2,
+      "note": "",
+      "pkgs": 186,
+      "platform": "Fanatics Baseball",
+      "shipped": 0,
+      "total": 186
+    },
+    {
+      "date": "2026-11-22",
+      "end": "2026-11-22T19:05:25",
+      "id": 3,
+      "note": "",
+      "part": "A",
+      "pkgs": null,
+      "platform": "Fanatics Baseball"
+    },
+    {
+      "date": "2026-11-22",
+      "end": "2026-11-23T03:15:00",
+      "id": 4,
+      "note": "",
+      "pkgs": 195,
+      "platform": "Fanatics Baseball",
+      "shipped": 0,
+      "total": 195
+    },
+    {
+      "date": "2026-11-22",
+      "end": "2026-11-23T03:26:01",
+      "id": 5,
+      "note": "",
+      "part": "B",
+      "pkgs": null,
+      "platform": "Fanatics Baseball"
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-23T19:03:41",
+      "id": 6,
+      "note": "",
+      "part": "A",
+      "pkgs": null,
+      "platform": "Fanatics Baseball"
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-24T05:33:02",
+      "id": 7,
+      "note": "",
+      "part": "B",
+      "pkgs": null,
+      "platform": "Fanatics Baseball"
+    },
+    {
+      "date": "2026-11-19",
+      "end": "2026-11-19T18:08:00",
+      "id": 8,
+      "note": "",
+      "pkgs": 52,
+      "platform": "Fanatics Blitz",
+      "psa": true,
+      "shipped": 0,
+      "total": 52
+    },
+    {
+      "date": "2026-11-19",
+      "end": "2026-11-20T02:39:00",
+      "id": 9,
+      "note": "",
+      "pkgs": 298,
+      "platform": "Fanatics Blitz",
+      "shipped": 0,
+      "total": 298
+    },
+    {
+      "date": "2026-11-21",
+      "end": "2026-11-22T04:06:00",
+      "id": 10,
+      "note": "",
+      "pkgs": 131,
+      "platform": "Fanatics Blitz",
+      "shipped": 0,
+      "total": 131
+    },
+    {
+      "date": "2026-11-22",
+      "end": "2026-11-22T18:06:31",
+      "id": 11,
+      "note": "",
+      "part": "B",
+      "pkgs": null,
+      "platform": "Fanatics Blitz"
+    },
+    {
+      "date": "2026-11-22",
+      "end": "2026-11-23T03:06:00",
+      "id": 12,
+      "note": "",
+      "pkgs": 219,
+      "platform": "Fanatics Blitz",
+      "shipped": 0,
+      "total": 219
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-24T03:01:21",
+      "id": 13,
+      "note": "",
+      "part": "B",
+      "pkgs": null,
+      "platform": "Fanatics Blitz"
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-23T18:06:49",
+      "id": 14,
+      "note": "",
+      "part": "A",
+      "pkgs": null,
+      "platform": "Fanatics Evolution"
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-23T18:06:49",
+      "id": 15,
+      "note": "",
+      "pkgs": null,
+      "platform": "Fanatics Evolution"
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-24T03:01:07",
+      "id": 16,
+      "note": "",
+      "part": "B",
+      "pkgs": null,
+      "platform": "Fanatics Evolution"
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-23T19:08:02",
+      "id": 17,
+      "note": "",
+      "part": "A",
+      "pkgs": null,
+      "platform": "Fanatics Jamz"
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-24T02:23:26",
+      "id": 18,
+      "note": "",
+      "part": "B",
+      "pkgs": null,
+      "platform": "Fanatics Jamz"
+    },
+    {
+      "date": "2026-11-20",
+      "end": "2026-11-21T00:18:00",
+      "id": 19,
+      "note": "",
+      "pkgs": 76,
+      "platform": "Fanatics Repack",
+      "shipped": 0,
+      "total": 76
+    },
+    {
+      "date": "2026-11-21",
+      "end": "2026-11-21T23:56:00",
+      "id": 20,
+      "note": "",
+      "pkgs": 68,
+      "platform": "Fanatics Repack",
+      "shipped": 0,
+      "total": 68
+    },
+    {
+      "date": "2026-11-22",
+      "end": "2026-11-22T23:35:00",
+      "id": 21,
+      "note": "",
+      "pkgs": 70,
+      "platform": "Fanatics Repack",
+      "shipped": 0,
+      "total": 70
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-24T01:44:35",
+      "id": 22,
+      "note": "",
+      "part": "B",
+      "pkgs": null,
+      "platform": "Fanatics Repack"
+    },
+    {
+      "date": "2026-11-19",
+      "end": "2026-11-20T00:58:00",
+      "id": 23,
+      "note": "",
+      "pkgs": 23,
+      "platform": "TikTok Card Shop",
+      "shipped": 0,
+      "total": 23
+    },
+    {
+      "date": "2026-11-20",
+      "end": "2026-11-21T02:56:00",
+      "id": 24,
+      "note": "",
+      "pkgs": 123,
+      "platform": "TikTok Card Shop",
+      "shipped": 96,
+      "total": 219
+    },
+    {
+      "date": "2026-11-21",
+      "end": "2026-11-22T03:00:54",
+      "id": 25,
+      "note": "",
+      "pkgs": 189,
+      "platform": "TikTok Card Shop",
+      "shipped": 0,
+      "total": 189
+    },
+    {
+      "date": "2026-11-22",
+      "end": "2026-11-23T05:00:00",
+      "id": 26,
+      "note": "",
+      "pkgs": 148,
+      "platform": "TikTok Card Shop",
+      "shipped": 0,
+      "total": 148
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-24T02:46:49",
+      "id": 27,
+      "note": "",
+      "pkgs": null,
+      "platform": "TikTok Card Shop"
+    },
+    {
+      "date": "2026-11-21",
+      "end": "2026-11-22T02:36:00",
+      "id": 28,
+      "note": "",
+      "pkgs": 1,
+      "platform": "Whatnot Card Shop",
+      "shipped": 123,
+      "total": 124
+    },
+    {
+      "date": "2026-11-22",
+      "end": "2026-11-23T02:32:00",
+      "id": 29,
+      "note": "",
+      "pkgs": 102,
+      "platform": "Whatnot Card Shop",
+      "shipped": 0,
+      "total": 102
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-24T03:24:43",
+      "id": 30,
+      "note": "",
+      "pkgs": null,
+      "platform": "Whatnot Card Shop"
+    },
+    {
+      "date": "2026-11-19",
+      "end": "2026-11-20T03:30:00",
+      "id": 31,
+      "note": "",
+      "pkgs": 20,
+      "platform": "Whatnot Footy",
+      "shipped": 0,
+      "total": 20
+    },
+    {
+      "date": "2026-11-20",
+      "end": "2026-11-21T03:57:00",
+      "id": 32,
+      "note": "",
+      "pkgs": 3,
+      "platform": "Whatnot Footy",
+      "shipped": 0,
+      "total": 3
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-24T04:10:03",
+      "id": 33,
+      "note": "",
+      "part": "A",
+      "pkgs": null,
+      "platform": "Whatnot Footy"
+    },
+    {
+      "date": "2026-11-22",
+      "end": "2026-11-23T02:43:39",
+      "id": 34,
+      "note": "",
+      "pkgs": null,
+      "platform": "Whatnot Galaxy"
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-23T18:11:08",
+      "id": 35,
+      "note": "",
+      "part": "A",
+      "pkgs": null,
+      "platform": "Whatnot Galaxy"
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-24T02:12:32",
+      "id": 36,
+      "note": "",
+      "part": "B",
+      "pkgs": null,
+      "platform": "Whatnot Galaxy"
+    },
+    {
+      "date": "2026-11-20",
+      "end": "2026-11-20T17:05:00",
+      "id": 37,
+      "note": "",
+      "pkgs": 69,
+      "platform": "Whatnot Ice",
+      "shipped": 0,
+      "total": 69
+    },
+    {
+      "date": "2026-11-20",
+      "end": "2026-11-21T01:58:00",
+      "id": 38,
+      "note": "",
+      "pkgs": 62,
+      "platform": "Whatnot Ice",
+      "shipped": 0,
+      "total": 62
+    },
+    {
+      "date": "2026-11-21",
+      "end": "2026-11-22T01:54:00",
+      "id": 39,
+      "note": "",
+      "pkgs": 82,
+      "platform": "Whatnot Ice",
+      "shipped": 0,
+      "total": 82
+    },
+    {
+      "date": "2026-11-22",
+      "end": "2026-11-23T01:59:00",
+      "id": 40,
+      "note": "",
+      "pkgs": 61,
+      "platform": "Whatnot Ice",
+      "shipped": 0,
+      "total": 61
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-24T02:00:14",
+      "id": 41,
+      "note": "",
+      "pkgs": null,
+      "platform": "Whatnot Ice"
+    },
+    {
+      "date": "2026-11-22",
+      "end": "2026-11-23T00:27:52",
+      "id": 42,
+      "note": "",
+      "pkgs": null,
+      "platform": "Whatnot Main"
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-23T18:14:35",
+      "id": 43,
+      "note": "",
+      "part": "A",
+      "pkgs": null,
+      "platform": "Whatnot Main"
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-24T02:03:54",
+      "id": 44,
+      "note": "",
+      "part": "B",
+      "pkgs": null,
+      "platform": "Whatnot Main"
+    },
+    {
+      "date": "2026-11-24",
+      "end": "2026-11-24T11:29:38",
+      "id": 45,
+      "note": "",
+      "part": "A",
+      "pkgs": null,
+      "platform": "Whatnot Main"
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-24T01:54:41",
+      "id": 46,
+      "note": "",
+      "pkgs": null,
+      "platform": "eBay Live"
+    }
   ],
-  "notes": [
-   "Mon Nov 23 Whatnot: delta between the Sun Nov 22 snapshot and the Mon Nov 23 snapshot.",
-   "Mon Nov 23 Whatnot Footy 254: from the Nov 23 Slack packed post (Caleb Jordan 5:30 PM) \u2014 89+89+76.",
-   "Mon Nov 23 Fanatics Blitz 675 / Evolution 84: full Slack re-read (Natalie FL-FB A/B + Isaiah FL-POKE posts added to the Nov 23 file) - Blitz was 268 from the partial morning read."
-  ],
-  "totals": [
-   2085,
-   null,
-   null,
-   null,
-   null,
-   null,
-   null
-  ],
-  "weekEnd": "2026-11-29",
-  "weekStart": "2026-11-23"
- },
- "shows": [
-  {
-   "date": "2026-11-16",
-   "end": "2026-11-17T04:13:00",
-   "id": 1,
-   "note": "",
-   "pkgs": 168,
-   "platform": "Fanatics Baseball",
-   "shipped": 0,
-   "total": 168
+  "slaRules": {
+    "Fanatics": {
+      "businessHours": false,
+      "hours": 72
+    },
+    "TikTok": {
+      "businessHours": false,
+      "hours": 96,
+      "labelHours": 48
+    },
+    "Whatnot": {
+      "businessHours": true,
+      "hours": 48
+    },
+    "default": {
+      "businessHours": false,
+      "hours": 72
+    },
+    "eBay": {
+      "businessHours": false,
+      "hours": 168
+    }
   },
-  {
-   "date": "2026-11-21",
-   "end": "2026-11-22T01:24:00",
-   "id": 2,
-   "note": "",
-   "pkgs": 186,
-   "platform": "Fanatics Baseball",
-   "shipped": 0,
-   "total": 186
-  },
-  {
-   "date": "2026-11-22",
-   "end": "2026-11-23T03:15:00",
-   "id": 3,
-   "note": "",
-   "pkgs": 195,
-   "platform": "Fanatics Baseball",
-   "shipped": 0,
-   "total": 195
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-23T19:03:41",
-   "id": 4,
-   "note": "",
-   "part": "A",
-   "pkgs": null,
-   "platform": "Fanatics Baseball"
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-24T05:33:02",
-   "id": 5,
-   "note": "",
-   "part": "B",
-   "pkgs": null,
-   "platform": "Fanatics Baseball"
-  },
-  {
-   "date": "2026-11-19",
-   "end": "2026-11-19T18:08:00",
-   "id": 8,
-   "note": "",
-   "pkgs": 52,
-   "platform": "Fanatics Blitz",
-   "psa": true,
-   "shipped": 0,
-   "total": 52
-  },
-  {
-   "date": "2026-11-19",
-   "end": "2026-11-20T02:39:00",
-   "id": 9,
-   "note": "",
-   "pkgs": 298,
-   "platform": "Fanatics Blitz",
-   "shipped": 0,
-   "total": 298
-  },
-  {
-   "date": "2026-11-20",
-   "end": "2026-11-20T18:16:00",
-   "id": 10,
-   "note": "",
-   "pkgs": 45,
-   "platform": "Fanatics Blitz",
-   "psa": true,
-   "shipped": 0,
-   "total": 45
-  },
-  {
-   "date": "2026-11-21",
-   "end": "2026-11-22T04:06:00",
-   "id": 11,
-   "note": "",
-   "pkgs": 131,
-   "platform": "Fanatics Blitz",
-   "shipped": 0,
-   "total": 131
-  },
-  {
-   "date": "2026-11-22",
-   "end": "2026-11-23T03:06:00",
-   "id": 12,
-   "note": "",
-   "pkgs": 219,
-   "platform": "Fanatics Blitz",
-   "shipped": 0,
-   "total": 219
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-24T03:01:21",
-   "id": 13,
-   "note": "",
-   "part": "B",
-   "pkgs": null,
-   "platform": "Fanatics Blitz"
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-23T18:06:49",
-   "id": 16,
-   "note": "",
-   "part": "A",
-   "pkgs": null,
-   "platform": "Fanatics Evolution"
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-24T03:01:07",
-   "id": 17,
-   "note": "",
-   "part": "B",
-   "pkgs": null,
-   "platform": "Fanatics Evolution"
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-23T19:08:02",
-   "id": 19,
-   "note": "",
-   "part": "A",
-   "pkgs": null,
-   "platform": "Fanatics Jamz"
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-24T02:23:26",
-   "id": 20,
-   "note": "",
-   "part": "B",
-   "pkgs": null,
-   "platform": "Fanatics Jamz"
-  },
-  {
-   "date": "2026-11-20",
-   "end": "2026-11-21T00:18:00",
-   "id": 21,
-   "note": "",
-   "pkgs": 76,
-   "platform": "Fanatics Repack",
-   "shipped": 0,
-   "total": 76
-  },
-  {
-   "date": "2026-11-21",
-   "end": "2026-11-21T23:56:00",
-   "id": 22,
-   "note": "",
-   "pkgs": 68,
-   "platform": "Fanatics Repack",
-   "shipped": 0,
-   "total": 68
-  },
-  {
-   "date": "2026-11-22",
-   "end": "2026-11-22T23:35:00",
-   "id": 23,
-   "note": "",
-   "pkgs": 70,
-   "platform": "Fanatics Repack",
-   "shipped": 0,
-   "total": 70
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-24T01:44:35",
-   "id": 24,
-   "note": "",
-   "part": "B",
-   "pkgs": null,
-   "platform": "Fanatics Repack"
-  },
-  {
-   "date": "2026-11-19",
-   "end": "2026-11-20T00:58:00",
-   "id": 25,
-   "note": "",
-   "pkgs": 23,
-   "platform": "TikTok Card Shop",
-   "shipped": 0,
-   "total": 23
-  },
-  {
-   "date": "2026-11-20",
-   "end": "2026-11-21T05:00:00",
-   "id": 26,
-   "note": "",
-   "pkgs": 123,
-   "platform": "TikTok Card Shop",
-   "shipped": 96,
-   "total": 219
-  },
-  {
-   "date": "2026-11-21",
-   "end": "2026-11-22T05:00:00",
-   "id": 27,
-   "note": "",
-   "pkgs": 189,
-   "platform": "TikTok Card Shop",
-   "shipped": 0,
-   "total": 189
-  },
-  {
-   "date": "2026-11-22",
-   "end": "2026-11-23T05:00:00",
-   "id": 28,
-   "note": "",
-   "pkgs": 148,
-   "platform": "TikTok Card Shop",
-   "shipped": 0,
-   "total": 148
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-24T02:46:49",
-   "id": 29,
-   "note": "",
-   "pkgs": null,
-   "platform": "TikTok Card Shop"
-  },
-  {
-   "date": "2026-11-21",
-   "end": "2026-11-22T02:36:00",
-   "id": 30,
-   "note": "",
-   "pkgs": 1,
-   "platform": "Whatnot Card Shop",
-   "shipped": 123,
-   "total": 124
-  },
-  {
-   "date": "2026-11-22",
-   "end": "2026-11-23T02:32:00",
-   "id": 31,
-   "note": "",
-   "pkgs": 102,
-   "platform": "Whatnot Card Shop",
-   "shipped": 0,
-   "total": 102
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-24T03:24:43",
-   "id": 32,
-   "note": "",
-   "pkgs": null,
-   "platform": "Whatnot Card Shop"
-  },
-  {
-   "date": "2026-11-19",
-   "end": "2026-11-20T03:30:00",
-   "id": 33,
-   "note": "",
-   "pkgs": 20,
-   "platform": "Whatnot Footy",
-   "shipped": 0,
-   "total": 20
-  },
-  {
-   "date": "2026-11-20",
-   "end": "2026-11-21T03:57:00",
-   "id": 34,
-   "note": "",
-   "pkgs": 3,
-   "platform": "Whatnot Footy",
-   "shipped": 0,
-   "total": 3
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-24T04:10:03",
-   "id": 36,
-   "note": "",
-   "part": "A",
-   "pkgs": null,
-   "platform": "Whatnot Footy"
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-23T18:11:08",
-   "id": 37,
-   "note": "",
-   "part": "A",
-   "pkgs": null,
-   "platform": "Whatnot Galaxy"
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-24T02:12:32",
-   "id": 38,
-   "note": "",
-   "part": "B",
-   "pkgs": null,
-   "platform": "Whatnot Galaxy"
-  },
-  {
-   "date": "2026-11-19",
-   "end": "2026-11-20T02:08:00",
-   "id": 39,
-   "note": "",
-   "pkgs": 76,
-   "platform": "Whatnot Ice",
-   "shipped": 0,
-   "total": 76
-  },
-  {
-   "date": "2026-11-20",
-   "end": "2026-11-20T17:05:00",
-   "id": 40,
-   "note": "",
-   "pkgs": 69,
-   "platform": "Whatnot Ice",
-   "shipped": 0,
-   "total": 69
-  },
-  {
-   "date": "2026-11-20",
-   "end": "2026-11-21T01:58:00",
-   "id": 41,
-   "note": "",
-   "pkgs": 62,
-   "platform": "Whatnot Ice",
-   "shipped": 0,
-   "total": 62
-  },
-  {
-   "date": "2026-11-21",
-   "end": "2026-11-22T01:54:00",
-   "id": 42,
-   "note": "",
-   "pkgs": 82,
-   "platform": "Whatnot Ice",
-   "shipped": 0,
-   "total": 82
-  },
-  {
-   "date": "2026-11-22",
-   "end": "2026-11-23T01:59:00",
-   "id": 43,
-   "note": "",
-   "pkgs": 61,
-   "platform": "Whatnot Ice",
-   "shipped": 0,
-   "total": 61
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-24T02:00:14",
-   "id": 44,
-   "note": "",
-   "pkgs": null,
-   "platform": "Whatnot Ice"
-  },
-  {
-   "date": "2026-11-21",
-   "end": "2026-11-21T17:40:00",
-   "id": 45,
-   "note": "",
-   "pkgs": 110,
-   "platform": "Whatnot Main",
-   "shipped": 0,
-   "total": 110
-  },
-  {
-   "date": "2026-11-21",
-   "end": "2026-11-22T01:32:00",
-   "id": 46,
-   "note": "",
-   "pkgs": 78,
-   "platform": "Whatnot Main",
-   "shipped": 0,
-   "total": 78
-  },
-  {
-   "date": "2026-11-22",
-   "end": "2026-11-22T18:05:00",
-   "id": 47,
-   "note": "",
-   "pkgs": 79,
-   "platform": "Whatnot Main",
-   "shipped": 0,
-   "total": 79
-  },
-  {
-   "date": "2026-11-22",
-   "end": "2026-11-23T00:20:00",
-   "id": 48,
-   "note": "",
-   "pkgs": 72,
-   "platform": "Whatnot Main",
-   "shipped": 0,
-   "total": 72
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-23T18:14:35",
-   "id": 49,
-   "note": "",
-   "part": "A",
-   "pkgs": null,
-   "platform": "Whatnot Main"
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-24T02:03:54",
-   "id": 50,
-   "note": "",
-   "part": "B",
-   "pkgs": null,
-   "platform": "Whatnot Main"
-  },
-  {
-   "date": "2026-11-23",
-   "end": "2026-11-24T01:54:41",
-   "id": 54,
-   "note": "",
-   "pkgs": null,
-   "platform": "eBay Live"
-  }
- ],
- "slaRules": {
-  "Fanatics": {
-   "businessHours": false,
-   "hours": 72
-  },
-  "TikTok": {
-   "businessHours": false,
-   "hours": 96,
-   "labelHours": 48
-  },
-  "Whatnot": {
-   "businessHours": true,
-   "hours": 48
-  },
-  "default": {
-   "businessHours": false,
-   "hours": 72
-  },
-  "eBay": {
-   "businessHours": false,
-   "hours": 168
-  }
- },
- "today": "2026-11-24",
- "version": 1
+  "today": "2026-11-24",
+  "version": 1
 }
