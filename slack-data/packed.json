@@ -1,6 +1,6 @@
 {
  "channel": "G0C1YNLJXBJ",
- "fetched_at": "2026-11-24T15:36:26-05:00",
+ "fetched_at": "2026-11-24T16:33:42-05:00",
  "messages": [
   {
    "ts": "1795453200",
@@ -27,6 +27,62 @@
    "ts": "1795453200",
    "post_date": "2026-11-23",
    "text": "SHOW: FL-FB02\nDATE: 11/16\nPkgs: 137 USPS\nSHOW: FL-FB02\nDATE: 11/17\nPkgs: 131 USPS",
+   "subtype": null,
+   "user": ""
+  },
+  {
+   "ts": "1795463701",
+   "post_date": "2026-11-23",
+   "text": "E-Commerce: Walmart\nDate: 11/23\nPkgs: 36 pkgs\n\nE-Commerce: Best Buy\nDate: 11/23\nPkgs: 110 pkgs\n\nE-Commerce: eBay\nDate: 11/23\nPkgs: 16 pkgs",
+   "subtype": null,
+   "user": ""
+  },
+  {
+   "ts": "1795466572",
+   "post_date": "2026-11-23",
+   "text": "SHOW: FL-POKE\nDATE: 11/20/2026\nPKGS: 84 USPS",
+   "subtype": null,
+   "user": ""
+  },
+  {
+   "ts": "1795467254",
+   "post_date": "2026-11-23",
+   "text": "SHOW: WTH-1 A\nDATE: 11/20/2026\nPKGS: 112 USPS\n\nSHOW: WTH-1 B\nDATE: 11/20/2026\nPKGS: 90 USPS\n\nSHOW: WTH-1 C\nDATE: 11/20/2026\nPKGS: 83 USPS\n\nSHOW: WTH-1 A\nDATE: 11/21/2026\nPKGS: 74 USPS",
+   "subtype": null,
+   "user": ""
+  },
+  {
+   "ts": "1795468054",
+   "post_date": "2026-11-23",
+   "text": "Show: FL-FB A\nDate: 11/16/2026\nPkgs: 108 USPS, 4 UPS, 1 FEDEX\n\nShow: FL-FB B\nDate: 11/20/2026\nPkgs: 287 USPS, 4 UPS, 3 FEDEX",
+   "subtype": null,
+   "user": ""
+  },
+  {
+   "ts": "1795550543",
+   "post_date": "2026-11-24",
+   "text": "E-Commerce: Walmart\nDate: 11/24\nPkgs: 6 pkgs\n\nE-Commerce: Best Buy\nDate: 11/24\nPkgs: 315 pkgs\n\nE-Commerce: eBay\nDate: 11/24\nPkgs: 4 pkgs",
+   "subtype": null,
+   "user": ""
+  },
+  {
+   "ts": "1795552663",
+   "post_date": "2026-11-24",
+   "text": "Show: FL-FB A\nDate: 11/18/2026\nPkgs: 203 USPS, 4 UPS, 2 FEDEX",
+   "subtype": null,
+   "user": ""
+  },
+  {
+   "ts": "1795552886",
+   "post_date": "2026-11-24",
+   "text": "SHOW: FL-POKE\nDATE: 11/21/2026\nPKGS: 80 USPS, 1 UPS\n\nSHOW: FL-POKE\nDATE: 11/22/2026\nPKGS: 84 USPS",
+   "subtype": null,
+   "user": ""
+  },
+  {
+   "ts": "1795553782",
+   "post_date": "2026-11-24",
+   "text": "SHOW: WTH-1 B\nDATE: 11/21/2026\nPKGS: 110 USPS\n\nSHOW: WTH-1 C\nDATE: 11/21/2026\nPKGS: 73 USPS, 4 UPS\n\nSHOW: WTH-1 A\nDATE: 11/22/2026\nPKGS: 79 USPS\n\nSHOW: WTH-1 B\nDATE: 11/22/2026\nPKGS: 70 USPS, 1 UPS\n\nSHOW: WN-HK\nDATE : 11/19/2026\nPKGS: 75 USPS, 1UPS",
    "subtype": null,
    "user": ""
   }
