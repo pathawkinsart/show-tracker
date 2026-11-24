@@ -116,7 +116,7 @@ jobs:
             echo "No change — nothing to commit."
             exit 0
           fi
-          git commit -m "Slack push: rebuild in-house from #breaking-ops + #breaking-shipping-updates (event ${{ github.event.client_payload.event_id }}, channel ${{ github.event.client_payload.channel_id }})"
+          git commit -m "Slack push: rebuild in-house from #breaking-ops + #breaking-shipping-updates (event ${{ github.event.client_payload.event_id || 'manual' }}, channel ${{ github.event.client_payload.channel_id || 'n/a' }})"
           # The VM crons also push this repo; rebase onto their push if any.
           git pull --rebase || { git rebase --abort; echo "Concurrent update won — skipping push; next run picks it up."; exit 0; }
           git push || { git pull --rebase && git push; }
