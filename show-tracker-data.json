@@ -13,7 +13,7 @@
     "Whatnot Main": "2026-11-23T00:27:52",
     "eBay Live": "2026-11-24T01:54:41"
   },
-  "generatedAt": "2026-11-24T17:34:35-05:00",
+  "generatedAt": "2026-11-24T17:35:45-05:00",
   "premier": {
     "bar": 95,
     "channels": {
@@ -43,7 +43,7 @@
         "status": "earned"
       }
     },
-    "period": "Sep 1 \u2013 Nov 30, 2026",
+    "period": "Sep 1 – Nov 30, 2026",
     "source": "Whatnot Premier Shop page per account, read Nov 20, 2026 (DETAILED-FINDINGS-2026-11-20.md). Premier is evaluated monthly on a rolling 3-month window; the next judgement is Dec 1, 2026. Update this file when Claude re-reads the Premier Shop page (monthly / per detailed report) and rebuild the tracker data."
   },
   "shippedPerDay": {
@@ -112,7 +112,7 @@
         null
       ],
       "Whatnot Footy": [
-        254,
+        null,
         null,
         null,
         null,
@@ -168,11 +168,10 @@
     ],
     "notes": [
       "Mon Nov 23 Whatnot: delta between the Sun Nov 22 snapshot and the Mon Nov 23 snapshot.",
-      "Mon Nov 23 Whatnot Footy 254: from the Nov 23 Slack packed post (Caleb Jordan 5:30 PM) \u2014 89+89+76.",
-      "Mon Nov 23 Fanatics Blitz 675 / Evolution 84: full Slack re-read (Natalie FL-FB A/B + Isaiah FL-POKE posts added to the Nov 23 file) - Blitz was 268 from the partial morning read."
+      "Mon Nov 23: Whatnot Footy not re-read in the snapshot, so no figure for Whatnot Footy (blank, not zero)."
     ],
     "totals": [
-      2085,
+      1831,
       null,
       null,
       null,
