@@ -464,6 +464,26 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None,
             if remaining_pool <= 0:
                 break
 
+    # Packed-post check for the ops-add gate below: a show with a
+    # packed post has already shipped, so an ops pic for it must not
+    # create a pkgs=null entry. Session-level post: exact
+    # (platform, date, part) match. Date-level post: counts only if
+    # no kept show of that date already drew from the pool (otherwise
+    # the post belongs to the kept show).
+    pool_consumed_dates = set()
+    for (platform, date), group in groups.items():
+        for s in group:
+            if id(s) in pool_alloc:
+                pool_consumed_dates.add((platform, date))
+
+    def has_packed_post(platform, date, part):
+        if part and (platform, date, part) in packed:
+            return True
+        if (platform, date, "") in packed and \
+                (platform, date) not in pool_consumed_dates:
+            return True
+        return False
+
     kept, removed, changed = [], [], []
     for s in sorted(old_shows,
                     key=lambda x: (x["platform"], x["date"], x["end"])):
@@ -534,6 +554,25 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None,
             # pkgs=null entry.
             report.append(f"SKIP (confirmed complete): {platform} {date} "
                           f"part={part or '-'}")
+            continue
+        if has_packed_post(platform, date, part):
+            # Already packed (a packed post exists) — it shipped, so
+            # do not add it as an in-house unknown.
+            report.append(f"SKIP (packed): {platform} {date} "
+                          f"part={part or '-'}")
+            continue
+        try:
+            end_dt = datetime.strptime(
+                end, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=EST)
+        except ValueError:
+            end_dt = None
+        if end_dt is not None and \
+                (now - end_dt).total_seconds() > 48 * 3600:
+            # Ended more than 48h ago and still not in the tracker:
+            # it shipped (the report would have it otherwise). Do not
+            # add a stale null entry.
+            report.append(f"SKIP (ended >48h ago): {platform} {date} "
+                          f"part={part or '-'} end={end}")
             continue
         entry = {
             "date": date,
