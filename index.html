@@ -384,6 +384,7 @@
       .show-card.ice .show-dates, .show-card.footy .show-dates, .show-card.main .show-dates, .show-card.galaxy .show-dates, .show-card.cardshop .show-dates, .show-card.ebay .show-dates, .show-card.baseball .show-dates, .show-card.jamz .show-dates, .show-card.blitz .show-dates, .show-card.evolution .show-dates, .show-card.repack .show-dates, .show-card.tiktok .show-dates { border-top-color: rgba(255,255,255,.35); }
       .show-card.ice .pack-label, .show-card.footy .pack-label, .show-card.main .pack-label, .show-card.galaxy .pack-label, .show-card.cardshop .pack-label, .show-card.ebay .pack-label, .show-card.baseball .pack-label, .show-card.jamz .pack-label, .show-card.blitz .pack-label, .show-card.evolution .pack-label, .show-card.repack .pack-label, .show-card.tiktok .pack-label { color: rgba(232,244,255,.88); }
       .show-card.ice .psa-note, .show-card.footy .psa-note, .show-card.main .psa-note, .show-card.galaxy .psa-note, .show-card.cardshop .psa-note, .show-card.ebay .psa-note, .show-card.baseball .psa-note, .show-card.jamz .psa-note, .show-card.blitz .psa-note, .show-card.evolution .psa-note, .show-card.repack .psa-note, .show-card.tiktok .psa-note { color: rgba(232,244,255,.92); }
+      .show-card.ice .shipped-note, .show-card.footy .shipped-note, .show-card.main .shipped-note, .show-card.galaxy .shipped-note, .show-card.cardshop .shipped-note, .show-card.ebay .shipped-note, .show-card.baseball .shipped-note, .show-card.jamz .shipped-note, .show-card.blitz .shipped-note, .show-card.evolution .shipped-note, .show-card.repack .shipped-note, .show-card.tiktok .shipped-note, .show-card.rumble .shipped-note { color: rgba(232,244,255,.92); text-shadow: 0 1px 3px rgba(0,0,0,.55), 0 0 14px rgba(0,0,0,.35); }
       .show-card.ice .date-chip, .show-card.footy .date-chip, .show-card.main .date-chip, .show-card.galaxy .date-chip, .show-card.cardshop .date-chip, .show-card.ebay .date-chip, .show-card.baseball .date-chip, .show-card.jamz .date-chip, .show-card.blitz .date-chip, .show-card.evolution .date-chip, .show-card.repack .date-chip, .show-card.tiktok .date-chip, .show-card.rumble .date-chip {
         background: #000000;
         border-color: rgba(160,212,255,.55);
@@ -430,6 +431,8 @@
       @media (max-width: 420px) { .sla { min-width: 112px; padding: 7px 7px 6px; } .sla .val { font-size: 17px; } .sla.overdue .val { font-size: 16px; } }
       .sla-stack { flex: none; display: flex; flex-direction: column; gap: 6px; }
       .tiktok-note { margin-top: 11px; font-size: 14px; font-weight: 500; color: var(--ink-2); line-height: 1.4; }
+      .shipped-note { margin-top: 11px; font-size: 14px; font-weight: 500; color: var(--ink-2); line-height: 1.55; }
+      .shipped-note .shipped-line { display: block; }
       .show-card.tiktok .tiktok-note { color: rgba(232,244,255,.92); }
 
       .show-note {
@@ -1131,6 +1134,8 @@
             date: dt,
             end: parseDateTime(raw.end),
             pkgs: raw.pkgs || 0,
+            shipped: (raw.shipped == null ? null : raw.shipped),
+            total: (raw.total == null ? null : raw.total),
             note: raw.note || "",
             psa: !!raw.psa,
             part: raw.part || ""
@@ -1470,6 +1475,37 @@
             psaNote.innerHTML = '<span class="psa-badge">PSA</span><p></p>';
             psaNote.querySelector("p").textContent = "PSA dates are out at PSA for grading: " + psaParts.join("; ") + ".";
             zone.appendChild(psaNote);
+          }
+          // Shipped so far, per show — from the data file's shipped
+          // count (Slack packed posts). Only shows with a known
+          // shipped count get a line; a show with shipped null shows
+          // nothing. Total known: "Shipped X of TOTAL · LEFT left".
+          // Total unknown: "Shipped X". Never a negative number.
+          var shippedLines = [];
+          gShows.forEach(function (show) {
+            if (show.shipped == null) return;
+            var sLetter = letterFor(show);
+            var sLabel = MON[show.date.getMonth()] + " " + show.date.getDate() + (sLetter ? " " + sLetter : "");
+            var sShipped = Math.max(0, show.shipped);
+            var sText;
+            if (show.total == null) {
+              sText = "Shipped " + sShipped.toLocaleString("en-US");
+            } else {
+              var sLeft = Math.max(0, show.total - show.shipped);
+              sText = "Shipped " + sShipped.toLocaleString("en-US") + " of " + show.total.toLocaleString("en-US") + " · " + sLeft.toLocaleString("en-US") + " left";
+            }
+            shippedLines.push(sLabel + " — " + sText);
+          });
+          if (shippedLines.length) {
+            var shNote = document.createElement("div");
+            shNote.className = "shipped-note";
+            shippedLines.forEach(function (line) {
+              var ln = document.createElement("span");
+              ln.className = "shipped-line";
+              ln.textContent = line;
+              shNote.appendChild(ln);
+            });
+            zone.appendChild(shNote);
           }
           card.appendChild(zone);
         });
