@@ -713,6 +713,30 @@ def main():
         print("  " + line)
     print(f"NEW: {len(data['shows'])} shows")
 
+    # Premier medallions: premier.json (next to the --in file) is the
+    # source of record for the On-Time Scan % per channel. The rebuild
+    # used to preserve the premier block embedded in the data file,
+    # so a re-read committed to premier.json never reached the page
+    # (Footy stayed 97.3 after the Nov 25 re-read to 97.5). Load it
+    # fresh here; if it is missing or unreadable, keep the preserved
+    # block and warn — never fail the build over it.
+    premier = None
+    for cand in (os.path.join(
+                     os.path.dirname(os.path.abspath(args.in_path)),
+                     "premier.json"),
+                 "premier.json"):
+        if os.path.exists(cand):
+            try:
+                with open(cand, encoding="utf-8") as f:
+                    premier = json.load(f)
+                print(f"premier: loaded from {cand}")
+            except Exception as e:
+                print(f"WARN: premier.json unreadable ({cand}): {e} — "
+                      "keeping preserved premier block")
+            break
+    if premier is not None:
+        data["premier"] = premier
+
     validate(data)
     out_path = args.out_path or args.in_path
     text = json.dumps(data, indent=2, sort_keys=True) + "\n"
