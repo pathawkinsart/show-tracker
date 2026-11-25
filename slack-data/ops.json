@@ -1,6 +1,6 @@
 {
   "channel": "C0C19E8SQ58",
-  "fetched_at": "2026-11-24T17:32:51-05:00",
+  "fetched_at": "2026-11-24T19:02:37-05:00",
   "messages": [
     {
       "ts": "1794807960",
@@ -283,6 +283,13 @@
       "user": ""
     },
     {
+      "ts": "1794985620",
+      "post_date": "2026-11-18",
+      "text": "NOTE BREAK #1117-4\nMIAMI MARLINS SPOT belongs to amarillas98\nWe corrected before we ripped, the spot was filled with the username of the user who traded before.",
+      "subtype": null,
+      "user": ""
+    },
+    {
       "ts": "1794986340",
       "post_date": "2026-11-18",
       "text": "WTH FL BK B 11/17",
@@ -458,6 +465,13 @@
       "user": ""
     },
     {
+      "ts": "1795075620",
+      "post_date": "2026-11-19",
+      "text": "First break of the night #1118-1\nHad no years for the product put in the title.\n2026-27 UD SERIES 1. 2023-24 UD METAL SKYBOX",
+      "subtype": null,
+      "user": ""
+    },
+    {
       "ts": "1795076640",
       "post_date": "2026-11-19",
       "text": "WTH CARDSHOP 11/18 FULL SHOW\nPlease refund for the following users as follows:",
@@ -573,6 +587,13 @@
       "ts": "1795157760",
       "post_date": "2026-11-20",
       "text": "WTH FL BK B 11/19",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795157880",
+      "post_date": "2026-11-20",
+      "text": "Break 208 error should be #1119-11, as marked in the sheet",
       "subtype": null,
       "user": ""
     },
@@ -1004,6 +1025,13 @@
       "user": ""
     },
     {
+      "ts": "1795418160",
+      "post_date": "2026-11-23",
+      "text": "Personal ripped for Vinnynazerian was motif FDI as scanned in the sheet",
+      "subtype": null,
+      "user": ""
+    },
+    {
       "ts": "1795419706",
       "post_date": "2026-11-23",
       "text": "WTH TT 11/22",
@@ -1182,6 +1210,34 @@
       "ts": "1795537778",
       "post_date": "2026-11-24",
       "text": "WTH1A 11/24",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795561680",
+      "post_date": "2026-11-24",
+      "text": "WTH 1B11/24",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795562040",
+      "post_date": "2026-11-24",
+      "text": "WTH WN ENT A 11/24",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795562580",
+      "post_date": "2026-11-24",
+      "text": "WTH-FL-PK-A\n11/24",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795563300",
+      "post_date": "2026-11-24",
+      "text": "WTH FL BK A 11/24",
       "subtype": null,
       "user": ""
     }
