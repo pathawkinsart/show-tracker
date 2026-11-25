@@ -356,8 +356,11 @@ def parse_ops_posts(ops_messages):
                 skipped.append(("bad date", text[:80]))
                 continue
         # Session: NIGHT = B; else a standalone A/B/C token; else a letter
-        # attached to the date ("11/23B"); else a letter attached to the
-        # code token ("WTH1A", "Wth 2a", "WTH2B").
+        # attached before the date ("A11/23" — the caption jams the
+        # session letter between the code and the date, e.g.
+        # "WTH-FL-PK-A11/23" or "WTH1B11/22"); else a letter attached
+        # to the date ("11/23B"); else a letter attached to the code
+        # token ("WTH1A", "Wth 2a", "WTH2B").
         upper = text.upper()
         if "NIGHT" in upper:
             session = "B"
@@ -366,12 +369,16 @@ def parse_ops_posts(ops_messages):
             if tokens:
                 session = tokens[0]
             else:
-                m2 = re.search(r"\d{1,2}[/\-]\d{1,2}([ABC])\b", upper)
-                if m2:
-                    session = m2.group(1)
+                m1b = re.search(r"([ABC])\d{1,2}[/\-]\d{1,2}", upper)
+                if m1b:
+                    session = m1b.group(1)
                 else:
-                    m3 = re.search(r"\b(?:WTH|FL|WN)[\s\-]*[A-Z0-9]*([ABC])\b", upper)
-                    session = m3.group(1) if m3 else ""
+                    m2 = re.search(r"\d{1,2}[/\-]\d{1,2}([ABC])\b", upper)
+                    if m2:
+                        session = m2.group(1)
+                    else:
+                        m3 = re.search(r"\b(?:WTH|FL|WN)[\s\-]*[A-Z0-9]*([ABC])\b", upper)
+                        session = m3.group(1) if m3 else ""
         # Platform from the normalized title.
         norm = re.sub(r"[\s\-]+", "", upper)
         platform = None
@@ -550,6 +557,30 @@ def rebuild(current, packed_keys, ops_shows, ops_psa, now, completed):
         next_id += 1
         report.append(f"ADD: {platform} {date} part={part or '-'} "
                       f"end={end}")
+
+    # Same-end dedup: one pic post can only end one show, so two
+    # entries for a channel+date ending the same second are one show
+    # seen twice — e.g. a session letter the old parser read ("A")
+    # and the new one missed (""), which the page then letters "C".
+    # Keep the entry that carries the session letter; drop the
+    # part-less twin(s). Groups where both carry letters are left
+    # alone (distinct sessions that share an end second).
+    grouped = {}
+    for s in kept:
+        grouped.setdefault((s["platform"], s["date"], s["end"]), []).append(s)
+    deduped = []
+    for key, group in grouped.items():
+        parted = [s for s in group if s.get("part")]
+        if len(group) > 1 and len(parted) == 1:
+            for s in group:
+                if not s.get("part"):
+                    report.append(
+                        f"DEDUP: {key[0]} {key[1]} end={key[2]} "
+                        f"dropped part-less twin of part={parted[0]['part']}")
+            deduped.append(parted[0])
+        else:
+            deduped.extend(group)
+    kept = deduped
 
     kept.sort(key=lambda x: (x["platform"], x["date"], x["end"]))
     for i, s in enumerate(kept, start=1):
