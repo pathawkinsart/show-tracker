@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Packed post form — Show Tracker</title>
+<link rel="icon" href="icon-192.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { background: #000; color: #f5f5f5; font-family: Barlow, system-ui, sans-serif; margin: 0; padding: 0 16px 48px; }
+  .wrap { max-width: 640px; margin: 0 auto; }
+  h1 { font-family: "Barlow Semi Condensed", sans-serif; font-size: 28px; margin: 22px 0 4px; }
+  .sub { color: #9a9a9a; margin: 0 0 20px; font-size: 15px; line-height: 1.45; }
+  .sub b { color: #e8e8e8; }
+  h2 { font-family: "Barlow Semi Condensed", sans-serif; font-size: 19px; margin: 26px 0 10px; }
+  .card { background: #111; border: 1px solid #2a2a2a; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+  .card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .card-head span { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 700; font-size: 17px; }
+  .remove { background: none; border: none; color: #ff6b6b; font-size: 14px; cursor: pointer; padding: 4px 0; }
+  label { display: block; font-size: 13px; color: #9a9a9a; margin: 12px 0 5px; }
+  label:first-child { margin-top: 0; }
+  select, input[type="date"], input[type="number"] {
+    width: 100%; background: #1c1c1c; color: #f5f5f5; border: 1px solid #3a3a3a;
+    border-radius: 8px; padding: 12px; font-size: 17px; font-family: Barlow, sans-serif;
+  }
+  select:focus, input:focus { outline: 2px solid #f5c518; outline-offset: 0; border-color: #f5c518; }
+  .row { display: flex; gap: 10px; }
+  .row > div { flex: 1; min-width: 0; }
+  .carriers { display: flex; gap: 10px; }
+  .carriers > div { flex: 1; min-width: 0; }
+  .add-btn {
+    width: 100%; background: #1c1c1c; color: #f5f5f5; border: 1px dashed #4a4a4a;
+    border-radius: 10px; padding: 13px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: Barlow, sans-serif;
+  }
+  .add-btn:active { background: #262626; }
+  .out-label { display: flex; justify-content: space-between; align-items: baseline; }
+  .hint { font-size: 13px; color: #9a9a9a; }
+  #output {
+    width: 100%; min-height: 180px; background: #0d0d0d; color: #f5f5f5;
+    border: 1px solid #3a3a3a; border-radius: 10px; padding: 14px;
+    font-family: ui-monospace, monospace; font-size: 15px; line-height: 1.55; white-space: pre-wrap;
+  }
+  .copy-btn {
+    width: 100%; background: #f5c518; color: #111; border: none; border-radius: 10px;
+    padding: 15px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 12px; font-family: Barlow, sans-serif;
+  }
+  .copy-btn:active { background: #ffd94d; }
+  .copy-btn.done { background: #35c163; color: #fff; }
+  .clear-btn {
+    width: 100%; background: none; color: #9a9a9a; border: none; padding: 12px;
+    font-size: 15px; cursor: pointer; margin-top: 4px; font-family: Barlow, sans-serif;
+  }
+  .empty-note { color: #ff9d9d; font-size: 14px; margin: 8px 0 0; display: none; }
+  .back { display: inline-block; color: #9a9a9a; font-size: 15px; margin-top: 18px; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Packed post form</h1>
+  <p class="sub">Fill this out instead of typing a post by hand. It writes the post in the exact format the tracker reads, so every channel comes out the same. When you're done, tap <b>Copy post</b> and paste it into <b>#breaking-shipping-updates</b>.</p>
+
+  <h2>Shows packed</h2>
+  <div id="shows"></div>
+  <button class="add-btn" id="addShow" type="button">+ Add another show</button>
+
+  <h2>E-Commerce packed</h2>
+  <div id="ecomms"></div>
+  <button class="add-btn" id="addEcomm" type="button">+ Add an e-commerce store</button>
+
+  <h2>Your post</h2>
+  <div class="out-label"><span class="hint">This is exactly what will be pasted into Slack.</span></div>
+  <textarea id="output" readonly rows="8" aria-label="Post text"></textarea>
+  <p class="empty-note" id="emptyNote">Add at least one show (or one e-commerce store) with a package count, and the post will appear here.</p>
+  <button class="copy-btn" id="copyBtn" type="button">Copy post</button>
+  <button class="clear-btn" id="clearBtn" type="button">Start over</button>
+
+  <a class="back" href="index.html">&larr; Back to the tracker</a>
+</div>
+
+<script>
+const CHANNELS = [
+  ["WN-OG", "Whatnot Main"],
+  ["WN-GALAXY", "Whatnot Galaxy"],
+  ["WN-FOOTY", "Whatnot Footy"],
+  ["WN-CARDSHOP", "Whatnot Card Shop"],
+  ["WN-HK", "Whatnot Ice"],
+  ["FL-MLB", "Fanatics Baseball"],
+  ["FL-BK", "Fanatics Jamz"],
+  ["FL-FB", "Fanatics Blitz"],
+  ["FL-POKE", "Fanatics Evolution"],
+  ["WTH4", "Fanatics Repack"],
+  ["EBAY LIVE", "eBay Live"],
+  ["TIKTOK", "TikTok Card Shop"],
+];
+const STORES = ["Walmart", "Best Buy", "eBay"];
+const SESSIONS = [["", "— no session —"], ["A", "A"], ["B", "B"], ["C", "C"]];
+
+function yesterdayISO() {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return d.toISOString().slice(0, 10);
+}
+function fmtDate(iso) {
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-");
+  return m + "/" + d + "/" + y;
+}
+function el(tag, cls, html) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (html !== undefined) n.innerHTML = html;
+  return n;
+}
+function select(opts, val) {
+  const s = el("select");
+  opts.forEach(([v, label]) => {
+    const o = document.createElement("option");
+    o.value = v; o.textContent = label;
+    if (v === val) o.selected = true;
+    s.appendChild(o);
+  });
+  return s;
+}
+function numInput(placeholder) {
+  const i = document.createElement("input");
+  i.type = "number"; i.min = "0"; i.inputMode = "numeric";
+  i.placeholder = placeholder || "0";
+  return i;
+}
+function dateInput(def) {
+  const i = document.createElement("input");
+  i.type = "date"; i.value = def || yesterdayISO();
+  return i;
+}
+
+const showsEl = document.getElementById("shows");
+const ecommsEl = document.getElementById("ecomms");
+const outputEl = document.getElementById("output");
+const emptyNote = document.getElementById("emptyNote");
+
+function showCard(index) {
+  const card = el("div", "card");
+  const head = el("div", "card-head");
+  head.appendChild(el("span", null, "Show " + (index + 1)));
+  if (index > 0) {
+    const rm = el("button", "remove", "Remove");
+    rm.type = "button";
+    rm.onclick = () => { card.remove(); renumber(); rebuild(); };
+    head.appendChild(rm);
+  }
+  card.appendChild(head);
+
+  const chLabel = el("label", null, "Channel");
+  const ch = select(CHANNELS.map(([code, name]) => [code, name + " (" + code + ")"]));
+  card.appendChild(chLabel); card.appendChild(ch);
+
+  const row = el("div", "row");
+  const dWrap = el("div");
+  dWrap.appendChild(el("label", null, "Show date"));
+  const dt = dateInput();
+  dWrap.appendChild(dt);
+  const sWrap = el("div");
+  sWrap.appendChild(el("label", null, "Session"));
+  const se = select(SESSIONS);
+  sWrap.appendChild(se);
+  row.appendChild(dWrap); row.appendChild(sWrap);
+  card.appendChild(row);
+
+  const cLabel = el("label", null, "Packages shipped");
+  card.appendChild(cLabel);
+  const carriers = el("div", "carriers");
+  const usps = numInput(), ups = numInput(), fedex = numInput();
+  [["USPS", usps], ["UPS", ups], ["FedEx", fedex]].forEach(([name, input]) => {
+    const w = el("div");
+    w.appendChild(el("label", null, name));
+    w.appendChild(input);
+    carriers.appendChild(w);
+  });
+  card.appendChild(carriers);
+
+  card._fields = { ch, dt, se, usps, ups, fedex };
+  card.addEventListener("input", rebuild);
+  card.addEventListener("change", rebuild);
+  return card;
+}
+
+function ecommCard(index) {
+  const card = el("div", "card");
+  const head = el("div", "card-head");
+  head.appendChild(el("span", null, "Store " + (index + 1)));
+  const rm = el("button", "remove", "Remove");
+  rm.type = "button";
+  rm.onclick = () => { card.remove(); renumber(); rebuild(); };
+  head.appendChild(rm);
+  card.appendChild(head);
+
+  const stLabel = el("label", null, "Store");
+  const st = select(STORES.map(s => [s, s]));
+  card.appendChild(stLabel); card.appendChild(st);
+
+  const row = el("div", "row");
+  const dWrap = el("div");
+  dWrap.appendChild(el("label", null, "Date"));
+  const dt = dateInput(new Date().toISOString().slice(0, 10));
+  dWrap.appendChild(dt);
+  const nWrap = el("div");
+  nWrap.appendChild(el("label", null, "Packages"));
+  const n = numInput();
+  nWrap.appendChild(n);
+  row.appendChild(dWrap); row.appendChild(nWrap);
+  card.appendChild(row);
+
+  card._fields = { st, dt, n };
+  card.addEventListener("input", rebuild);
+  card.addEventListener("change", rebuild);
+  return card;
+}
+
+function renumber() {
+  [...showsEl.children].forEach((c, i) => {
+    c.querySelector(".card-head span").textContent = "Show " + (i + 1);
+  });
+  [...ecommsEl.children].forEach((c, i) => {
+    c.querySelector(".card-head span").textContent = "Store " + (i + 1);
+  });
+}
+
+function carrierParts(f) {
+  const parts = [];
+  const u = parseInt(f.usps.value || "0", 10) || 0;
+  const p = parseInt(f.ups.value || "0", 10) || 0;
+  const x = parseInt(f.fedex.value || "0", 10) || 0;
+  if (u > 0) parts.push(u + " USPS");
+  if (p > 0) parts.push(p + " UPS");
+  if (x > 0) parts.push(x + " FEDEX");
+  return parts;
+}
+
+function rebuild() {
+  const blocks = [];
+  [...showsEl.children].forEach(card => {
+    const f = card._fields;
+    const parts = carrierParts(f);
+    if (!parts.length || !f.dt.value) return;
+    const code = f.ch.value + (f.se.value ? " " + f.se.value : "");
+    blocks.push("SHOW: " + code + "\nDATE: " + fmtDate(f.dt.value) + "\nPKGS: " + parts.join(", "));
+  });
+  [...ecommsEl.children].forEach(card => {
+    const f = card._fields;
+    const n = parseInt(f.n.value || "0", 10) || 0;
+    if (!n || !f.dt.value) return;
+    blocks.push("E-Commerce: " + f.st.value + "\nDate: " + fmtDate(f.dt.value) + "\nPkgs: " + n + " pkgs");
+  });
+  outputEl.value = blocks.join("\n\n");
+  emptyNote.style.display = blocks.length ? "none" : "block";
+}
+
+document.getElementById("addShow").onclick = () => {
+  showsEl.appendChild(showCard(showsEl.children.length));
+  rebuild();
+};
+document.getElementById("addEcomm").onclick = () => {
+  ecommsEl.appendChild(ecommCard(ecommsEl.children.length));
+  rebuild();
+};
+document.getElementById("clearBtn").onclick = () => {
+  showsEl.innerHTML = "";
+  ecommsEl.innerHTML = "";
+  showsEl.appendChild(showCard(0));
+  rebuild();
+};
+document.getElementById("copyBtn").onclick = async (e) => {
+  const btn = e.currentTarget;
+  if (!outputEl.value) return;
+  try {
+    await navigator.clipboard.writeText(outputEl.value);
+  } catch (_) {
+    outputEl.select();
+    document.execCommand("copy");
+  }
+  btn.textContent = "Copied — paste it in #breaking-shipping-updates";
+  btn.classList.add("done");
+  setTimeout(() => {
+    btn.textContent = "Copy post";
+    btn.classList.remove("done");
+  }, 3000);
+};
+
+showsEl.appendChild(showCard(0));
+rebuild();
+</script>
+</body>
+</html>
