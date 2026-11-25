@@ -11,7 +11,7 @@
     "Whatnot Ice": "2026-11-20T17:05:00",
     "Whatnot Main": "2026-11-23T18:14:35"
   },
-  "generatedAt": "2026-11-24T23:04:57-05:00",
+  "generatedAt": "2026-11-24T23:35:52-05:00",
   "premier": {
     "bar": 95,
     "channels": {
@@ -48,7 +48,7 @@
     "channels": {
       "Fanatics Baseball": [
         null,
-        null,
+        530,
         null,
         null,
         null,
@@ -57,7 +57,7 @@
       ],
       "Fanatics Blitz": [
         675,
-        null,
+        501,
         null,
         null,
         null,
@@ -66,7 +66,7 @@
       ],
       "Fanatics Evolution": [
         84,
-        null,
+        165,
         null,
         null,
         null,
@@ -75,7 +75,7 @@
       ],
       "Fanatics Jamz": [
         298,
-        null,
+        168,
         null,
         null,
         null,
@@ -93,7 +93,7 @@
       ],
       "TikTok Card Shop": [
         96,
-        null,
+        170,
         null,
         null,
         null,
@@ -147,7 +147,7 @@
       ],
       "eBay Live": [
         139,
-        null,
+        54,
         null,
         null,
         null,
@@ -170,7 +170,7 @@
     ],
     "totals": [
       1831,
-      null,
+      1588,
       null,
       null,
       null,
