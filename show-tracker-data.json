@@ -8,10 +8,10 @@
     "TikTok Card Shop": "2026-11-20T00:58:00",
     "Whatnot Card Shop": "2026-11-24T03:24:43",
     "Whatnot Footy": "2026-11-24T19:00:00",
-    "Whatnot Ice": "2026-11-20T17:05:00",
+    "Whatnot Ice": "2026-11-22T01:54:00",
     "Whatnot Main": "2026-11-23T18:14:35"
   },
-  "generatedAt": "2026-11-25T00:10:20-05:00",
+  "generatedAt": "2026-11-25T00:40:23-05:00",
   "premier": {
     "bar": 95,
     "channels": {
@@ -295,16 +295,9 @@
       "platform": "Fanatics Repack"
     },
     {
-      "date": "2026-11-22",
-      "end": "2026-11-22T23:35:00",
-      "id": 16,
-      "note": "",
-      "platform": "Fanatics Repack"
-    },
-    {
       "date": "2026-11-23",
       "end": "2026-11-24T01:44:35",
-      "id": 17,
+      "id": 16,
       "note": "",
       "part": "B",
       "platform": "Fanatics Repack"
@@ -312,71 +305,57 @@
     {
       "date": "2026-11-19",
       "end": "2026-11-20T00:58:00",
-      "id": 18,
+      "id": 17,
       "note": "",
       "platform": "TikTok Card Shop"
     },
     {
       "date": "2026-11-23",
       "end": "2026-11-24T02:46:49",
-      "id": 19,
+      "id": 18,
       "note": "",
       "platform": "TikTok Card Shop"
     },
     {
       "date": "2026-11-23",
       "end": "2026-11-24T03:24:43",
-      "id": 20,
+      "id": 19,
       "note": "",
       "platform": "Whatnot Card Shop"
     },
     {
       "date": "2026-11-24",
       "end": "2026-11-24T19:00:00",
-      "id": 21,
+      "id": 20,
       "note": "",
       "part": "A",
       "platform": "Whatnot Footy"
     },
     {
-      "date": "2026-11-20",
-      "end": "2026-11-20T17:05:00",
-      "id": 22,
-      "note": "",
-      "platform": "Whatnot Ice"
-    },
-    {
-      "date": "2026-11-20",
-      "end": "2026-11-21T01:58:00",
-      "id": 23,
-      "note": "",
-      "platform": "Whatnot Ice"
-    },
-    {
       "date": "2026-11-21",
       "end": "2026-11-22T01:54:00",
-      "id": 24,
+      "id": 21,
       "note": "",
       "platform": "Whatnot Ice"
     },
     {
       "date": "2026-11-22",
       "end": "2026-11-23T01:59:00",
-      "id": 25,
+      "id": 22,
       "note": "",
       "platform": "Whatnot Ice"
     },
     {
       "date": "2026-11-23",
       "end": "2026-11-24T02:00:14",
-      "id": 26,
+      "id": 23,
       "note": "",
       "platform": "Whatnot Ice"
     },
     {
       "date": "2026-11-23",
       "end": "2026-11-23T18:14:35",
-      "id": 27,
+      "id": 24,
       "note": "",
       "part": "A",
       "platform": "Whatnot Main"
@@ -384,7 +363,7 @@
     {
       "date": "2026-11-23",
       "end": "2026-11-24T02:03:54",
-      "id": 28,
+      "id": 25,
       "note": "",
       "part": "B",
       "platform": "Whatnot Main"
@@ -392,7 +371,7 @@
     {
       "date": "2026-11-24",
       "end": "2026-11-24T11:29:38",
-      "id": 29,
+      "id": 26,
       "note": "",
       "part": "A",
       "platform": "Whatnot Main"
@@ -400,7 +379,7 @@
     {
       "date": "2026-11-24",
       "end": "2026-11-24T18:08:00",
-      "id": 30,
+      "id": 27,
       "note": "",
       "platform": "Whatnot Main"
     }
