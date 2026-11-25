@@ -1,6 +1,6 @@
 {
   "channel": "C0C19E8SQ58",
-  "fetched_at": "2026-11-25T15:19:23.216703-05:00",
+  "fetched_at": "2026-11-25T15:28:32.676653-05:00",
   "messages": [
     {
       "ts": "1794892320",
@@ -34,13 +34,6 @@
       "ts": "1794900960",
       "post_date": "2026-11-17",
       "text": "WTH-FOOTY-11/16",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1794900960",
-      "post_date": "2026-11-17",
-      "text": "WTH EBAY 11/16",
       "subtype": null,
       "user": ""
     },
@@ -202,13 +195,6 @@
       "ts": "1794990060",
       "post_date": "2026-11-18",
       "text": "WTH CARD SHOP 11/17",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1794990060",
-      "post_date": "2026-11-18",
-      "text": "WTH WN ET 11/17 B",
       "subtype": null,
       "user": ""
     },
@@ -444,13 +430,6 @@
       "user": ""
     },
     {
-      "ts": "1795154700",
-      "post_date": "2026-11-20",
-      "text": "WTH TT PP 11/19",
-      "subtype": null,
-      "user": ""
-    },
-    {
       "ts": "1795155000",
       "post_date": "2026-11-20",
       "text": "WTH TT PP 11/19",
@@ -584,13 +563,6 @@
       "user": ""
     },
     {
-      "ts": "1795224000",
-      "post_date": "2026-11-20",
-      "text": "WTH FL FB 2A",
-      "subtype": null,
-      "user": ""
-    },
-    {
       "ts": "1795232400",
       "post_date": "2026-11-20",
       "text": "WTH-2A 11/20",
@@ -713,20 +685,6 @@
       "ts": "1795304168",
       "post_date": "2026-11-21",
       "text": "WTH FOOTY A 11/21",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795304571",
-      "post_date": "2026-11-21",
-      "text": "WTH-FL-PK-A 11/17",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795305720",
-      "post_date": "2026-11-21",
-      "text": "WTH FL BK 2A",
       "subtype": null,
       "user": ""
     },
