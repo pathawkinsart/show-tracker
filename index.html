@@ -192,19 +192,17 @@
       }
       .show-card.leaving { opacity: 0; transform: translateX(24px); }
 
-      /* ---------- Per-channel Update button (cloud) ---------- */
-      .chan-update {
-        flex: none; margin-left: 10px; align-self: center;
+      /* ---------- Singular Refresh button (header) ---------- */
+      .refresh-btn {
         font-family: inherit; font-size: 13px; font-weight: 700;
         color: var(--ink-2); background: transparent;
         border: 1.5px solid var(--line); border-radius: 999px;
         padding: 6px 12px; cursor: pointer; white-space: nowrap;
+        margin-top: 10px;
       }
-      .chan-update:hover:not(:disabled) { border-color: var(--ink-2); }
-      .chan-update:disabled { opacity: .6; cursor: default; }
-      .chan-update.done { color: var(--green); border-color: var(--green); }
-      .chan-update.unavailable { color: var(--ink-3); }
-      .chan-update-note { font-size: 12px; color: var(--ink-3); margin: 8px 0 0; }
+      .refresh-btn:hover:not(:disabled) { border-color: var(--ink-2); }
+      .refresh-btn:disabled { opacity: .6; cursor: default; }
+      .refresh-btn.done { color: var(--green); border-color: var(--green); }
 
       /* ---------- Premier Shop status (Whatnot channels only) ----------
          A medallion in the card's top row, inspired by Whatnot's own
@@ -597,7 +595,7 @@
         .show-card, .progress-fill, .toast, .date-chip { transition: none; }
       }
       @media print {
-        .controls, .actions, details.add-box, .toast, .howto { display: none !important; }
+        .controls, .actions, details.add-box, .toast, .howto, .refresh-btn { display: none !important; }
         body { background: #fff; }
         .show-card, .kpi, .packed-row { box-shadow: none; }
       }
@@ -610,6 +608,7 @@
         <h1>Show Tracker</h1>
         <p class="band-sub">Shows still in the building — <strong id="bandDate">Friday, November 20, 2026</strong></p>
         <p class="band-updated">Last updated <strong id="bandUpdated">—</strong></p>
+        <button type="button" class="refresh-btn" id="refreshBtn">Check Slack now</button>
         <div class="howto">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f06a24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
           <p>Finished packing a show? <strong>Tap its date</strong> in the channel's list — it comes off the in-house list. Packed the wrong one? <span class="dim">Tap <strong>Put back</strong> in the Packed list below and it returns.</span></p>
@@ -968,82 +967,53 @@
       // celebrates that the channel is current instead of vanishing.
       var ALL_CHANNELS = ["Whatnot Footy", "Whatnot Main", "Whatnot Galaxy", "Whatnot Card Shop", "Whatnot Ice", "Fanatics Baseball", "Fanatics Jamz", "Fanatics Blitz", "Fanatics Evolution", "Fanatics Repack", "eBay Live", "TikTok Card Shop", "Sudden Death", "Rumble"];
       // Channels still being set up: they get the caution-tape
-      // "Under construction" card (no shows, no Update button).
+      // "Under construction" card (no shows).
       var UNDER_CONSTRUCTION = ["Sudden Death", "Rumble"];
-      // Channel keys for the per-channel Update buttons.
-      // Sudden Death has no profile yet, so it gets no button.
-      var CHAN_KEY = {
-        "Whatnot Footy": "footy", "Whatnot Main": "main",
-        "Whatnot Galaxy": "galaxy", "Whatnot Card Shop": "cardshop",
-        "Whatnot Ice": "ice", "Fanatics Baseball": "baseball",
-        "Fanatics Jamz": "jamz", "Fanatics Blitz": "blitz",
-        "Fanatics Evolution": "evolution", "Fanatics Repack": "repack",
-        "eBay Live": "ebay", "TikTok Card Shop": "tiktok"
-      };
-      // The Update button works from ANY device. One tap POSTs the
-      // channel to the Show Tracker Worker, which triggers the cloud
-      // rebuild directly — no GitHub issue, no sign-in. The Worker
-      // re-reads the day's Slack packed posts, rebuilds the tracker
-      // data and pushes it. Nothing to do with the work PC. The
-      // refresh covers shipped (packed) numbers from Slack for
-      // every channel; it does NOT re-read any seller dashboard.
-      // The show list comes from Slack ops pics, and a packed post
-      // naming a show takes it off the list. Tapping Update on
-      // several channels in a row is safe: the Worker only starts
-      // one rebuild every 5 minutes (a rebuild covers every
-      // channel anyway) and answers "Already updating" in between.
+      // One singular Refresh button (header). It asks the cloud for a
+      // FRESH Slack read, outside the 15-minute schedule: the Worker
+      // writes a refresh request that the sync picks up within minutes,
+      // and also triggers the usual rebuild of whatever data is already
+      // in. The page re-fetches its data every 5 minutes, so new posts
+      // show up on their own once the fresh read lands. Nothing to do
+      // with the work PC. At most one refresh per 5 minutes (the Worker
+      // answers "already checking" in between).
       var WORKER_UPDATE_URL = "https://show-tracker-slack.phawkins0001.workers.dev/update";
-      function requestChannelUpdate(key, chan, btn) {
-        if (btn.disabled) return;
-        btn.disabled = true;
-        btn.textContent = "Updating…";
-        btn.title = "Asking the cloud to rebuild the tracker…";
-        fetch(WORKER_UPDATE_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ channel: key })
-        }).then(function (res) {
-          return res.json().catch(function () { return {}; }).then(function (data) {
-            return { status: res.status, data: data };
+      var refreshBtn = document.getElementById("refreshBtn");
+      if (refreshBtn) {
+        refreshBtn.addEventListener("click", function () {
+          if (refreshBtn.disabled) return;
+          refreshBtn.disabled = true;
+          refreshBtn.textContent = "Checking Slack\u2026";
+          fetch(WORKER_UPDATE_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ channel: "all" })
+          }).then(function (res) {
+            return res.json().catch(function () { return {}; }).then(function (data) {
+              return { status: res.status, data: data };
+            });
+          }).then(function (out) {
+            if (out.status === 202 || (out.data && out.data.ok)) {
+              refreshBtn.classList.add("done");
+              refreshBtn.textContent = "Refresh requested";
+              showToast("Fresh Slack read requested \u2014 new posts will appear in a few minutes.", true);
+            } else if (out.status === 429) {
+              refreshBtn.textContent = "Already checking";
+              showToast("A refresh was already requested a few minutes ago.", true);
+            } else {
+              throw new Error("refresh failed: " + out.status);
+            }
+            setTimeout(function () {
+              refreshBtn.disabled = false;
+              refreshBtn.textContent = "Check Slack now";
+              refreshBtn.classList.remove("done");
+            }, 30000);
+          }).catch(function () {
+            refreshBtn.disabled = false;
+            refreshBtn.textContent = "Check Slack now";
+            showToast("Couldn't reach the cloud \u2014 check your connection and try again.", true);
           });
-        }).then(function (out) {
-          if (out.status === 202 || (out.data && out.data.ok)) {
-            btn.classList.add("done");
-            btn.textContent = "Update sent";
-            btn.title = "Cloud is rebuilding the tracker from Slack (about 15 min). The page refreshes itself when the new data lands.";
-            showToast("Update sent — the cloud is rebuilding the tracker.", true);
-          } else if (out.status === 429) {
-            btn.textContent = "Already updating";
-            btn.title = "A rebuild was already started a few minutes ago — try again shortly.";
-            showToast("Already updating — a rebuild was started a few minutes ago.", true);
-          } else {
-            throw new Error("update failed: " + out.status);
-          }
-          setTimeout(function () {
-            btn.disabled = false;
-            btn.textContent = "Update";
-            btn.classList.remove("done");
-            btn.title = "";
-          }, 30000);
-        }).catch(function () {
-          btn.disabled = false;
-          btn.textContent = "Update";
-          btn.title = "Couldn't reach the cloud — check your connection and tap Update again.";
-          showToast("Couldn't reach the cloud — tap Update again.", true);
         });
-      }
-      function updateButton(chan) {
-        var key = CHAN_KEY[chan];
-        if (!key) return null; // Sudden Death: no profile yet
-        var btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "chan-update";
-        btn.textContent = "Update";
-        btn.setAttribute("aria-label", "Update " + chan + " now");
-        btn.addEventListener("click", function () {
-          requestChannelUpdate(key, chan, btn);
-        });
-        return btn;
       }
       var shows = [];
       var noPost = []; // {platform, date} — "No post" flags, never shows
@@ -1376,8 +1346,6 @@
                 : '<div class="sla current"><div class="val">Current</div><div class="lbl">All caught up</div></div>');
             cTop.querySelector(".show-name").textContent = chan;
             cTop.querySelector(".chan-count").textContent = isUnderConstruction ? "Coming soon — no shows yet" : packedForChan ? ("All " + totalForChan + (totalForChan === 1 ? " show" : " shows") + " packed & cleared · 0 in house") : "0 shows in house";
-            var cBtn = updateButton(chan);
-            if (cBtn) cTop.appendChild(cBtn);
             cCard.appendChild(cTop);
             var banner = document.createElement("div");
             if (isUnderConstruction) {
@@ -1438,8 +1406,6 @@
             nameEl.appendChild(chanBadge);
           }
           top.querySelector(".chan-count").textContent = gShows.length + (gShows.length === 1 ? " show" : " shows") + " in house";
-          var uBtn = updateButton(chan);
-          if (uBtn) top.appendChild(uBtn);
           var pBadge = premierBadge(chan);
           if (pBadge) top.appendChild(pBadge);
           card.appendChild(top);
