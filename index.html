@@ -629,6 +629,7 @@
         <div class="kpi"><div class="num" id="kpiShows">–</div><div class="lbl">Shows in house</div></div>
         <div class="kpi hot"><div class="num" id="kpiOldest">–</div><div class="lbl">Oldest show (days)</div></div>
         <div class="kpi done"><div class="num" id="kpiPacked">0</div><div class="lbl">Packed &amp; cleared</div></div>
+        <div class="kpi"><div class="num" id="kpiShippedWeek">–</div><div class="lbl">Packages shipped this week</div></div>
       </section>
       <div class="progress-row">
         <div class="progress-track" role="progressbar" aria-label="Shows cleared" id="progressBar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill" id="progressFill"></div></div>
@@ -1284,6 +1285,13 @@
         document.getElementById("kpiShows").textContent = dataLoaded ? inHouse.length : "–";
         document.getElementById("kpiOldest").textContent = dataLoaded && inHouse.length ? oldest : "—";
         document.getElementById("kpiPacked").textContent = dataLoaded ? done.length : "–";
+        // Packages shipped this week — the same totals the shipped-per-day
+        // table shows (sum of the week's daily totals). Blank days are
+        // missing data, never zero, so a week with no totals yet shows "–".
+        var spd = lastGoodData && lastGoodData.shippedPerDay;
+        var weekTotal = 0, anyWeek = false;
+        (spd && spd.totals || []).forEach(function (v) { if (v !== null && v !== undefined) { weekTotal += v; anyWeek = true; } });
+        document.getElementById("kpiShippedWeek").textContent = dataLoaded && anyWeek ? weekTotal.toLocaleString("en-US") : "–";
         var pct = shows.length ? Math.round(done.length / shows.length * 100) : 0;
         document.getElementById("progressFill").style.width = pct + "%";
         document.getElementById("progressBar").setAttribute("aria-valuenow", pct);
