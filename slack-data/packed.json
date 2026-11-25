@@ -1,6 +1,6 @@
 {
   "channel": "G0C1YNLJXBJ",
-  "fetched_at": "2026-11-25T15:49:36.881318-05:00",
+  "fetched_at": "2026-11-25T16:05:05.582391-05:00",
   "messages": [
     {
       "ts": "1795212388",
@@ -181,6 +181,13 @@
       "ts": "1795639500",
       "post_date": "2026-11-25",
       "text": "SHOW: WN-OG A\nDATE: 11/23/2026\nPKGS: 115 USPS\nSHOW: WN-OG B\nDATE: 11/23/2026\nPKGS: 105 USPS\nSHOW: WN-HK\nDATE: 11/21\nPKGS: 81 USPS, 1 UPS\nSHOW: WN-HK\nDATE: 11/22\nPKGS: 60 USPS",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795640274",
+      "post_date": "2026-11-25",
+      "text": "SHOW: WN-GALAXY\nDATE: 11/24/2026 A\nPkgs: 28 USPS\n\nSHOW: WN-GALAXY\nDATE: 11/24/2026 B\nPkgs: 25 USPS\n\nSHOW: WN-CARDSHOP\nDATE: 11/24/2026\nPkgs: 151 USPS, 1 UPS\n\nSHOW: TIKTOK\nDATE: 11/24/2026\nPkgs: 62 USPS",
       "subtype": null,
       "user": ""
     }
