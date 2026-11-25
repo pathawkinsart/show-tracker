@@ -1,6 +1,6 @@
 {
   "channel": "C0C19E8SQ58",
-  "fetched_at": "2026-11-25T01:55:57-05:00",
+  "fetched_at": "2026-11-25T02:13:13-05:00",
   "messages": [
     {
       "ts": "1794892320",
@@ -1133,6 +1133,13 @@
       "ts": "1795588980",
       "post_date": "2026-11-25",
       "text": "WTH eBay 2b",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795589820",
+      "post_date": "2026-11-25",
+      "text": "WTH1C 11/24\n*Note: User dannyras50007 needs Break #422 - Spot #42 for $1170 refunded. Paid and never picked a number or received team",
       "subtype": null,
       "user": ""
     }
