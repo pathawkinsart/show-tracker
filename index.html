@@ -431,6 +431,11 @@
       .sla-stack { flex: none; display: flex; flex-direction: column; gap: 6px; }
       .tiktok-note { margin-top: 11px; font-size: 14px; font-weight: 500; color: var(--ink-2); line-height: 1.4; }
       .show-card.tiktok .tiktok-note { color: rgba(232,244,255,.92); }
+      /* "No post" flag: a channel that usually runs had no show pic
+         for yesterday. A question, not a show — never counted. */
+      .nopost-note { margin-top: 11px; font-size: 14px; font-weight: 500; color: var(--ink-2); line-height: 1.4; }
+      .nopost-note b { font-weight: 700; }
+      .show-card.ice .nopost-note, .show-card.footy .nopost-note, .show-card.main .nopost-note, .show-card.galaxy .nopost-note, .show-card.cardshop .nopost-note, .show-card.ebay .nopost-note, .show-card.baseball .nopost-note, .show-card.jamz .nopost-note, .show-card.blitz .nopost-note, .show-card.evolution .nopost-note, .show-card.repack .nopost-note, .show-card.tiktok .nopost-note, .show-card.rumble .nopost-note { color: rgba(232,244,255,.92); text-shadow: 0 1px 3px rgba(0,0,0,.55), 0 0 14px rgba(0,0,0,.35); }
 
       .show-note {
         margin-top: 10px; font-size: 14px; color: var(--amber);
@@ -1041,6 +1046,7 @@
         return btn;
       }
       var shows = [];
+      var noPost = []; // {platform, date} — "No post" flags, never shows
       var nextId = 1;
       var dataLoaded = false;
       var lastDataHash = "";
@@ -1132,6 +1138,12 @@
         });
         shows = parsed.concat(localAdds);
         nextId = shows.reduce(function (m, s) { return Math.max(m, s.id || 0); }, 0) + 1;
+        noPost = [];
+        (json.noPost || []).forEach(function (raw) {
+          var dt = parseDateOnly(raw.date);
+          if (!dt || !raw.platform) return;
+          noPost.push({ platform: raw.platform, date: dt });
+        });
         // Packed state for shows no longer in the file is dropped;
         // everything still listed keeps its packed tap.
         Object.keys(packed).forEach(function (id) {
@@ -1307,6 +1319,24 @@
           if (!chanGroups[s.platform]) chanGroups[s.platform] = [];
           chanGroups[s.platform].push(s);
         });
+        // "No post" flags by channel — a question, not a show.
+        var noPostByChan = {};
+        noPost.forEach(function (np) {
+          if (!noPostByChan[np.platform]) noPostByChan[np.platform] = [];
+          noPostByChan[np.platform].push(np);
+        });
+        function noPostRow(chan) {
+          var list = noPostByChan[chan] || [];
+          if (!list.length) return null;
+          var el = document.createElement("div");
+          el.className = "nopost-note";
+          el.setAttribute("role", "note");
+          var parts = list.map(function (np) {
+            return "<b>" + fmtShort(np.date) + " — No post</b>";
+          });
+          el.innerHTML = parts.join("<br>") + " — this channel usually runs, did a show happen?";
+          return el;
+        }
         // Every known channel gets a card, in a fixed order, plus any
         // extra channel that turns up in the data file.
         var chanOrder = ALL_CHANNELS.slice();
@@ -1364,6 +1394,12 @@
               banner.querySelector(".current-sub").textContent = packedForChan ? "Every show on this channel has been packed and cleared — this channel is fully up to date. Nice work." : "No shows are waiting on this channel right now — this channel is fully up to date.";
             }
             cCard.appendChild(banner);
+            var npRow2 = noPostRow(chan);
+            if (npRow2) {
+              var cTitle = banner.querySelector(".current-title");
+              if (cTitle) cTitle.textContent = "Nothing in house";
+              cCard.appendChild(npRow2);
+            }
             showList.appendChild(cCard);
             return;
           }
@@ -1434,6 +1470,8 @@
             chips.appendChild(chip);
           });
           zone.appendChild(chips);
+          var npRow = noPostRow(chan);
+          if (npRow) zone.appendChild(npRow);
           if (isTikTok(chan)) {
             var ttNote = document.createElement("div");
             ttNote.className = "tiktok-note";

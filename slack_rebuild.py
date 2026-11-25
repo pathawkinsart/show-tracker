@@ -108,11 +108,14 @@ OPS_CODE_MAP = [
     ("FLPK", "Fanatics Evolution"),      # WTH-FL-PK
     ("POKE", "Fanatics Evolution"),
     ("WNENT", "Whatnot Galaxy"),         # WTH WN ENT (Galaxy day show)
+    ("WNET", "Whatnot Galaxy"),          # WTH WN ET (same show, no N)
     ("GALAXY", "Whatnot Galaxy"),
     ("FLBK", "Fanatics Jamz"),           # WTH FL-BK
+    ("JAMZ", "Fanatics Jamz"),           # "FL JAMZ" in title/body
     ("FLFB", "Fanatics Blitz"),          # WTH FL FB / FL-FB02
     ("FB02", "Fanatics Blitz"),
     ("REPACK", "Fanatics Repack"),
+    ("FLRP", "Fanatics Repack"),          # WTH FL RP
     ("WTH4", "Fanatics Repack"),
     ("EBAY", "eBay Live"),
     ("WTH1", "Whatnot Main"),
@@ -122,20 +125,87 @@ OPS_CODE_MAP = [
     ("ICE", "Whatnot Ice"),
     ("WNHK", "Whatnot Ice"),
     ("TTCARDSHOP", "TikTok Card Shop"),
+    ("TTCS", "TikTok Card Shop"),         # WTH TT CS
     ("TIKTOK", "TikTok Card Shop"),
     ("FOOTY", "Whatnot Footy"),
     ("WNSC", "Whatnot Footy"),
     ("CARDSHOP", "Whatnot Card Shop"),
 ]
 
-_DATE_RE = re.compile(r"(\d{1,2})[/-](\d{1,2})(?:[/-](\d{4}|\d{2}))?")
-# Ops titles use slashes ("11/24") and dashes ("11-24-26" — Galaxy
-# night recaps); the year may be 4-digit or 2-digit (2-digit = 20YY).
+_MONTHS = {"JAN": 1, "FEB": 2, "MAR": 3, "APR": 4, "MAY": 5, "JUN": 6,
+           "JUL": 7, "AUG": 8, "SEP": 9, "OCT": 10, "NOV": 11, "DEC": 12}
+# Every date shape a breaker might type in an ops title: ISO
+# (2026-11-24), month names (Nov 24, 24 Nov), numeric with / or -
+# (11/24, 11-24-26), dotted with a year (11.24.26). Day+month only
+# takes the post year. Dotted without a year is NOT a date — a bare
+# "1.5" is a decimal. Each pattern yields (year, month, day) with
+# year None when it is not given.
+_MONTH_WORD = (r"(JAN(?:UARY)?|FEB(?:RUARY)?|MAR(?:CH)?|APR(?:IL)?|MAY|"
+               r"JUN(?:E)?|JUL(?:Y)?|AUG(?:UST)?|SEP(?:T(?:EMBER)?)?|"
+               r"OCT(?:OBER)?|NOV(?:EMBER)?|DEC(?:EMBER)?)")
+_DATE_PATTERNS = [
+    ("iso", re.compile(r"\b(\d{4})-(\d{1,2})-(\d{1,2})")),
+    ("month_first", re.compile(
+        r"\b" + _MONTH_WORD + r"\.?\s+(\d{1,2})(?:\s*,?\s*(\d{4}|\d{2}))?",
+        re.IGNORECASE)),
+    ("day_first", re.compile(
+        r"\b(\d{1,2})\s+" + _MONTH_WORD + r"\.?(?:\s*,?\s*(\d{4}|\d{2}))?",
+        re.IGNORECASE)),
+    # No word boundary on numeric: dates ride attached to a code
+    # ("WTH 1B11/24", "WTH-FL-PK-A11/23"). A token that cannot be
+    # a date (month 19 in #1119-11) is skipped by the caller.
+    ("numeric", re.compile(r"(\d{1,2})[/\-](\d{1,2})(?:[/\-](\d{4}|\d{2}))?")),
+    ("dotted", re.compile(r"(\d{1,2})\.(\d{1,2})\.(\d{4}|\d{2})")),
+]
+
+
+def _norm_year(s, post_dt):
+    """Year from a regex group: None -> post year, 2-digit -> 20YY."""
+    if s is None:
+        return post_dt.year
+    y = int(s)
+    return 2000 + y if y < 100 else y
+
+
+def extract_show_date(text, post_dt):
+    """First date-like token in the text that forms a real date.
+
+    Candidates are tried in text order; a token that cannot be a
+    date (month 19 in a break number like #1119-11) is skipped in
+    favour of a later token. Returns a datetime.date or None."""
+    cands = []
+    for kind, pat in _DATE_PATTERNS:
+        for m in pat.finditer(text):
+            if kind == "iso":
+                y, mo, d = (int(m.group(1)), int(m.group(2)),
+                            int(m.group(3)))
+            elif kind == "month_first":
+                mo = _MONTHS[m.group(1).upper()[:3]]
+                d = int(m.group(2))
+                y = _norm_year(m.group(3), post_dt)
+            elif kind == "day_first":
+                d = int(m.group(1))
+                mo = _MONTHS[m.group(2).upper()[:3]]
+                y = _norm_year(m.group(3), post_dt)
+            else:  # numeric / dotted
+                mo, d = int(m.group(1)), int(m.group(2))
+                y = _norm_year(m.group(3), post_dt)
+            cands.append((m.start(), y, mo, d))
+    cands.sort(key=lambda c: c[0])
+    for _pos, y, mo, d in cands:
+        try:
+            return datetime(y, mo, d).date()
+        except ValueError:
+            continue
+    return None
+
+
 # DATE line inside a packed post: "DATE: 11/20", "DATE: 11/21 B",
 # "DATE: 11/17/2026 A", "Date: 11/21/26" (2-digit year — Caleb
 # Jordan's posts use MM/DD/YY; normalized to 20YY in the parser).
+# Separators may be slashes or dashes ("DATE: 11-21-26").
 _PACKED_DATE_RE = re.compile(
-    r"^DATE\s*:\s*(\d{1,2})/(\d{1,2})(?:/(\d{4}|\d{2}))?(?:\s+([ABC]))?\s*$",
+    r"^DATE\s*:\s*(\d{1,2})[/\-](\d{1,2})(?:[/\-](\d{4}|\d{2}))?(?:\s+([ABC]))?\s*$",
     re.IGNORECASE | re.MULTILINE)
 
 
@@ -263,35 +333,25 @@ def parse_ops_posts(ops_messages):
         ts = m.get("ts")
         if not text or not ts:
             continue
-        # Skip obvious non-show chatter (no date in the text at all).
-        dm = _DATE_RE.search(text)
-        if not dm:
-            skipped.append(("no date in text", text[:80]))
-            continue
         try:
             post_dt = datetime.fromtimestamp(float(ts), EST)
         except (TypeError, ValueError):
             skipped.append(("bad timestamp", text[:80]))
             continue
-        month, day = int(dm.group(1)), int(dm.group(2))
-        y3 = dm.group(3)
-        if y3 is None:
-            year = post_dt.year
-        elif len(y3) == 2:
-            year = 2000 + int(y3)
-        else:
-            year = int(y3)
-        try:
-            show_date = datetime(year, month, day).date()
-        except ValueError:
-            skipped.append(("bad date", text[:80]))
+        # Skip obvious non-show chatter (no date in the text at all).
+        # extract_show_date tries every date shape (ISO, month names,
+        # numeric / or -, dotted with a year, day+month only) and
+        # skips tokens that cannot be a date (break numbers).
+        show_date = extract_show_date(text, post_dt)
+        if show_date is None:
+            skipped.append(("no date in text", text[:80]))
             continue
         # Night shows are posted after midnight with the prior day's date
         # in the text; if the text date is in the future vs the post date,
         # it is last year's show (Dec/Jan boundary) — nudge back a year.
         if (show_date - post_dt.date()).days > 1:
             try:
-                show_date = show_date.replace(year=year - 1)
+                show_date = show_date.replace(year=show_date.year - 1)
             except ValueError:
                 skipped.append(("bad date", text[:80]))
                 continue
@@ -306,7 +366,7 @@ def parse_ops_posts(ops_messages):
             if tokens:
                 session = tokens[0]
             else:
-                m2 = re.search(r"\d{1,2}/\d{1,2}([ABC])\b", upper)
+                m2 = re.search(r"\d{1,2}[/\-]\d{1,2}([ABC])\b", upper)
                 if m2:
                     session = m2.group(1)
                 else:
@@ -347,6 +407,41 @@ def is_named_by_packed(packed_keys, platform, date, part):
         return any(p == platform and d == date
                    for (p, d, _s) in packed_keys)
     return False
+
+
+REGULAR_DAYS = 4  # a channel that ran >=4 of the last 7 days "usually" runs
+
+
+def missing_yesterday_flags(ops_shows, now):
+    """Channels that usually run but have no show for yesterday.
+
+    Returns [{platform, date}] — display only, never a show and
+    never counted. A show that happened and already shipped still
+    counts as having happened (ops pics are the record). The flag
+    clears on its own at the next rebuild once the pic post lands
+    (or the Update button is pressed after it is posted)."""
+    yesterday = (now - timedelta(days=1)).date()
+    week_start = yesterday - timedelta(days=7)
+    days_with_show = {}
+    yesterday_platforms = set()
+    for platform, date, part, end in ops_shows:
+        if platform not in PLATFORMS:
+            continue
+        try:
+            d = datetime.strptime(date, "%Y-%m-%d").date()
+        except ValueError:
+            continue
+        if d == yesterday:
+            yesterday_platforms.add(platform)
+        elif week_start <= d < yesterday:
+            days_with_show.setdefault(platform, set()).add(d)
+    flags = []
+    for platform in PLATFORMS:
+        if len(days_with_show.get(platform, ())) >= REGULAR_DAYS \
+                and platform not in yesterday_platforms:
+            flags.append({"platform": platform,
+                          "date": yesterday.isoformat()})
+    return flags
 
 
 def rebuild(current, packed_keys, ops_shows, ops_psa, now, completed):
@@ -470,6 +565,7 @@ def rebuild(current, packed_keys, ops_shows, ops_psa, now, completed):
     data = dict(current)
     data["shows"] = kept
     data["channelEnds"] = channel_ends
+    data["noPost"] = missing_yesterday_flags(ops_shows, now)
     data["today"] = now.date().isoformat()
     data["generatedAt"] = now.strftime("%Y-%m-%dT%H:%M:%S-05:00")
     return data, report
@@ -491,6 +587,9 @@ def validate(data):
         ids.add(s.get("id"))
     if not data.get("slaRules"):
         raise ValueError("slaRules missing — refusing to write")
+    for f in data.get("noPost", []):
+        if not f.get("platform") or not f.get("date"):
+            raise ValueError(f"bad noPost flag: {f!r}")
     return True
 
 
