@@ -111,9 +111,10 @@ OPS_CODE_MAP = [
 
 _DATE_RE = re.compile(r"(\d{1,2})/(\d{1,2})(?:/(\d{4}))?")
 # DATE line inside a packed post: "DATE: 11/20", "DATE: 11/21 B",
-# "DATE: 11/17/2026 A".
+# "DATE: 11/17/2026 A", "Date: 11/21/26" (2-digit year — Caleb
+# Jordan's posts use MM/DD/YY; normalized to 20YY in the parser).
 _PACKED_DATE_RE = re.compile(
-    r"^DATE\s*:\s*(\d{1,2})/(\d{1,2})(?:/(\d{4}))?(?:\s+([ABC]))?\s*$",
+    r"^DATE\s*:\s*(\d{1,2})/(\d{1,2})(?:/(\d{4}|\d{2}))?(?:\s+([ABC]))?\s*$",
     re.IGNORECASE | re.MULTILINE)
 
 
@@ -175,6 +176,8 @@ def parse_packed_posts(packed_messages, sp):
                 continue
             month, day = int(dm.group(1)), int(dm.group(2))
             year = int(dm.group(3)) if dm.group(3) else None
+            if year is not None and year < 100:
+                year += 2000  # 2-digit year ("11/21/26") means 2026
             session = dm.group(4) or ""
             # Session can also ride on the SHOW code ("WTH-1 B", "WN-FOOTY 11/21 B"
             # is the DATE line; "SHOW: FL-MLB B" is the code). _norm_code strips
@@ -427,9 +430,20 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None,
         return show["pkgs"] + shipped_cum
 
     # First pass: session-level shipped per show (no pool involved).
+    # A show with a session part takes ONLY its own packed key —
+    # assigning the date's combined sessions to every session show
+    # (the old code) put the same total on A and B alike.
+    # A date-level show (no part) takes the combined sessions of
+    # its date: max for Footy, sum elsewhere (pre-existing rule).
     session_shipped = {}
     for s in old_shows:
         platform, date = s["platform"], s["date"]
+        part = s.get("part", "")
+        if part:
+            v = packed.get((platform, date, part))
+            if v:
+                session_shipped[id(s)] = v
+            continue
         sess = [v for (p, d, ss), v in packed.items()
                 if p == platform and d == date and ss != ""]
         if sess:
@@ -448,7 +462,15 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None,
             if id(s) in session_shipped:
                 continue
             if s.get("pkgs") is None and s.get("total") is None:
-                continue  # unknown total — cannot draw from the pool
+                # Unknown total — the pool cannot be split across
+                # shows without a total as cap. Exception: a lone
+                # show of the date owns the whole pool (there is
+                # nothing else it could belong to).
+                if len(group) != 1:
+                    continue
+                pool_alloc[id(s)] = remaining_pool
+                remaining_pool = 0
+                break
             # Total for capping: stored, snapshot, or pkgs + pool share.
             # For the derivation, the show's share is min(pool, total);
             # total itself is pkgs + share, so solve: if the pool fits
@@ -496,8 +518,23 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None,
                             s.get("shipped", 0)))
             continue
         if s.get("pkgs") is None and s.get("total") is None:
-            # Unknown total — Slack cannot prove it shipped. Keep as-is.
-            kept.append(dict(s))
+            # Unknown total — pkgs cannot be computed, so the show
+            # stays pkgs=null and can never be removed by packed.
+            # But shipped IS known when a packed post names this
+            # show exactly (session post) or is the lone show of
+            # its date (pool): record it. The date-level pool
+            # cannot be split across several unknown-total shows.
+            ns = dict(s)
+            if id(s) in session_shipped:
+                ns["shipped"] = session_shipped[id(s)]
+            elif id(s) in pool_alloc:
+                ns["shipped"] = pool_alloc[id(s)]
+            if ns.get("shipped"):
+                report.append(
+                    f"SHIPPED (total unknown): {platform} {date} "
+                    f"part={s.get('part', '') or '-'} "
+                    f"shipped {ns['shipped']}")
+            kept.append(ns)
             continue
         if id(s) in session_shipped:
             shipped = session_shipped[id(s)]
