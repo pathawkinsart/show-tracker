@@ -1,44 +1,65 @@
 #!/usr/bin/env python3
-"""Rebuild show-tracker-data.json from Slack ONLY (general version).
+"""Rebuild show-tracker-data.json from Slack ONLY — pure-Slack model.
 
-The event-driven counterpart to the Nov 24 manual rebuild
-(rebuild_from_slack.py, which had the packed data hardcoded).
-This script parses the two channels' fetched history and applies
-the same in-house math:
+Clean rewrite (Nov 24, 2026, Patrick's start-over rule). The previous
+slack_rebuild.py was patched five times around a data model that
+contradicted the rule below, and it kept telling Patrick shows still
+had "packages left" — a number that came from the Excel/Bins side,
+not Slack. This file replaces it. Do not re-add the removed model.
 
-  * a show Patrick confirmed complete comes off, even when its
-    packed count is below its stored total — see completed-shows.json
-    (Patrick, 2026-11-24). The stored/snapshot total is NOT the
-    test (snapshot totals are unreliable — eBay showed 184/198/90
-    vs packed 49/54/36 for shows he confirmed complete). A packed
-    post on its own does NOT remove a show — only a packed count
-    that reaches the total, or Patrick's confirmation, does;
-  * a partially packed show stays with pkgs reduced by shipped;
-  * a newly ended show (ops post, not already in the tracker) is
-    added with pkgs = null (unknown total — Slack has no totals);
-  * a show with no packed post stays at its current count.
+THE RULE (Patrick, stated repeatedly):
+  The tracker goes by SLACK NUMBERS ONLY. If Slack says a show
+  shipped, it shipped. The tracker must NOT know "packages left"
+  from any other source — no Bins, no Excel/snapshots, no worksheet
+  counts. Slack's packed posts are the only source of shipped.
+  Slack's ops pics are the only source of shows. That is the whole
+  model.
 
-Sources (fetched by slack_fetch.py into --data-dir):
+THE MODEL:
+  * Shows enter the tracker ONLY from #breaking-ops pic posts
+    (channel, date, session, end = post time). A show with no
+    pic-derived end auto-ends at 5 AM the morning after its date
+    (Patrick, Nov 23).
+  * A show is DONE and comes OFF the tracker when a packed post
+    from #breaking-shipping-updates names it. Any packed post
+    naming the show = shipped = off. No total, no "left", no
+    packed>=total test, no cross-check against any other source.
+    Patrick-confirmed completes (completed-shows.json) also come
+    off, and are never resurrected by a later ops pic.
+  * Show objects carry ONLY: platform, date, end, id, note — plus
+    `part` (the A/B/C session letter, from the ops pic; the page
+    needs it to label session chips) and `psa` (display flag for
+    the "Free PSA Grading" badge; carried from the existing show,
+    or set when an ops pic title mentions PSA). NO pkgs, NO total,
+    NO shipped on show objects. Shipped counts live ONLY in the
+    shipped-per-day table, which this script preserves verbatim
+    and never recomputes.
+  * The in-house show list persists in show-tracker-data.json
+    across runs. Ops posts only ADD new shows and update end
+    times; packed posts and completed-shows.json only REMOVE
+    them. A show whose ops pic has aged out of the 8-day Slack
+    window is NOT dropped — it stays until a packed post names
+    it or Patrick confirms it complete.
+
+Sources (fetched by slack_fetch.py / the VM browser-read cron
+into --data-dir):
   ops.json    — #breaking-ops messages: post timestamp = show end.
   packed.json — #breaking-shipping-updates messages: SHOW/DATE/Pkgs blocks.
 
-Parsing reuses the existing slack_packed.py parser (from the shared
-repo: forge-claude-shared/shipping-report/slack_packed.py) for the
-packed posts — its SHOW/Pkgs regexes, code normalizer and carrier
-totals. This script only adds the DATE-line extraction that the
-in-house math needs (slack_packed itself aggregates per channel,
-not per show). The #breaking-ops title parser is heuristic
-(free-text titles); unparseable posts are logged and skipped,
-never crash the build.
+Parsing reuses the vendored slack_packed.py parser (vendor/) for
+the packed posts — its SHOW/Pkgs regexes, code normalizer and
+carrier totals — plus the DATE-line extraction that maps a packed
+block to a show date and session. The #breaking-ops title parser
+is heuristic (free-text titles); unparseable posts are logged and
+skipped, never crash the build.
 
 shippedPerDay / slaRules / premier / version and any other
-top-level keys are preserved verbatim — the event rebuild only
-touches the in-house show list (channelEnds, today, generatedAt).
+top-level keys are preserved verbatim — the rebuild only touches
+the in-house show list (shows, channelEnds, today, generatedAt).
 
 Validation: the output must parse, have 1-200 shows, unique ids,
-and every show must have date/end/platform and pkgs (int >= 0 or
-null). On any validation failure the script exits non-zero and
-writes nothing.
+and every show must have date/end/platform. On any validation
+failure the script exits non-zero and writes nothing.
 
 Usage:
   python3 slack_rebuild.py --data-dir slack-data [--in show-tracker-data.json]
@@ -54,7 +75,7 @@ from zoneinfo import ZoneInfo
 
 EST = ZoneInfo("America/New_York")
 
-# Tracker platform names (must match build_tracker_json.py / the page).
+# Tracker platform names (must match the page's ALL_CHANNELS).
 PLATFORMS = [
     "Whatnot Footy", "Whatnot Main", "Whatnot Galaxy",
     "Whatnot Card Shop", "Whatnot Ice",
@@ -63,9 +84,7 @@ PLATFORMS = [
     "eBay Live", "TikTok Card Shop",
 ]
 
-# Template column (slack_packed) -> tracker platform (build_tracker_json
-# SLACK_COL_TO_CHANNEL, plus the Whatnot columns which the report builder
-# takes from snapshot deltas but the Slack-only rebuild takes from Slack).
+# Template column (slack_packed) -> tracker platform.
 COLUMN_TO_PLATFORM = {
     "Footy": "Whatnot Footy",
     "WN OG": "Whatnot Main",
@@ -118,8 +137,18 @@ _PACKED_DATE_RE = re.compile(
     re.IGNORECASE | re.MULTILINE)
 
 
+def end_5am(date_iso):
+    """Patrick's rule (Nov 23): when the break is over the breaker
+    takes a pic; if there is no pic, the show auto-ends at 5 AM
+    the morning after the show date. Returns "YYYY-MM-DDTHH:MM:SS"."""
+    d = datetime.strptime(date_iso, "%Y-%m-%d").date()
+    return datetime.combine(
+        d + timedelta(days=1), datetime.min.time()).replace(
+            hour=5).strftime("%Y-%m-%dT%H:%M:%S")
+
+
 def load_slack_packed_parser(parser_dir):
-    """Import slack_packed.py (shared repo) and return the module.
+    """Import slack_packed.py and return the module.
     Searches --slack-parser-dir, then the Action checkout layout
     (shared-repo/shipping-report), then the local workspace."""
     candidates = []
@@ -149,7 +178,11 @@ def parse_packed_posts(packed_messages, sp):
 
     Reuses slack_packed's SHOW/Pkgs regexes, code normalizer and
     carrier totals; adds the DATE line (show date + session letter)
-    that slack_packed itself does not return."""
+    that slack_packed itself does not return.
+
+    The pure-Slack model only needs the KEYS (which shows a packed
+    post names); the counts are returned for logging and are never
+    used to compute a total, a remainder, or a removal test."""
     packed = {}
     unknown = []
     for m in packed_messages:
@@ -286,294 +319,74 @@ def parse_ops_posts(ops_messages):
     return parsed, skipped
 
 
-def load_snapshot_totals(paths):
-    """Original per-show totals from the SLA snapshot CSVs (shared
-    repo's sla/snapshots/*.csv). Each row: (channel, show_start,
-    show_end, shipments). Loads every file given, newest first,
-    newest row winning per (channel, show_start) — mirroring
-    build_tracker_json.load_all_snapshot_ends, because a channel
-    missing from the newest snapshot (Footy, not re-read in the
-    Nov 23 5 PM run; TikTok, never in a snapshot) keeps its last
-    read instead of breaking the build.
-    Returns {(channel, show_start): (show_end, shipments)} and
-    {(channel, show_date): [(show_start, shipments), ...]}."""
-    import csv
-    import glob
-    by_start = {}
-    files = []
-    for p in paths:
-        if os.path.isdir(p):
-            files += glob.glob(os.path.join(p, "*.csv"))
-        elif os.path.isfile(p):
-            files.append(p)
-    # Newest first by the date in the filename.
-    def key(fn):
-        m = re.search(r"(\d{4}-\d{2}-\d{2})", os.path.basename(fn))
-        return m.group(1) if m else ""
-    files.sort(key=key, reverse=True)
-    for path in files:
-        try:
-            with open(path, newline="", encoding="utf-8") as f:
-                for row in csv.DictReader(f):
-                    ch = (row.get("channel") or "").strip()
-                    start = (row.get("show_start") or "").strip()
-                    end = (row.get("show_end") or "").strip()
-                    try:
-                        shipments = int(row.get("shipments") or 0)
-                    except ValueError:
-                        continue
-                    try:
-                        start_dt = datetime.strptime(start, "%Y-%m-%d %H:%M")
-                    except ValueError:
-                        continue
-                    if not ch or shipments <= 0:
-                        continue
-                    # Newest wins: only set when not already present.
-                    by_start.setdefault((ch, start_dt), (end, shipments))
-        except (OSError, ValueError):
-            continue
-    return by_start
+def is_named_by_packed(packed_keys, platform, date, part):
+    """True when a packed post names this show.
+
+    A packed post names a show when:
+      * its (platform, date, session) matches the show's session
+        exactly, or
+      * it is a date-level post (session "") for the show's date —
+        it covers every show of that date, or
+      * the show is date-level (part "") and any packed post for
+        its (platform, date) exists — the session posts together
+        cover the whole date's break.
+    No count is compared. Any post naming the show = shipped."""
+    if (platform, date, part) in packed_keys:
+        return True
+    if (platform, date, "") in packed_keys:
+        return True
+    if part == "":
+        return any(p == platform and d == date
+                   for (p, d, _s) in packed_keys)
+    return False
 
 
-def snapshot_total_for(by_start, platform, date, end, group):
-    """Original total for one tracker show from the snapshot rows.
-    Tries, in order:
-      1. exact match on (platform, show_end) — the tracker's end
-         came from this snapshot row's show_end;
-      2. (platform, show_date) + index within the group (the Nth
-         show of the day = the Nth snapshot row, both time-ordered).
-    Returns None when no snapshot row matches (e.g. TikTok, which
-    is never in a snapshot; or a show that ended after the last
-    snapshot)."""
-    if end:
-        for (ch, start_dt), (row_end, shipments) in by_start.items():
-            if ch != platform:
-                continue
-            try:
-                row_end_dt = datetime.strptime(row_end, "%Y-%m-%d %H:%M")
-            except ValueError:
-                continue
-            if row_end_dt.strftime("%Y-%m-%dT%H:%M:%S") == end:
-                return shipments
-    # Fall back to (platform, date) + index within the group.
-    rows = sorted(
-        [(s, v[1]) for (c, s), v in by_start.items()
-         if c == platform and s.date().isoformat() == date])
-    if rows and len(rows) == len(group):
-        idx = group.index(next(s for s in group if s["end"] == end))
-        if idx < len(rows):
-            return rows[idx][1]
-    return None
+def rebuild(current, packed_keys, ops_shows, ops_psa, now, completed):
+    """Apply the pure-Slack model. Returns (new_data, report_lines).
 
+    packed_keys: set of (platform, date, session) named by packed posts.
+    ops_shows:   list of (platform, date, part, end) from ops pics.
+    ops_psa:     set of (platform, date, part) whose ops pic title
+                 mentions PSA (display flag for the page's PSA badge).
+    completed:   set of (platform, date) Patrick confirmed complete.
 
-def rebuild(current, packed, ops_shows, now, snapshot_totals=None,
-            completed=None):
-    """Apply the in-house math. Returns (new_data, report_lines).
-
-    IDEMPOTENCY: each show carries a stored `total` (its original
-    package count) and `shipped` (cumulative shipped applied).
-    Every run recomputes shipped from the full packed-post history
-    and sets pkgs = total - shipped, so re-running with the same
-    posts changes nothing. The stored `total` is the source of
-    truth; it is derived only once, when a show first lacks it:
-      1. the SLA snapshot (authoritative original total), then
-      2. pkgs + shipped (correct when the file is a Slack-rebuild
-         output whose pkgs is already reduced — the state the
-         Action first sees after the Nov 24 manual rebuild).
-    A show with total=None (unknown total) is never reduced.
-    Shows in `completed` (Patrick-confirmed, completed-shows.json)
-    come off regardless of remaining. Date-level packed totals are
-    a pool shared by every show of that (platform, date):
-    allocated to the earliest-ending show first, capped by each
-    show's total."""
-    snapshot_totals = snapshot_totals or {}
-    completed = completed or set()
-    report = []
+    A show comes off when a packed post names it, or when it is in
+    completed-shows.json. Nothing else removes a show. New shows
+    enter only from ops pics. Show objects carry no package counts.
+    """
     old_shows = current["shows"]
+    report = []
+    kept, removed = [], []
 
-    # Group tracker shows by (platform, date) for snapshot matching
-    # and pool allocation (both need the group's shows in end order).
-    from collections import defaultdict
-    groups = defaultdict(list)
     for s in sorted(old_shows,
                     key=lambda x: (x["platform"], x["date"], x["end"])):
-        groups[(s["platform"], s["date"])].append(s)
-
-    # Date-level packed pools: (platform, date) -> cumulative pkgs.
-    pool = {}
-    for (p, d, s), v in packed.items():
-        if s == "":
-            pool[(p, d)] = max(pool.get((p, d), 0), v)
-
-    # Per-show shipped (cumulative) from the packed data. Session-level
-    # posts first; otherwise the date-level pool, allocated earliest-first.
-    # The pool allocation needs each show's total as the cap, so resolve
-    # totals first (below), then allocate.
-    def resolve_total(show, shipped_cum):
-        """Original total for one show. Prefers the stored `total`,
-        then the snapshot (authoritative), then pkgs + shipped
-        (correct only when the file is a Slack-rebuild output whose
-        pkgs is already reduced — the state the Action first sees
-        after the Nov 24 manual rebuild; see the module docstring
-        and README for the report-path caveat)."""
-        if show.get("total") is not None:
-            return show["total"]
-        group = groups[(show["platform"], show["date"])]
-        snap = snapshot_total_for(
-            snapshot_totals, show["platform"], show["date"],
-            show["end"], group)
-        if snap is not None:
-            return snap
-        # Slack-baseline derivation: pkgs is already reduced by shipped.
-        if show.get("pkgs") is None:
-            return None
-        return show["pkgs"] + shipped_cum
-
-    # First pass: session-level shipped per show (no pool involved).
-    # A show with a session part takes ONLY its own packed key —
-    # assigning the date's combined sessions to every session show
-    # (the old code) put the same total on A and B alike.
-    # A date-level show (no part) takes the combined sessions of
-    # its date, summed: the sessions are distinct breaks with
-    # distinct packages (Footy 11/19 A=105, B=124; Footy 11/22
-    # completed at 89+76=165). Taking the max undercounts.
-    session_shipped = {}
-    for s in old_shows:
         platform, date = s["platform"], s["date"]
         part = s.get("part", "")
-        if part:
-            v = packed.get((platform, date, part))
-            if v:
-                session_shipped[id(s)] = v
-            continue
-        sess = [v for (p, d, ss), v in packed.items()
-                if p == platform and d == date and ss != ""]
-        if sess:
-            session_shipped[id(s)] = sum(sess)
-
-    # Second pass: pool allocation per (platform, date) group, using
-    # each show's total as the cap. Shows with session posts don't
-    # draw from the pool.
-    pool_alloc = {}
-    for (platform, date), group in groups.items():
-        remaining_pool = pool.get((platform, date), 0)
-        if not remaining_pool:
-            continue
-        for s in group:
-            if id(s) in session_shipped:
-                continue
-            if s.get("pkgs") is None and s.get("total") is None:
-                # Unknown total — the pool cannot be split across
-                # shows without a total as cap. Exception: a lone
-                # show of the date owns the whole pool (there is
-                # nothing else it could belong to).
-                if len(group) != 1:
-                    continue
-                pool_alloc[id(s)] = remaining_pool
-                remaining_pool = 0
-                break
-            # Total for capping: stored, snapshot, or pkgs + pool share.
-            # For the derivation, the show's share is min(pool, total);
-            # total itself is pkgs + share, so solve: if the pool fits
-            # entirely in this show (pool <= total), share = pool and
-            # total = pkgs + pool. That holds whenever the show is still
-            # present with pkgs > 0 (it was not fully shipped).
-            total = resolve_total(s, remaining_pool)
-            if total is None:
-                continue
-            share = min(remaining_pool, total)
-            pool_alloc[id(s)] = share
-            remaining_pool -= share
-            if remaining_pool <= 0:
-                break
-
-    # Packed-post check for the ops-add gate below: a show with a
-    # packed post has already shipped, so an ops pic for it must not
-    # create a pkgs=null entry. Session-level post: exact
-    # (platform, date, part) match. Date-level post: counts only if
-    # no kept show of that date already drew from the pool (otherwise
-    # the post belongs to the kept show).
-    pool_consumed_dates = set()
-    for (platform, date), group in groups.items():
-        for s in group:
-            if id(s) in pool_alloc:
-                pool_consumed_dates.add((platform, date))
-
-    def has_packed_post(platform, date, part):
-        if part and (platform, date, part) in packed:
-            return True
-        if (platform, date, "") in packed and \
-                (platform, date) not in pool_consumed_dates:
-            return True
-        return False
-
-    kept, removed, changed = [], [], []
-    for s in sorted(old_shows,
-                    key=lambda x: (x["platform"], x["date"], x["end"])):
-        platform, date = s["platform"], s["date"]
         if (platform, date) in completed:
-            # Patrick-confirmed complete (completed-shows.json): the
-            # packed post is the completion signal; the stored /
-            # snapshot total is not the test.
-            removed.append((platform, date, s.get("total"),
-                            s.get("shipped", 0)))
+            removed.append((platform, date, "confirmed complete"))
             continue
-        if s.get("pkgs") is None and s.get("total") is None:
-            # Unknown total — pkgs cannot be computed, so the show
-            # stays pkgs=null and can never be removed by packed.
-            # But shipped IS known when a packed post names this
-            # show exactly (session post) or is the lone show of
-            # its date (pool): record it. The date-level pool
-            # cannot be split across several unknown-total shows.
-            ns = dict(s)
-            if id(s) in session_shipped:
-                ns["shipped"] = session_shipped[id(s)]
-            elif id(s) in pool_alloc:
-                ns["shipped"] = pool_alloc[id(s)]
-            if ns.get("shipped"):
-                report.append(
-                    f"SHIPPED (total unknown): {platform} {date} "
-                    f"part={s.get('part', '') or '-'} "
-                    f"shipped {ns['shipped']}")
-            kept.append(ns)
+        if is_named_by_packed(packed_keys, platform, date, part):
+            removed.append((platform, date, "packed post"))
             continue
-        if id(s) in session_shipped:
-            shipped = session_shipped[id(s)]
-        elif id(s) in pool_alloc:
-            shipped = pool_alloc[id(s)]
-        else:
-            shipped = 0
-        total = resolve_total(s, shipped)
-        if total is None:
-            kept.append(dict(s))
-            continue
-        # A backfill can add shipped after the stored total was
-        # derived (the total was set when shipped was 0, so it
-        # equals pkgs). The total can never be less than the
-        # packages still here plus the packages shipped — re-derive
-        # it, or the show is wrongly removed. (Footy 11/19:
-        # stored total 20, shipped 229; total must become 249.)
-        if s.get("pkgs") is not None:
-            total = max(total, s["pkgs"] + shipped)
-        remaining = total - shipped
-        ns = dict(s)
-        ns["total"] = total
-        ns["shipped"] = shipped
-        if remaining <= 0:
-            removed.append((platform, date, total, shipped))
-            continue
-        ns["pkgs"] = remaining
-        if shipped and ns["pkgs"] != s.get("pkgs"):
-            changed.append((platform, date, total, shipped, remaining))
-        kept.append(ns)
+        # Keep, stripped to the Slack-only fields. No pkgs, no total,
+        # no shipped — the tracker does not know package counts.
+        entry = {
+            "date": date,
+            "end": s.get("end") or end_5am(date),
+            "id": s["id"],
+            "note": s.get("note", ""),
+            "platform": platform,
+        }
+        if part:
+            entry["part"] = part
+        if s.get("psa"):
+            entry["psa"] = True
+        kept.append(entry)
 
     for r in removed:
-        report.append(f"OFF: {r[0]} {r[1]} total={r[2]} shipped={r[3]}")
-    for c in changed:
-        report.append(
-            f"REDUCED: {c[0]} {c[1]} {c[2]} -> {c[4]} (shipped {c[3]})")
+        report.append(f"OFF: {r[0]} {r[1]} ({r[2]})")
 
-    # New / updated shows from #breaking-ops.
+    # New shows from #breaking-ops.
     existing_keys = {(s["platform"], s["date"], s.get("part", ""))
                      for s in kept}
     next_id = max((s["id"] for s in kept), default=0) + 1
@@ -585,9 +398,9 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None,
                 match = s
                 break
         if match is not None:
-            # Already in the tracker (e.g. from the snapshot): the pic
-            # post time is the true end — use it when it is earlier
-            # than the current end (the 5 AM fallback is later).
+            # Already in the tracker: the pic post time is the true
+            # end — use it when it is earlier than the current end
+            # (the 5 AM fallback is later).
             if end < match["end"]:
                 match["end"] = end
                 report.append(f"END UPDATED: {platform} {date} "
@@ -596,14 +409,13 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None,
         if key in existing_keys:
             continue
         if (platform, date) in completed:
-            # Patrick-confirmed complete — do not resurrect it as a
-            # pkgs=null entry.
+            # Patrick-confirmed complete — do not resurrect it.
             report.append(f"SKIP (confirmed complete): {platform} {date} "
                           f"part={part or '-'}")
             continue
-        if has_packed_post(platform, date, part):
+        if is_named_by_packed(packed_keys, platform, date, part):
             # Already packed (a packed post exists) — it shipped, so
-            # do not add it as an in-house unknown.
+            # do not add it as an in-house show.
             report.append(f"SKIP (packed): {platform} {date} "
                           f"part={part or '-'}")
             continue
@@ -615,8 +427,7 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None,
         if end_dt is not None and \
                 (now - end_dt).total_seconds() > 48 * 3600:
             # Ended more than 48h ago and still not in the tracker:
-            # it shipped (the report would have it otherwise). Do not
-            # add a stale null entry.
+            # it shipped. Do not add a stale entry.
             report.append(f"SKIP (ended >48h ago): {platform} {date} "
                           f"part={part or '-'} end={end}")
             continue
@@ -625,16 +436,17 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None,
             "end": end,
             "id": next_id,
             "note": "",
-            "pkgs": None,
             "platform": platform,
         }
         if part:
             entry["part"] = part
+        if key in ops_psa:
+            entry["psa"] = True
         kept.append(entry)
         existing_keys.add(key)
         next_id += 1
         report.append(f"ADD: {platform} {date} part={part or '-'} "
-                      f"end={end} pkgs=null")
+                      f"end={end}")
 
     kept.sort(key=lambda x: (x["platform"], x["date"], x["end"]))
     for i, s in enumerate(kept, start=1):
@@ -664,9 +476,8 @@ def validate(data):
     for s in shows:
         if not s.get("date") or not s.get("end") or not s.get("platform"):
             raise ValueError(f"show missing date/end/platform: {s!r}")
-        pkgs = s.get("pkgs")
-        if pkgs is not None and (not isinstance(pkgs, int) or pkgs < 0):
-            raise ValueError(f"bad pkgs {pkgs!r} on {s!r}")
+        if "pkgs" in s or "total" in s or "shipped" in s:
+            raise ValueError(f"show carries a package count: {s!r}")
         if s.get("id") in ids:
             raise ValueError(f"duplicate show id {s.get('id')}")
         ids.add(s.get("id"))
@@ -683,13 +494,15 @@ def main():
                     help="default: overwrite --in")
     ap.add_argument("--slack-parser-dir", default=None)
     ap.add_argument("--snapshot", default=None,
-                    help="SLA snapshot CSV file or snapshots directory "
-                         "(shared repo) — source of original per-show "
-                         "totals when the tracker file has no stored "
-                         "`total`. May be given more than once.")
+                    help="accepted and ignored: the pure-Slack model "
+                         "takes no totals from SLA snapshots.")
     ap.add_argument("--snapshot-dir", default=None,
-                    help="same as --snapshot, but a directory")
+                    help="accepted and ignored: see --snapshot.")
     args = ap.parse_args()
+
+    if args.snapshot or args.snapshot_dir:
+        print("NOTE: --snapshot/--snapshot-dir ignored — the tracker "
+              "is Slack-only and takes no totals from snapshots.")
 
     with open(args.in_path, encoding="utf-8") as f:
         current = json.load(f)
@@ -713,30 +526,37 @@ def main():
 
     sp = load_slack_packed_parser(args.slack_parser_dir)
     packed, unknown = parse_packed_posts(packed_messages, sp)
-    print(f"packed posts parsed: {len(packed)} show totals")
+    print(f"packed posts parsed: {len(packed)} show keys")
     for u in unknown:
         print(f"  WARN packed skipped: {u[0]} {u[1]!r} pkgs={u[2]}")
+    packed_keys = set(packed.keys())
 
     ops_shows, skipped = parse_ops_posts(ops_messages)
     print(f"ops posts parsed: {len(ops_shows)} shows")
     for reason, text in skipped:
         print(f"  WARN ops skipped: {reason}: {text!r}")
+    # PSA flag: an ops pic title mentioning PSA (display flag only).
+    # parse_ops_posts drops the text, so re-parse just the messages
+    # that mention PSA to recover their (platform, date, part).
+    ops_psa = set()
+    for m in ops_messages:
+        text = (m.get("text") or "")
+        if "PSA" not in text.upper():
+            continue
+        # Reuse the parsed show for this message by matching its
+        # timestamp; simpler: mark by (platform, date, part) via a
+        # second parse of this one message.
+        one, _ = parse_ops_posts([m])
+        for (platform, date, part, _end) in one:
+            ops_psa.add((platform, date, part))
+    if ops_psa:
+        print(f"ops PSA shows: {sorted(ops_psa)}")
 
     now = datetime.now(EST)
-    snap_paths = []
-    if args.snapshot:
-        snap_paths.append(args.snapshot)
-    if args.snapshot_dir:
-        snap_paths.append(args.snapshot_dir)
-    snapshot_totals = load_snapshot_totals(snap_paths) if snap_paths else {}
-    if snap_paths:
-        print(f"snapshot totals: {len(snapshot_totals)} show rows")
 
     # Patrick-confirmed completions (completed-shows.json, next to the
     # --in file or in the working directory). A listed (platform,
-    # date) comes off even when its packed count is below its stored
-    # total — the packed post is the completion signal and the
-    # snapshot total is not the test.
+    # date) comes off and is never resurrected by a later ops pic.
     completed = set()
     for cand in (os.path.join(
                      os.path.dirname(os.path.abspath(args.in_path)),
@@ -749,14 +569,11 @@ def main():
             print(f"confirmed completions: {len(completed)} from {cand}")
             break
 
-    data, report = rebuild(current, packed, ops_shows, now,
-                           snapshot_totals, completed)
+    data, report = rebuild(current, packed_keys, ops_shows, ops_psa,
+                           now, completed)
     for line in report:
         print("  " + line)
-    known = sum(s["pkgs"] for s in data["shows"] if s["pkgs"] is not None)
-    nulls = sum(1 for s in data["shows"] if s["pkgs"] is None)
-    print(f"NEW: {len(data['shows'])} shows, {known} known pkgs, "
-          f"{nulls} shows with pkgs=null")
+    print(f"NEW: {len(data['shows'])} shows")
 
     validate(data)
     out_path = args.out_path or args.in_path

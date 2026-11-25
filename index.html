@@ -380,7 +380,7 @@
         text-shadow: 0 1px 3px rgba(0,0,0,.55), 0 0 14px rgba(0,0,0,.35);
       }
       .show-card.ice .show-meta, .show-card.footy .show-meta, .show-card.main .show-meta, .show-card.galaxy .show-meta, .show-card.cardshop .show-meta, .show-card.ebay .show-meta, .show-card.baseball .show-meta, .show-card.jamz .show-meta, .show-card.blitz .show-meta, .show-card.evolution .show-meta, .show-card.repack .show-meta, .show-card.tiktok .show-meta, .show-card.rumble .show-meta { color: rgba(232,244,255,.9); }
-      .show-card.ice .show-meta .pkgs, .show-card.footy .show-meta .pkgs, .show-card.main .show-meta .pkgs, .show-card.galaxy .show-meta .pkgs, .show-card.cardshop .show-meta .pkgs, .show-card.ebay .show-meta .pkgs, .show-card.baseball .show-meta .pkgs, .show-card.jamz .show-meta .pkgs, .show-card.blitz .show-meta .pkgs, .show-card.evolution .show-meta .pkgs, .show-card.repack .show-meta .pkgs, .show-card.tiktok .show-meta .pkgs, .show-card.rumble .show-meta .pkgs { color: #ffffff; }
+      
       .show-card.ice .show-dates, .show-card.footy .show-dates, .show-card.main .show-dates, .show-card.galaxy .show-dates, .show-card.cardshop .show-dates, .show-card.ebay .show-dates, .show-card.baseball .show-dates, .show-card.jamz .show-dates, .show-card.blitz .show-dates, .show-card.evolution .show-dates, .show-card.repack .show-dates, .show-card.tiktok .show-dates { border-top-color: rgba(255,255,255,.35); }
       .show-card.ice .pack-label, .show-card.footy .pack-label, .show-card.main .pack-label, .show-card.galaxy .pack-label, .show-card.cardshop .pack-label, .show-card.ebay .pack-label, .show-card.baseball .pack-label, .show-card.jamz .pack-label, .show-card.blitz .pack-label, .show-card.evolution .pack-label, .show-card.repack .pack-label, .show-card.tiktok .pack-label { color: rgba(232,244,255,.88); }
       .show-card.ice .psa-note, .show-card.footy .psa-note, .show-card.main .psa-note, .show-card.galaxy .psa-note, .show-card.cardshop .psa-note, .show-card.ebay .psa-note, .show-card.baseball .psa-note, .show-card.jamz .psa-note, .show-card.blitz .psa-note, .show-card.evolution .psa-note, .show-card.repack .psa-note, .show-card.tiktok .psa-note { color: rgba(232,244,255,.92); }
@@ -401,7 +401,7 @@
         font-size: 24px; font-weight: 700; line-height: 1.1; margin: 0;
       }
       .show-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 5px; font-size: 14.5px; color: var(--ink-2); }
-      .show-meta .pkgs { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+      
       .plat {
         display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
         background: var(--surface-2); border: 1px solid var(--line); color: var(--ink-2);
@@ -625,7 +625,6 @@
       <!-- Summary -->
       <section class="kpis" aria-label="Worksheet summary">
         <div class="kpi"><div class="num" id="kpiShows">–</div><div class="lbl">Shows in house</div></div>
-        <div class="kpi"><div class="num" id="kpiPkgs">–</div><div class="lbl">Packages in house</div></div>
         <div class="kpi hot"><div class="num" id="kpiOldest">–</div><div class="lbl">Oldest show (days)</div></div>
         <div class="kpi done"><div class="num" id="kpiPacked">0</div><div class="lbl">Packed &amp; cleared</div></div>
       </section>
@@ -713,10 +712,6 @@
           <div>
             <label for="fDate">Show date</label>
             <input id="fDate" type="date" value="2026-11-20" required />
-          </div>
-          <div>
-            <label for="fPkgs">Packages</label>
-            <input id="fPkgs" type="number" min="0" step="1" placeholder="0" />
           </div>
           <div>
             <label for="fNote">Note (optional)</label>
@@ -986,9 +981,9 @@
       // re-reads the day's Slack packed posts, rebuilds the tracker
       // data and pushes it. Nothing to do with the work PC. The
       // refresh covers shipped (packed) numbers from Slack for
-      // every channel; it does NOT re-read any seller dashboard
-      // and does NOT change the show list or package totals
-      // (those come from the Breaking folder). Tapping Update on
+      // every channel; it does NOT re-read any seller dashboard.
+      // The show list comes from Slack ops pics, and a packed post
+      // naming a show takes it off the list. Tapping Update on
       // several channels in a row is safe: the Worker only starts
       // one rebuild every 5 minutes (a rebuild covers every
       // channel anyway) and answers "Already updating" in between.
@@ -1130,7 +1125,6 @@
             platform: raw.platform,
             date: dt,
             end: parseDateTime(raw.end),
-            pkgs: raw.pkgs || 0,
             note: raw.note || "",
             psa: !!raw.psa,
             part: raw.part || ""
@@ -1292,10 +1286,8 @@
         var done = shows.filter(function (s) { return packed[s.id]; });
 
         // KPIs always reflect the full worksheet, not the filter
-        var pkgs = inHouse.reduce(function (t, s) { return t + (s.pkgs || 0); }, 0);
         var oldest = inHouse.length ? Math.max.apply(null, inHouse.map(function (s) { return daysBetween(s.date, TODAY); })) : 0;
         document.getElementById("kpiShows").textContent = dataLoaded ? inHouse.length : "–";
-        document.getElementById("kpiPkgs").textContent = dataLoaded ? pkgs.toLocaleString("en-US") : "–";
         document.getElementById("kpiOldest").textContent = dataLoaded && inHouse.length ? oldest : "—";
         document.getElementById("kpiPacked").textContent = dataLoaded ? done.length : "–";
         var pct = shows.length ? Math.round(done.length / shows.length * 100) : 0;
@@ -1353,7 +1345,7 @@
                 ? '<div class="sla under-construction"><div class="val">Under construction</div><div class="lbl">Coming soon</div></div>'
                 : '<div class="sla current"><div class="val">Current</div><div class="lbl">All caught up</div></div>');
             cTop.querySelector(".show-name").textContent = chan;
-            cTop.querySelector(".chan-count").textContent = isUnderConstruction ? "Coming soon — no shows yet" : packedForChan ? ("All " + totalForChan + (totalForChan === 1 ? " show" : " shows") + " packed & cleared · 0 in house") : "0 shows · 0 packages in house";
+            cTop.querySelector(".chan-count").textContent = isUnderConstruction ? "Coming soon — no shows yet" : packedForChan ? ("All " + totalForChan + (totalForChan === 1 ? " show" : " shows") + " packed & cleared · 0 in house") : "0 shows in house";
             var cBtn = updateButton(chan);
             if (cBtn) cTop.appendChild(cBtn);
             cCard.appendChild(cTop);
@@ -1376,7 +1368,6 @@
             return;
           }
           displayedCards++;
-          var gPkgs = gShows.reduce(function (t, s) { return t + (s.pkgs || 0); }, 0);
           var slaDeadline = slaDeadlineFor(chan, gShows);
           var slaInfo = slaDeadline ? slaDisplay(slaDeadline, new Date()) : { text: "—", cls: "ok", overdue: false };
           var labelDeadline = slaLabelDeadlineFor(chan, gShows);
@@ -1410,7 +1401,7 @@
             chanBadge.textContent = "PSA";
             nameEl.appendChild(chanBadge);
           }
-          top.querySelector(".chan-count").textContent = gShows.length + (gShows.length === 1 ? " show" : " shows") + " · " + gPkgs.toLocaleString("en-US") + " packages in house";
+          top.querySelector(".chan-count").textContent = gShows.length + (gShows.length === 1 ? " show" : " shows") + " in house";
           var uBtn = updateButton(chan);
           if (uBtn) top.appendChild(uBtn);
           var pBadge = premierBadge(chan);
@@ -1500,7 +1491,7 @@
             rowBadge.textContent = "PSA";
             pnEl.appendChild(rowBadge);
           }
-          row.querySelector(".pm").innerHTML = "<b>Packed " + fmt(packed[show.id]) + "</b> · " + (show.pkgs || 0).toLocaleString("en-US") + " packages";
+          row.querySelector(".pm").innerHTML = "<b>Packed " + fmt(packed[show.id]) + "</b>";
           var undo = document.createElement("button");
           undo.type = "button";
           undo.className = "undo-btn";
@@ -1577,7 +1568,6 @@
           platform: platform,
           date: dt,
           end: null,
-          pkgs: parseInt(document.getElementById("fPkgs").value, 10) || 0,
           note: document.getElementById("fNote").value.trim(),
           _local: true
         });
@@ -1589,11 +1579,11 @@
 
       // Packed log CSV — one row per cleared show, for the morning report
       document.getElementById("downloadLog").addEventListener("click", function () {
-        var rows = [["Channel", "Show date", "Packed date", "Days to pack", "Packages", "PSA grading"]];
+        var rows = [["Channel", "Show date", "Packed date", "Days to pack", "PSA grading"]];
         shows.filter(function (s) { return packed[s.id]; })
           .sort(function (a, b) { return packed[a.id] - packed[b.id]; })
           .forEach(function (s) {
-            rows.push([s.platform, fmt(s.date), fmt(packed[s.id]), daysBetween(s.date, packed[s.id]), s.pkgs || 0, s.psa ? "Yes" : "No"]);
+            rows.push([s.platform, fmt(s.date), fmt(packed[s.id]), daysBetween(s.date, packed[s.id]), s.psa ? "Yes" : "No"]);
           });
         if (rows.length === 1) { showToast("Nothing packed yet — the log is empty.", true); return; }
         var csv = rows.map(function (r) {
@@ -1666,19 +1656,18 @@
       document.getElementById("copySummary").addEventListener("click", function () {
         var inHouse = shows.filter(function (s) { return !packed[s.id]; }).sort(function (a, b) { return a.date - b.date; });
         var done = shows.filter(function (s) { return packed[s.id]; });
-        var pkgs = inHouse.reduce(function (t, s) { return t + (s.pkgs || 0); }, 0);
         var lines = [];
         lines.push("IN-HOUSE SHOWS — " + fmt(TODAY) + ", " + TODAY.getFullYear());
-        lines.push(inHouse.length + " shows · " + pkgs.toLocaleString("en-US") + " packages still in house");
+        lines.push(inHouse.length + " shows still in house");
         lines.push("");
         inHouse.forEach(function (s) {
           var dl2 = slaDeadlineFor(s.platform, [s]);
           var slaTxt = dl2 ? slaDisplay(dl2, new Date()).text : "—";
           var lbl2 = slaLabelDeadlineFor(s.platform, [s]);
           if (lbl2) {
-            lines.push("• " + s.platform + " — show " + fmt(s.date) + ", label SLA (48h): " + slaDisplay(lbl2, new Date()).text + ", first scan SLA (+48h): " + slaTxt + ", " + (s.pkgs || 0) + " pkgs");
+            lines.push("• " + s.platform + " — show " + fmt(s.date) + ", label SLA (48h): " + slaDisplay(lbl2, new Date()).text + ", first scan SLA (+48h): " + slaTxt);
           } else {
-            lines.push("• " + s.platform + " — show " + fmt(s.date) + (s.psa ? " [PSA grading]" : "") + ", SLA ship countdown: " + slaTxt + ", " + (s.pkgs || 0) + " pkgs");
+            lines.push("• " + s.platform + " — show " + fmt(s.date) + (s.psa ? " [PSA grading]" : "") + ", SLA ship countdown: " + slaTxt);
           }
         });
         if (done.length) {
