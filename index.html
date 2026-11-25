@@ -150,15 +150,13 @@
 
       /* ---------- Controls ---------- */
       .controls { margin: 16px 0 4px; display: flex; flex-direction: column; gap: 10px; }
-      .filters { display: flex; flex-wrap: wrap; gap: 8px; }
-      .filter-btn {
-        border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
-        border-radius: 999px; padding: 8px 16px; font: inherit; font-size: 14.5px; font-weight: 600;
-        cursor: pointer; min-height: 2.75rem;
+      .filter-row { display: flex; align-items: center; gap: 10px; }
+      .filter-row label { font-weight: 600; font-size: 14.5px; color: var(--ink-2); flex: none; }
+      .channel-select {
+        flex: 1; min-width: 0; font: inherit; font-size: 16px; padding: 10px 14px;
+        border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink);
+        cursor: pointer;
       }
-      .filter-btn[aria-pressed="true"] { background: var(--ink); color: #ffffff; border-color: var(--ink); }
-      @media (prefers-color-scheme: light) { .filter-btn[aria-pressed="true"] { background: #f4f5f6; color: #000000; border-color: #f4f5f6; } }
-      @media (prefers-color-scheme: dark) { .filter-btn[aria-pressed="true"] { background: var(--header-ink); color: #141619; border-color: var(--header-ink); } }
       .search-row { display: flex; gap: 8px; }
       .search-row input[type="search"] {
         flex: 1; font: inherit; font-size: 16px; padding: 10px 14px;
@@ -459,7 +457,7 @@
       .date-chip:active { transform: scale(.96); }
       .date-chip.today { border-color: var(--accent); background: var(--accent-soft); }
       .date-chip.today .dow { color: var(--accent); }
-      .date-chip:focus-visible, .filter-btn:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+      .date-chip:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
         outline: 3px solid var(--accent); outline-offset: 2px;
       }
 
@@ -639,7 +637,10 @@
 
       <!-- Controls -->
       <div class="controls">
-        <div class="filters" id="filters" role="group" aria-label="Filter by platform"></div>
+      <div class="filter-row">
+        <label for="filters">Channel</label>
+        <select id="filters" class="channel-select" aria-label="Filter by channel"></select>
+      </div>
         <div class="search-row">
           <input type="search" id="search" placeholder="Search channels or dates — try “baseball” or “Nov 18”" aria-label="Search channels or dates" />
         </div>
@@ -1185,17 +1186,29 @@
         return "";
       }
 
+      // Channel picker is a dropdown, not buttons. Options are rebuilt
+      // only when the channel list changes, so the 5-minute data
+      // refresh never closes an open dropdown; the selected value is
+      // re-applied on every render.
+      var lastFilterList = null;
       function renderFilters() {
-        filtersEl.innerHTML = "";
-        platforms().forEach(function (p) {
-          var b = document.createElement("button");
-          b.type = "button";
-          b.className = "filter-btn";
-          b.textContent = p;
-          b.setAttribute("aria-pressed", p === activeFilter ? "true" : "false");
-          b.addEventListener("click", function () { activeFilter = p; render(); });
-          filtersEl.appendChild(b);
-        });
+        var list = platforms();
+        var key = list.join("\u0000");
+        if (key !== lastFilterList) {
+          lastFilterList = key;
+          filtersEl.innerHTML = "";
+          list.forEach(function (p) {
+            var o = document.createElement("option");
+            o.value = p;
+            o.textContent = p === "All" ? "All channels" : p;
+            filtersEl.appendChild(o);
+          });
+          filtersEl.onchange = function () {
+            activeFilter = filtersEl.value;
+            render();
+          };
+        }
+        if (filtersEl.value !== activeFilter) filtersEl.value = activeFilter;
       }
 
       function matches(show) {
