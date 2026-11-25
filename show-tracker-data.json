@@ -2,14 +2,12 @@
   "channelEnds": {
     "Fanatics Baseball": "2026-11-17T04:13:00",
     "Fanatics Blitz": "2026-11-19T18:08:00",
-    "Fanatics Jamz": "2026-11-24T18:35:00",
     "Fanatics Repack": "2026-11-24T01:44:35",
     "TikTok Card Shop": "2026-11-20T00:58:00",
-    "Whatnot Footy": "2026-11-24T19:00:00",
     "Whatnot Ice": "2026-11-24T02:00:14",
     "Whatnot Main": "2026-11-24T11:29:38"
   },
-  "generatedAt": "2026-11-25T17:21:16-05:00",
+  "generatedAt": "2026-11-25T17:39:28-05:00",
   "noPost": [
     {
       "date": "2026-11-24",
@@ -253,25 +251,9 @@
       "platform": "Fanatics Blitz"
     },
     {
-      "date": "2026-11-24",
-      "end": "2026-11-24T18:35:00",
-      "id": 9,
-      "note": "",
-      "part": "A",
-      "platform": "Fanatics Jamz"
-    },
-    {
-      "date": "2026-11-24",
-      "end": "2026-11-25T03:41:50",
-      "id": 10,
-      "note": "",
-      "part": "B",
-      "platform": "Fanatics Jamz"
-    },
-    {
       "date": "2026-11-23",
       "end": "2026-11-24T01:44:35",
-      "id": 11,
+      "id": 9,
       "note": "",
       "part": "B",
       "platform": "Fanatics Repack"
@@ -279,7 +261,7 @@
     {
       "date": "2026-11-24",
       "end": "2026-11-25T02:20:52",
-      "id": 12,
+      "id": 10,
       "note": "",
       "part": "B",
       "platform": "Fanatics Repack"
@@ -287,36 +269,28 @@
     {
       "date": "2026-11-19",
       "end": "2026-11-20T00:58:00",
-      "id": 13,
+      "id": 11,
       "note": "",
       "platform": "TikTok Card Shop"
     },
     {
-      "date": "2026-11-24",
-      "end": "2026-11-24T19:00:00",
-      "id": 14,
-      "note": "",
-      "part": "A",
-      "platform": "Whatnot Footy"
-    },
-    {
       "date": "2026-11-23",
       "end": "2026-11-24T02:00:14",
-      "id": 15,
+      "id": 12,
       "note": "",
       "platform": "Whatnot Ice"
     },
     {
       "date": "2026-11-24",
       "end": "2026-11-25T02:23:13",
-      "id": 16,
+      "id": 13,
       "note": "",
       "platform": "Whatnot Ice"
     },
     {
       "date": "2026-11-24",
       "end": "2026-11-24T11:29:38",
-      "id": 17,
+      "id": 14,
       "note": "",
       "part": "A",
       "platform": "Whatnot Main"
@@ -324,7 +298,7 @@
     {
       "date": "2026-11-24",
       "end": "2026-11-24T18:08:00",
-      "id": 18,
+      "id": 15,
       "note": "",
       "part": "B",
       "platform": "Whatnot Main"
