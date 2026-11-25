@@ -1,6 +1,6 @@
 {
   "channel": "G0C1YNLJXBJ",
-  "fetched_at": "2026-11-25T14:48:29.302383-05:00",
+  "fetched_at": "2026-11-25T14:56:34.166946-05:00",
   "messages": [
     {
       "ts": "1795212388",
@@ -153,6 +153,13 @@
       "ts": "1795630588",
       "post_date": "2026-11-25",
       "text": "Sorry, forgot to add this to the list yesterday!\nSHOW: FL-POKE\nDate: 11/23/2026\nPKGS: 86 USPS",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795636250",
+      "post_date": "2026-11-25",
+      "text": "E-Commerce: Walmart\nDate: 11/25\nPkgs: 5 pkgs\n\nE-Commerce: Best Buy\nDate: 11/25\nPkgs: 165 pkgs\n\nE-Commerce: eBay\nDate: 11/25\nPkgs: 10 pkgs",
       "subtype": null,
       "user": ""
     }
