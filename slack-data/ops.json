@@ -1,6 +1,6 @@
 {
   "channel": "C0C19E8SQ58",
-  "fetched_at": "2026-11-25T02:13:13-05:00",
+  "fetched_at": "2026-11-25T03:10:13-05:00",
   "messages": [
     {
       "ts": "1794892320",
@@ -1140,6 +1140,41 @@
       "ts": "1795589820",
       "post_date": "2026-11-25",
       "text": "WTH1C 11/24\n*Note: User dannyras50007 needs Break #422 - Spot #42 for $1170 refunded. Paid and never picked a number or received team",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795590842",
+      "post_date": "2026-11-25",
+      "text": "WTH FLFB 2B - 11/24",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795591252",
+      "post_date": "2026-11-25",
+      "text": "WTH FL REPACK 11/24B",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795591393",
+      "post_date": "2026-11-25",
+      "text": "WTH ICE 11/24",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795591867",
+      "post_date": "2026-11-25",
+      "text": "11-24-26 GALAXY NIGHT SHOW",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795592340",
+      "post_date": "2026-11-25",
+      "text": "WTH-FL-PK-B 11/24",
       "subtype": null,
       "user": ""
     }
