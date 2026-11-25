@@ -110,7 +110,7 @@
       ],
       "Whatnot Card Shop": [
         131,
-        null,
+        101,
         null,
         null,
         null,
@@ -118,8 +118,8 @@
         null
       ],
       "Whatnot Footy": [
-        null,
-        null,
+        254,
+        100,
         null,
         null,
         null,
@@ -128,7 +128,7 @@
       ],
       "Whatnot Galaxy": [
         49,
-        null,
+        59,
         null,
         null,
         null,
@@ -137,7 +137,7 @@
       ],
       "Whatnot Ice": [
         0,
-        null,
+        76,
         null,
         null,
         null,
@@ -146,7 +146,7 @@
       ],
       "Whatnot Main": [
         359,
-        null,
+        337,
         null,
         null,
         null,
@@ -174,11 +174,12 @@
     ],
     "notes": [
       "Mon Nov 23 Whatnot: delta between the Sun Nov 22 snapshot and the Mon Nov 23 snapshot.",
-      "Mon Nov 23: Whatnot Footy not re-read in the snapshot, so no figure for Whatnot Footy (blank, not zero)."
+      "Mon Nov 23: Whatnot Footy not re-read in the snapshot, so no figure for Whatnot Footy (blank, not zero).",
+      "Mon Nov 23 Whatnot Footy and Tue Nov 24 Whatnot: from Slack packed posts (no snapshot for those days \u2014 packed counts, not carrier scans)."
     ],
     "totals": [
-      1831,
-      1588,
+      2085,
+      2261,
       null,
       null,
       null,
