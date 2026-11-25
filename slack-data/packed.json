@@ -1,6 +1,6 @@
 {
   "channel": "G0C1YNLJXBJ",
-  "fetched_at": "2026-11-25T01:22:05-05:00",
+  "fetched_at": "2026-11-25T01:55:57-05:00",
   "messages": [
     {
       "ts": "1795212388",
@@ -13,34 +13,6 @@
       "ts": "1795293225",
       "post_date": "2026-11-21",
       "text": "SHOW: FL-BK\nDATE: 11/19\nPKGS: 147 USPS\nSHOW: WN-FOOTY A\nDATE: 11/20\nPKGS: 114 USPS\nSHOW: WN-FOOTY B\nDATE: 11/20\nPKGS: 108 USPS",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795470072",
-      "post_date": "2026-11-23",
-      "text": "SHOW: TIKTOK\nDATE: 11/20\nPkgs: 96 USPS\nSHOW: WN-GALAXY\nDATE: 11/19 A\nPkgs: 1 UPS\nSHOW: WN-GALAXY\nDATE: 11/22 A\nPkgs: 48 USPS\nSHOW: WN-CARDSHOP\nDATE: 11/20\nPkgs: 123 USPS, 2 UPS\nSHOW: WN-CARDSHOP\nDATE: 11/21\nPkgs: 119 USPS, 4 UPS",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795473046",
-      "post_date": "2026-11-23",
-      "text": "SHOW: WN-FOOTY\nDATE: 11/21 B\nPkgs: 89 USPS\nSHOW: WN-FOOTY\nDATE: 11/22 A\nPkgs: 89 USPS\nSHOW: WN-FOOTY\nDATE: 11/22 B\nPkgs: 76 USPS\nSHOW: EBAY LIVE\nDATE: 11/20\nPkgs: 48 USPS, 1 UPS\nSHOW: EBAY LIVE\nDATE: 11/21\nPkgs: 54 USPS\nSHOW: EBAY LIVE\nDATE: 11/22\nPkgs: 35 USPS, 1 Local\nSHOW: FL-BK\nDATE: 11/21\nPkgs: 161 USPS, 1 UPS",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795491464",
-      "post_date": "2026-11-23",
-      "text": "SHOW: FL-BK\nDATE: 11/22\nPkgs: 134 USPS, 2 UPS",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795492450",
-      "post_date": "2026-11-23",
-      "text": "SHOW: FL-FB02\nDATE: 11/16\nPkgs: 137 USPS\nSHOW: FL-FB02\nDATE: 11/17\nPkgs: 131 USPS",
       "subtype": null,
       "user": ""
     },
@@ -69,6 +41,34 @@
       "ts": "1795468054",
       "post_date": "2026-11-23",
       "text": "Show: FL-FB A\nDate: 11/16/2026\nPkgs: 108 USPS, 4 UPS, 1 FEDEX\n\nShow: FL-FB B\nDate: 11/20/2026\nPkgs: 287 USPS, 4 UPS, 3 FEDEX",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795470072",
+      "post_date": "2026-11-23",
+      "text": "SHOW: TIKTOK\nDATE: 11/20\nPkgs: 96 USPS\nSHOW: WN-GALAXY\nDATE: 11/19 A\nPkgs: 1 UPS\nSHOW: WN-GALAXY\nDATE: 11/22 A\nPkgs: 48 USPS\nSHOW: WN-CARDSHOP\nDATE: 11/20\nPkgs: 123 USPS, 2 UPS\nSHOW: WN-CARDSHOP\nDATE: 11/21\nPkgs: 119 USPS, 4 UPS",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795473046",
+      "post_date": "2026-11-23",
+      "text": "SHOW: WN-FOOTY\nDATE: 11/21 B\nPkgs: 89 USPS\nSHOW: WN-FOOTY\nDATE: 11/22 A\nPkgs: 89 USPS\nSHOW: WN-FOOTY\nDATE: 11/22 B\nPkgs: 76 USPS\nSHOW: EBAY LIVE\nDATE: 11/20\nPkgs: 48 USPS, 1 UPS\nSHOW: EBAY LIVE\nDATE: 11/21\nPkgs: 54 USPS\nSHOW: EBAY LIVE\nDATE: 11/22\nPkgs: 35 USPS, 1 Local\nSHOW: FL-BK\nDATE: 11/21\nPkgs: 161 USPS, 1 UPS",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795491464",
+      "post_date": "2026-11-23",
+      "text": "SHOW: FL-BK\nDATE: 11/22\nPkgs: 134 USPS, 2 UPS",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795492450",
+      "post_date": "2026-11-23",
+      "text": "SHOW: FL-FB02\nDATE: 11/16\nPkgs: 137 USPS\nSHOW: FL-FB02\nDATE: 11/17\nPkgs: 131 USPS",
       "subtype": null,
       "user": ""
     },

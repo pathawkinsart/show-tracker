@@ -1,6 +1,6 @@
 {
   "channel": "C0C19E8SQ58",
-  "fetched_at": "2026-11-25T01:22:05-05:00",
+  "fetched_at": "2026-11-25T01:55:57-05:00",
   "messages": [
     {
       "ts": "1794892320",
@@ -1126,6 +1126,13 @@
       "ts": "1795565220",
       "post_date": "2026-11-24",
       "text": "WTH-2A 11/24",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795588980",
+      "post_date": "2026-11-25",
+      "text": "WTH eBay 2b",
       "subtype": null,
       "user": ""
     }
