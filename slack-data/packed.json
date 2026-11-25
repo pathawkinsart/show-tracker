@@ -1,6 +1,6 @@
 {
   "channel": "G0C1YNLJXBJ",
-  "fetched_at": "2026-11-25T15:10:50.525083-05:00",
+  "fetched_at": "2026-11-25T15:19:23.216703-05:00",
   "messages": [
     {
       "ts": "1795212388",
@@ -160,6 +160,20 @@
       "ts": "1795636250",
       "post_date": "2026-11-25",
       "text": "E-Commerce: Walmart\nDate: 11/25\nPkgs: 5 pkgs\n\nE-Commerce: Best Buy\nDate: 11/25\nPkgs: 165 pkgs\n\nE-Commerce: eBay\nDate: 11/25\nPkgs: 10 pkgs",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795637460",
+      "post_date": "2026-11-25",
+      "text": "SHOW: WTH-4 FANATICS REPACK\nDATE: 11/23/2026\nPKGS: 77 USPS",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795637700",
+      "post_date": "2026-11-25",
+      "text": "Show: FL-FB B\nDate: 11/21/2026\nPkgs: 254 USPS, 2 UPS, 5 FEDEX\n\nShow: FL-FB A\nDate: 11/22/2026\nPkgs: 209 USPS, 1 UPS, 3 FEDEX",
       "subtype": null,
       "user": ""
     }
