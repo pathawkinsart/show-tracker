@@ -101,7 +101,7 @@ jobs:
               p = s.get('pkgs')
               assert p is None or (isinstance(p, int) and p >= 0), \
                   f"bad pkgs {p!r} on {s!r}"
-          known = sum(s['pkgs'] for s in shows if s['pkgs'] is not None)
+          known = sum(s['pkgs'] for s in shows if s.get('pkgs') is not None)
           print(f"VALID: {len(shows)} shows / {known} known pkgs, "
                 f"generatedAt {d.get('generatedAt')}")
           EOF

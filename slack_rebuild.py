@@ -107,7 +107,7 @@ COLUMN_TO_PLATFORM = {
 OPS_CODE_MAP = [
     ("FLPK", "Fanatics Evolution"),      # WTH-FL-PK
     ("POKE", "Fanatics Evolution"),
-    ("WNET", "Whatnot Galaxy"),          # WTH WN ET
+    ("WNENT", "Whatnot Galaxy"),         # WTH WN ENT (Galaxy day show)
     ("GALAXY", "Whatnot Galaxy"),
     ("FLBK", "Fanatics Jamz"),           # WTH FL-BK
     ("FLFB", "Fanatics Blitz"),          # WTH FL FB / FL-FB02
@@ -128,7 +128,9 @@ OPS_CODE_MAP = [
     ("CARDSHOP", "Whatnot Card Shop"),
 ]
 
-_DATE_RE = re.compile(r"(\d{1,2})/(\d{1,2})(?:/(\d{4}))?")
+_DATE_RE = re.compile(r"(\d{1,2})[/-](\d{1,2})(?:[/-](\d{4}|\d{2}))?")
+# Ops titles use slashes ("11/24") and dashes ("11-24-26" — Galaxy
+# night recaps); the year may be 4-digit or 2-digit (2-digit = 20YY).
 # DATE line inside a packed post: "DATE: 11/20", "DATE: 11/21 B",
 # "DATE: 11/17/2026 A", "Date: 11/21/26" (2-digit year — Caleb
 # Jordan's posts use MM/DD/YY; normalized to 20YY in the parser).
@@ -272,7 +274,13 @@ def parse_ops_posts(ops_messages):
             skipped.append(("bad timestamp", text[:80]))
             continue
         month, day = int(dm.group(1)), int(dm.group(2))
-        year = int(dm.group(3)) if dm.group(3) else post_dt.year
+        y3 = dm.group(3)
+        if y3 is None:
+            year = post_dt.year
+        elif len(y3) == 2:
+            year = 2000 + int(y3)
+        else:
+            year = int(y3)
         try:
             show_date = datetime(year, month, day).date()
         except ValueError:

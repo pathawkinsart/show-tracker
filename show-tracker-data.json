@@ -8,10 +8,11 @@
     "TikTok Card Shop": "2026-11-20T00:58:00",
     "Whatnot Card Shop": "2026-11-24T03:24:43",
     "Whatnot Footy": "2026-11-24T19:00:00",
+    "Whatnot Galaxy": "2026-11-24T18:14:00",
     "Whatnot Ice": "2026-11-22T01:54:00",
     "Whatnot Main": "2026-11-23T18:14:35"
   },
-  "generatedAt": "2026-11-25T07:44:39-05:00",
+  "generatedAt": "2026-11-25T07:47:17-05:00",
   "premier": {
     "bar": 95,
     "channels": {
@@ -379,37 +380,53 @@
       "platform": "Whatnot Footy"
     },
     {
+      "date": "2026-11-24",
+      "end": "2026-11-24T18:14:00",
+      "id": 27,
+      "note": "",
+      "part": "A",
+      "platform": "Whatnot Galaxy"
+    },
+    {
+      "date": "2026-11-24",
+      "end": "2026-11-25T02:31:07",
+      "id": 28,
+      "note": "",
+      "part": "B",
+      "platform": "Whatnot Galaxy"
+    },
+    {
       "date": "2026-11-21",
       "end": "2026-11-22T01:54:00",
-      "id": 27,
+      "id": 29,
       "note": "",
       "platform": "Whatnot Ice"
     },
     {
       "date": "2026-11-22",
       "end": "2026-11-23T01:59:00",
-      "id": 28,
-      "note": "",
-      "platform": "Whatnot Ice"
-    },
-    {
-      "date": "2026-11-23",
-      "end": "2026-11-24T02:00:14",
-      "id": 29,
-      "note": "",
-      "platform": "Whatnot Ice"
-    },
-    {
-      "date": "2026-11-24",
-      "end": "2026-11-25T02:23:13",
       "id": 30,
       "note": "",
       "platform": "Whatnot Ice"
     },
     {
       "date": "2026-11-23",
-      "end": "2026-11-23T18:14:35",
+      "end": "2026-11-24T02:00:14",
       "id": 31,
+      "note": "",
+      "platform": "Whatnot Ice"
+    },
+    {
+      "date": "2026-11-24",
+      "end": "2026-11-25T02:23:13",
+      "id": 32,
+      "note": "",
+      "platform": "Whatnot Ice"
+    },
+    {
+      "date": "2026-11-23",
+      "end": "2026-11-23T18:14:35",
+      "id": 33,
       "note": "",
       "part": "A",
       "platform": "Whatnot Main"
@@ -417,7 +434,7 @@
     {
       "date": "2026-11-23",
       "end": "2026-11-24T02:03:54",
-      "id": 32,
+      "id": 34,
       "note": "",
       "part": "B",
       "platform": "Whatnot Main"
@@ -425,7 +442,7 @@
     {
       "date": "2026-11-24",
       "end": "2026-11-24T11:29:38",
-      "id": 33,
+      "id": 35,
       "note": "",
       "part": "A",
       "platform": "Whatnot Main"
@@ -433,7 +450,7 @@
     {
       "date": "2026-11-24",
       "end": "2026-11-24T18:08:00",
-      "id": 34,
+      "id": 36,
       "note": "",
       "platform": "Whatnot Main"
     }
