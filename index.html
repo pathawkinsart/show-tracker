@@ -969,21 +969,20 @@
       // Channels still being set up: they get the caution-tape
       // "Under construction" card (no shows).
       var UNDER_CONSTRUCTION = ["Sudden Death", "Rumble"];
-      // One singular Refresh button (header). It asks the cloud for a
-      // FRESH Slack read, outside the 15-minute schedule: the Worker
-      // writes a refresh request that the sync picks up within minutes,
-      // and also triggers the usual rebuild of whatever data is already
-      // in. The page re-fetches its data every 5 minutes, so new posts
-      // show up on their own once the fresh read lands. Nothing to do
-      // with the work PC. At most one refresh per 5 minutes (the Worker
-      // answers "already checking" in between).
+      // One singular Refresh button (header). It asks the cloud to
+      // rebuild the tracker from whatever the sync has already read.
+      // It does NOT read Slack — no button press can; the 5-minute
+      // sync is the only reader, so new posts land within a few minutes
+      // on their own. The page re-fetches its data every 5 minutes.
+      // Nothing to do with the work PC. At most one rebuild per
+      // 5 minutes (the Worker answers "already checking" in between).
       var WORKER_UPDATE_URL = "https://show-tracker-slack.phawkins0001.workers.dev/update";
       var refreshBtn = document.getElementById("refreshBtn");
       if (refreshBtn) {
         refreshBtn.addEventListener("click", function () {
           if (refreshBtn.disabled) return;
           refreshBtn.disabled = true;
-          refreshBtn.textContent = "Checking Slack\u2026";
+          refreshBtn.textContent = "Rebuilding\u2026";
           fetch(WORKER_UPDATE_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -995,8 +994,8 @@
           }).then(function (out) {
             if (out.status === 202 || (out.data && out.data.ok)) {
               refreshBtn.classList.add("done");
-              refreshBtn.textContent = "Refresh requested";
-              showToast("Fresh Slack read requested \u2014 new posts will appear in a few minutes.", true);
+              refreshBtn.textContent = "Rebuild sent";
+              showToast("Rebuilding \u2014 the tracker checks Slack every 5 minutes, so new posts show up within a few minutes.", true);
             } else if (out.status === 429) {
               refreshBtn.textContent = "Already checking";
               showToast("A refresh was already requested a few minutes ago.", true);
