@@ -1,7 +1,21 @@
 {
   "channel": "G0C1YNLJXBJ",
-  "fetched_at": "2026-11-24T21:24:18-05:00",
+  "fetched_at": "2026-11-24T21:35:38-05:00",
   "messages": [
+    {
+      "ts": "1795212388",
+      "post_date": "2026-11-20",
+      "text": "Show: WN-FOOTY\nDate: 11/19/26 A\nPkgs: 103 USPS, 2 Fedex\nShow: WN-FOOTY\nDate: 11/19/26 B\nPkgs: 124 USPS\nShow: EBAY LIVE\nDate: 11/18/16\nPkgs: 40 USPS, 1 Fedex\nShow: EBAY LIVE\nDate: 11/19/26\nPkgs: 51 USPS",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795293225",
+      "post_date": "2026-11-21",
+      "text": "SHOW: FL-BK\nDATE: 11/19\nPKGS: 147 USPS\nSHOW: WN-FOOTY A\nDATE: 11/20\nPKGS: 114 USPS\nSHOW: WN-FOOTY B\nDATE: 11/20\nPKGS: 108 USPS",
+      "subtype": null,
+      "user": ""
+    },
     {
       "ts": "1795470072",
       "post_date": "2026-11-23",

@@ -13,7 +13,7 @@
     "Whatnot Main": "2026-11-23T00:27:52",
     "eBay Live": "2026-11-24T01:54:41"
   },
-  "generatedAt": "2026-11-24T21:24:43-05:00",
+  "generatedAt": "2026-11-24T21:35:38-05:00",
   "premier": {
     "bar": 95,
     "channels": {
@@ -491,8 +491,8 @@
       "note": "",
       "pkgs": 20,
       "platform": "Whatnot Footy",
-      "shipped": 0,
-      "total": 20
+      "shipped": 229,
+      "total": 249
     },
     {
       "date": "2026-11-20",
@@ -501,8 +501,8 @@
       "note": "",
       "pkgs": 3,
       "platform": "Whatnot Footy",
-      "shipped": 0,
-      "total": 3
+      "shipped": 222,
+      "total": 225
     },
     {
       "date": "2026-11-23",

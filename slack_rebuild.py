@@ -434,7 +434,9 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None,
     # assigning the date's combined sessions to every session show
     # (the old code) put the same total on A and B alike.
     # A date-level show (no part) takes the combined sessions of
-    # its date: max for Footy, sum elsewhere (pre-existing rule).
+    # its date, summed: the sessions are distinct breaks with
+    # distinct packages (Footy 11/19 A=105, B=124; Footy 11/22
+    # completed at 89+76=165). Taking the max undercounts.
     session_shipped = {}
     for s in old_shows:
         platform, date = s["platform"], s["date"]
@@ -447,8 +449,7 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None,
         sess = [v for (p, d, ss), v in packed.items()
                 if p == platform and d == date and ss != ""]
         if sess:
-            session_shipped[id(s)] = (
-                max(sess) if platform == "Whatnot Footy" else sum(sess))
+            session_shipped[id(s)] = sum(sess)
 
     # Second pass: pool allocation per (platform, date) group, using
     # each show's total as the cap. Shows with session posts don't
@@ -546,6 +547,14 @@ def rebuild(current, packed, ops_shows, now, snapshot_totals=None,
         if total is None:
             kept.append(dict(s))
             continue
+        # A backfill can add shipped after the stored total was
+        # derived (the total was set when shipped was 0, so it
+        # equals pkgs). The total can never be less than the
+        # packages still here plus the packages shipped — re-derive
+        # it, or the show is wrongly removed. (Footy 11/19:
+        # stored total 20, shipped 229; total must become 249.)
+        if s.get("pkgs") is not None:
+            total = max(total, s["pkgs"] + shipped)
         remaining = total - shipped
         ns = dict(s)
         ns["total"] = total
