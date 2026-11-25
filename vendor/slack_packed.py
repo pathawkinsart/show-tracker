@@ -74,6 +74,7 @@ _CODE_MAP_RAW = {
     "WN-FOOTY": "Footy",
     "WTH-1": "WN OG",
     "WN-WTH-1": "WN OG",
+    "WN-OG": "WN OG",
     "WN-HK": "ICE",
     "WN-ICE": "ICE",
     "WN-GALAXY": "Galaxy",
