@@ -1,6 +1,6 @@
 {
   "channel": "C0C19E8SQ58",
-  "fetched_at": "2026-11-25T03:37:52-05:00",
+  "fetched_at": "2026-11-25T04:35:29-05:00",
   "messages": [
     {
       "ts": "1794892320",
@@ -1189,6 +1189,20 @@
       "ts": "1795594740",
       "post_date": "2026-11-25",
       "text": "WTH FOOTY A 11/24",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795595951",
+      "post_date": "2026-11-25",
+      "text": "WTH CARDSHOP 11/24",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795596110",
+      "post_date": "2026-11-25",
+      "text": "WTH FL BK B 11/24",
       "subtype": null,
       "user": ""
     }
