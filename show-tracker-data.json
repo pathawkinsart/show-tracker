@@ -1,7 +1,7 @@
 {
   "channelEnds": {
     "Fanatics Baseball": "2026-11-17T04:13:00",
-    "Fanatics Blitz": "2026-11-22T18:06:31",
+    "Fanatics Blitz": "2026-11-23T03:33:44",
     "Fanatics Evolution": "2026-11-25T18:05:00",
     "Fanatics Jamz": "2026-11-25T18:38:00",
     "Fanatics Repack": "2026-11-25T02:20:52",
@@ -12,7 +12,7 @@
     "Whatnot Ice": "2026-11-25T22:40:29",
     "Whatnot Main": "2026-11-24T11:29:38"
   },
-  "generatedAt": "2026-11-26T08:14:22-05:00",
+  "generatedAt": "2026-11-26T08:20:17-05:00",
   "noPost": [
     {
       "date": "2026-11-25",
@@ -231,7 +231,7 @@
     },
     {
       "date": "2026-11-22",
-      "end": "2026-11-22T18:06:31",
+      "end": "2026-11-23T03:33:44",
       "id": 6,
       "note": "",
       "part": "B",

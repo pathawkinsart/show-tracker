@@ -361,7 +361,10 @@ def parse_ops_posts(ops_messages):
         # Session: NIGHT = B; else a standalone A/B/C token; else a letter
         # attached before the date ("A11/23" — the caption jams the
         # session letter between the code and the date, e.g.
-        # "WTH-FL-PK-A11/23" or "WTH1B11/22"); else a letter attached
+        # "WTH-FL-PK-A11/23" or "WTH1B11/22"); else a letter on a
+        # number right before the date ("2A-11/22", "2B 11/22") —
+        # this must beat the code-token fallback, which would
+        # otherwise read the B in "FL FB"; else a letter attached
         # to the date ("11/23B"); else a letter attached to the code
         # token ("WTH1A", "Wth 2a", "WTH2B").
         upper = text.upper()
@@ -380,8 +383,12 @@ def parse_ops_posts(ops_messages):
                     if m2:
                         session = m2.group(1)
                     else:
-                        m3 = re.search(r"\b(?:WTH|FL|WN)[\s\-]*[A-Z0-9]*([ABC])\b", upper)
-                        session = m3.group(1) if m3 else ""
+                        m2b = re.search(r"\d([ABC])[\s\-]*\d{1,2}[/\-]\d{1,2}", upper)
+                        if m2b:
+                            session = m2b.group(1)
+                        else:
+                            m3 = re.search(r"\b(?:WTH|FL|WN)[\s\-]*[A-Z0-9]*([ABC])\b", upper)
+                            session = m3.group(1) if m3 else ""
         # Platform from the normalized title.
         norm = re.sub(r"[\s\-]+", "", upper)
         platform = None
