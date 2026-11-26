@@ -11,7 +11,7 @@
     "Whatnot Ice": "2026-11-24T02:00:14",
     "Whatnot Main": "2026-11-24T11:29:38"
   },
-  "generatedAt": "2026-11-25T22:07:21-05:00",
+  "generatedAt": "2026-11-25T23:37:38-05:00",
   "noPost": [
     {
       "date": "2026-11-24",
@@ -68,7 +68,7 @@
       "Fanatics Blitz": [
         675,
         501,
-        null,
+        474,
         null,
         null,
         null,
@@ -77,7 +77,7 @@
       "Fanatics Evolution": [
         84,
         165,
-        null,
+        175,
         null,
         null,
         null,
@@ -86,7 +86,7 @@
       "Fanatics Jamz": [
         298,
         168,
-        null,
+        149,
         null,
         null,
         null,
@@ -95,7 +95,7 @@
       "Fanatics Repack": [
         null,
         null,
-        null,
+        215,
         null,
         null,
         null,
@@ -104,7 +104,7 @@
       "TikTok Card Shop": [
         96,
         170,
-        null,
+        159,
         null,
         null,
         null,
@@ -113,7 +113,7 @@
       "Whatnot Card Shop": [
         131,
         101,
-        null,
+        266,
         null,
         null,
         null,
@@ -122,7 +122,7 @@
       "Whatnot Footy": [
         254,
         100,
-        null,
+        108,
         null,
         null,
         null,
@@ -131,7 +131,7 @@
       "Whatnot Galaxy": [
         49,
         59,
-        null,
+        53,
         null,
         null,
         null,
@@ -140,7 +140,7 @@
       "Whatnot Ice": [
         0,
         76,
-        null,
+        273,
         null,
         null,
         null,
@@ -158,7 +158,7 @@
       "eBay Live": [
         139,
         54,
-        null,
+        50,
         null,
         null,
         null,
@@ -177,12 +177,13 @@
     "notes": [
       "Mon Nov 23 Whatnot: delta between the Sun Nov 22 snapshot and the Mon Nov 23 snapshot.",
       "Mon Nov 23: Whatnot Footy not re-read in the snapshot, so no figure for Whatnot Footy (blank, not zero).",
-      "Mon Nov 23 Whatnot Footy and Tue Nov 24 Whatnot: from Slack packed posts (no snapshot for those days \u2014 packed counts, not carrier scans)."
+      "Mon Nov 23 Whatnot Footy and Tue Nov 24 Whatnot: from Slack packed posts (no snapshot for those days \u2014 packed counts, not carrier scans).",
+      "Wed Nov 25 Whatnot (Ice, Card Shop, Galaxy, Footy): from Slack packed posts (no snapshot \u2014 packed counts, not carrier scans). Whatnot Main blank: its Nov 25 posts use code WN-OG, unmapped by the parser (115 + 105 pkgs not counted)."
     ],
     "totals": [
       2085,
       2261,
-      null,
+      1922,
       null,
       null,
       null,
