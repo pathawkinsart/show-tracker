@@ -1,6 +1,6 @@
 {
   "channel": "C0C19E8SQ58",
-  "fetched_at": "2026-11-26T06:26:45-05:00",
+  "fetched_at": "2026-11-26T06:33:53-05:00",
   "messages": [
     {
       "ts": "1794983738",
@@ -1175,6 +1175,13 @@
       "ts": "1795681200",
       "post_date": "2026-11-26",
       "text": "11-25-26 GALAXY NIGHT SHOW",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795692660",
+      "post_date": "2026-11-26",
+      "text": "WTH FOOTY 11/25 A (cont.)",
       "subtype": null,
       "user": ""
     }
