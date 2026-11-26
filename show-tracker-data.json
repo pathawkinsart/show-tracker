@@ -13,7 +13,7 @@
     "Whatnot Main": "2026-11-24T11:29:38",
     "eBay Live": "2026-11-26T02:12:00"
   },
-  "generatedAt": "2026-11-26T09:47:13-05:00",
+  "generatedAt": "2026-11-26T09:52:16-05:00",
   "noPost": [],
   "premier": {
     "bar": 95,
@@ -142,7 +142,7 @@
       "Whatnot Main": [
         359,
         337,
-        null,
+        220,
         null,
         null,
         null,
@@ -171,12 +171,13 @@
       "Mon Nov 23 Whatnot: delta between the Sun Nov 22 snapshot and the Mon Nov 23 snapshot.",
       "Mon Nov 23: Whatnot Footy not re-read in the snapshot, so no figure for Whatnot Footy (blank, not zero).",
       "Mon Nov 23 Whatnot Footy and Tue Nov 24 Whatnot: from Slack packed posts (no snapshot for those days \u2014 packed counts, not carrier scans).",
-      "Wed Nov 25 Whatnot (Ice, Card Shop, Galaxy, Footy): from Slack packed posts (no snapshot \u2014 packed counts, not carrier scans). Whatnot Main blank: its Nov 25 posts use code WN-OG, unmapped by the parser (115 + 105 pkgs not counted)."
+      "Wed Nov 25 Whatnot (Ice, Card Shop, Galaxy, Footy): from Slack packed posts (no snapshot \u2014 packed counts, not carrier scans). Whatnot Main blank: its Nov 25 posts use code WN-OG, unmapped by the parser (115 + 105 pkgs not counted).",
+      "Whatnot Main 2026-11-25: 220 pkgs, added by hand. (WN-OG 115+105)"
     ],
     "totals": [
       2085,
       2261,
-      1922,
+      2142,
       null,
       null,
       null,
