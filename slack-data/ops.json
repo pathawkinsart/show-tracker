@@ -1,6 +1,6 @@
 {
   "channel": "C0C19E8SQ58",
-  "fetched_at": "2026-11-26T18:29:20-05:00",
+  "fetched_at": "2026-11-26T18:53:15-05:00",
   "messages": [
     {
       "ts": "1794983738",
@@ -1203,6 +1203,13 @@
       "ts": "1795734575",
       "post_date": "2026-11-26",
       "text": "WTH FL FB 2A-11/26",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795736760",
+      "post_date": "2026-11-26",
+      "text": "WTH FOOTY A 11/26",
       "subtype": null,
       "user": ""
     }
