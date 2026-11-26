@@ -946,6 +946,11 @@
       // A show with an explicit part keeps it; the rest take the
       // unused letters in worksheet order.
       function letterFor(show) {
+        // A show with a recorded session always shows its letter,
+        // even when it is the only show on that date — the letter
+        // is which session it is (A vs B), not just a
+        // disambiguator between same-day shows.
+        if (show.part) return show.part;
         var group = shows.filter(function (s) { return s.platform === show.platform && sameDay(s.date, show.date); });
         if (group.length < 2) return "";
         var LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
