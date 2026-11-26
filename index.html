@@ -1032,6 +1032,49 @@
       var lastDataHash = "";
       var lastGoodData = null;
       var packed = {}; // id -> packed Date
+      // Packed taps persist in localStorage, keyed by a STABLE
+      // platform|date|part identity — NOT by show id. The rebuild
+      // renumbers every show id from 1 on every run, so an id-keyed
+      // tap goes stale and the show comes back after the next
+      // rebuild or page reload. The in-memory `packed` map is
+      // rebuilt from storage on every data load (see loadData).
+      var PACKED_LS_KEY = "show-tracker-packed-v1";
+      function packedKeyFor(show) {
+        var y = show.date.getFullYear();
+        var m = ("0" + (show.date.getMonth() + 1)).slice(-2);
+        var dd = ("0" + show.date.getDate()).slice(-2);
+        return show.platform + "|" + y + "-" + m + "-" + dd + "|" + (show.part || "");
+      }
+      function loadPackedKeys() {
+        try {
+          var raw = localStorage.getItem(PACKED_LS_KEY);
+          if (!raw) return {};
+          var obj = JSON.parse(raw);
+          return obj && typeof obj === "object" ? obj : {};
+        } catch (e) { return {}; }
+      }
+      function savePackedKeys(map) {
+        try { localStorage.setItem(PACKED_LS_KEY, JSON.stringify(map)); } catch (e) {}
+      }
+      function applyPackedFromStorage() {
+        var saved = loadPackedKeys();
+        var kept = {};
+        shows.forEach(function (s) {
+          var k = packedKeyFor(s);
+          if (saved[k]) {
+            var when = new Date(saved[k]);
+            if (!isNaN(when.getTime())) {
+              packed[s.id] = when;
+              kept[k] = saved[k];
+            }
+          }
+        });
+        // Prune taps for shows no longer listed, so storage
+        // does not grow stale entries forever.
+        if (Object.keys(saved).length !== Object.keys(kept).length) {
+          savePackedKeys(kept);
+        }
+      }
       var activeFilter = "All";
       var toastTimer = null;
       var lastPackedIds = [];
@@ -1124,11 +1167,13 @@
           if (!dt || !raw.platform) return;
           noPost.push({ platform: raw.platform, date: dt });
         });
-        // Packed state for shows no longer in the file is dropped;
-        // everything still listed keeps its packed tap.
-        Object.keys(packed).forEach(function (id) {
-          if (!shows.some(function (s) { return String(s.id) === String(id); })) delete packed[id];
-        });
+        // Packed taps are rebuilt from localStorage on every data
+        // load, matched by stable platform|date|part — show ids are
+        // renumbered on every rebuild, so an id-keyed tap goes stale
+        // and the show comes back. Taps for shows no longer listed
+        // are dropped (and pruned from storage).
+        packed = {};
+        applyPackedFromStorage();
         if (activeFilter !== "All" && platforms().indexOf(activeFilter) === -1) activeFilter = "All";
         dataLoaded = true;
         dataLoadFailed = false;
@@ -1546,6 +1591,11 @@
         if (packed[show.id]) return;
         function commit() {
           packed[show.id] = new Date(TODAY.getTime());
+          // Persist the tap so it survives a page reload and the
+          // next rebuild's id renumbering.
+          var saved = loadPackedKeys();
+          saved[packedKeyFor(show)] = packed[show.id].toISOString();
+          savePackedKeys(saved);
           lastPackedIds = [show.id];
           // Full re-render so every count moves at once — channel
           // card counts, SLA re-anchored to the next oldest show
@@ -1562,9 +1612,14 @@
       }
 
       function unpackShow(id) {
+        var show = shows.filter(function (s) { return s.id === id; })[0];
+        if (show) {
+          var saved = loadPackedKeys();
+          delete saved[packedKeyFor(show)];
+          savePackedKeys(saved);
+        }
         delete packed[id];
         renderPreservingScroll();
-        var show = shows.filter(function (s) { return s.id === id; })[0];
         if (show) showToast(show.platform + " · " + fmt(show.date) + " is back on the in-house list.", true);
       }
 
@@ -1580,7 +1635,13 @@
         if (lastPackedIds.length) {
           var ids = lastPackedIds.slice();
           lastPackedIds = [];
-          ids.forEach(function (id) { delete packed[id]; });
+          var saved = loadPackedKeys();
+          ids.forEach(function (id) {
+            var s = shows.filter(function (x) { return x.id === id; })[0];
+            if (s) delete saved[packedKeyFor(s)];
+            delete packed[id];
+          });
+          savePackedKeys(saved);
           renderPreservingScroll();
         }
         document.getElementById("toast").classList.remove("show");
