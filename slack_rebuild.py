@@ -208,7 +208,7 @@ def extract_show_date(text, post_dt):
 # Jordan's posts use MM/DD/YY; normalized to 20YY in the parser).
 # Separators may be slashes or dashes ("DATE: 11-21-26").
 _PACKED_DATE_RE = re.compile(
-    r"^DATE\s*:\s*(\d{1,2})[/\-](\d{1,2})(?:[/\-](\d{4}|\d{2}))?(?:\s+([ABC]))?\s*$",
+    r"^DATE\s*:\s*(\d{1,2})[/\-](\d{1,2})(?:[/\-](\d{4}|\d{2}))?(?:[\s/\-]+([ABC]))?\s*$",
     re.IGNORECASE | re.MULTILINE)
 
 

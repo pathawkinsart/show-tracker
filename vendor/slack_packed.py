@@ -134,6 +134,12 @@ def _norm_code(raw):
     # Trailing show letter: FL-MLBB -> FL-MLB, WTH-1B -> WTH-1.
     if len(code) > 1 and code[-1] in "ABC" and code[:-1] in CODE_TO_COLUMN:
         return code[:-1]
+    # Descriptive suffix: the SHOW line may carry the channel's full
+    # name after the code, e.g. "WTH-4 FANATICS REPACK" -> WTH4.
+    # Match the longest known code that is a proper prefix.
+    for known in sorted(CODE_TO_COLUMN, key=len, reverse=True):
+        if code.startswith(known) and len(code) > len(known):
+            return known
     return None
 
 
