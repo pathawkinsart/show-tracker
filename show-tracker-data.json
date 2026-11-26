@@ -6,13 +6,11 @@
     "Fanatics Jamz": "2026-11-25T18:38:00",
     "Fanatics Repack": "2026-11-25T02:20:52",
     "TikTok Card Shop": "2026-11-26T03:04:00",
-    "Whatnot Card Shop": "2026-11-26T03:12:00",
     "Whatnot Footy": "2026-11-25T18:19:00",
-    "Whatnot Galaxy": "2026-11-25T18:13:00",
     "Whatnot Ice": "2026-11-25T22:40:29",
     "eBay Live": "2026-11-26T02:12:00"
   },
-  "generatedAt": "2026-11-26T16:41:59-05:00",
+  "generatedAt": "2026-11-26T16:51:35-05:00",
   "noPost": [],
   "premier": {
     "bar": 95,
@@ -250,46 +248,23 @@
     },
     {
       "date": "2026-11-25",
-      "end": "2026-11-26T03:12:00",
-      "id": 9,
-      "note": "",
-      "part": "A",
-      "platform": "Whatnot Card Shop"
-    },
-    {
-      "date": "2026-11-25",
       "end": "2026-11-25T18:19:00",
-      "id": 10,
+      "id": 9,
       "note": "",
       "part": "A",
       "platform": "Whatnot Footy"
     },
     {
       "date": "2026-11-25",
-      "end": "2026-11-25T18:13:00",
-      "id": 11,
-      "note": "",
-      "platform": "Whatnot Galaxy"
-    },
-    {
-      "date": "2026-11-25",
-      "end": "2026-11-26T03:20:00",
-      "id": 12,
-      "note": "",
-      "part": "B",
-      "platform": "Whatnot Galaxy"
-    },
-    {
-      "date": "2026-11-25",
       "end": "2026-11-25T22:40:29",
-      "id": 13,
+      "id": 10,
       "note": "",
       "platform": "Whatnot Ice"
     },
     {
       "date": "2026-11-25",
       "end": "2026-11-26T02:12:00",
-      "id": 14,
+      "id": 11,
       "note": "",
       "platform": "eBay Live"
     }
