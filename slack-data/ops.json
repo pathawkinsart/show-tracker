@@ -1,6 +1,6 @@
 {
   "channel": "C0C19E8SQ58",
-  "fetched_at": "2026-11-25T18:19:17.300438-05:00",
+  "fetched_at": "2026-11-25T19:48:17-05:00",
   "messages": [
     {
       "ts": "1794892320",
@@ -1189,6 +1189,34 @@
       "ts": "1795648380",
       "post_date": "2026-11-25",
       "text": "WTH GALAXY DAY 11/25",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795650000",
+      "post_date": "2026-11-25",
+      "text": "WTH FL FB 02 A 11/25\nQuick note for OPS. In internal Break #384 (Public #1125-4) We added a Hobby Box afterwards because we got shorted an Auto in a delight box. I ripped that Hobby Box a little later so those cards may not have been accounted for MyHobby. Any questions please send me a message. Thank you so much",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795649880",
+      "post_date": "2026-11-25",
+      "text": "WTH FL BK A 11/25",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795649760",
+      "post_date": "2026-11-25",
+      "text": "WTH1A 11/25",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795648740",
+      "post_date": "2026-11-25",
+      "text": "WTH FOOTY A 11/25",
       "subtype": null,
       "user": ""
     }
