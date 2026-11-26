@@ -743,6 +743,51 @@
         <h2>Shipped packages per channel per day</h2>
         <span class="count" id="shippedWeek"></span>
       </div>
+
+      <!-- Add a shipped count manually -->
+      <details class="add-box">
+        <summary>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add a shipped count manually
+        </summary>
+        <form class="add-form" id="shippedForm">
+          <div>
+            <label for="sPlatform">Channel</label>
+            <select id="sPlatform">
+              <option>Whatnot Footy</option>
+              <option>Whatnot Main</option>
+              <option>Whatnot Galaxy</option>
+              <option>Whatnot Ice</option>
+              <option>Whatnot Card Shop</option>
+              <option>Fanatics Baseball</option>
+              <option>Fanatics Blitz</option>
+              <option>Fanatics Jamz</option>
+              <option>Fanatics Evolution</option>
+              <option>Fanatics Repack</option>
+              <option>eBay Live</option>
+              <option>TikTok Card Shop</option>
+              <option>Sudden Death</option>
+              <option>Rumble</option>
+            </select>
+          </div>
+          <div>
+            <label for="sDate">Ship date</label>
+            <input id="sDate" type="date" required />
+          </div>
+          <div>
+            <label for="sPkgs">Packages shipped</label>
+            <input id="sPkgs" type="number" min="0" step="1" placeholder="e.g. 220" required />
+          </div>
+          <div>
+            <label for="sNote">Note (optional)</label>
+            <input id="sNote" type="text" placeholder="e.g. counted from Bins" />
+          </div>
+          <div class="full">
+            <button class="btn primary" type="submit" style="width:100%; justify-content:center;">Add shipped count</button>
+          </div>
+        </form>
+      </details>
+
       <div class="shipped-wrap" id="shippedWrap">
         <table class="shipped-table" id="shippedTable"></table>
         <div class="shipped-notes" id="shippedNotes"></div>
@@ -999,6 +1044,7 @@
       // 5 minutes (the Worker answers "already checking" in between).
       var WORKER_UPDATE_URL = "https://show-tracker-slack.phawkins0001.workers.dev/update";
       var WORKER_COMPLETE_URL = "https://show-tracker-slack.phawkins0001.workers.dev/complete";
+      var WORKER_SHIPPED_URL = "https://show-tracker-slack.phawkins0001.workers.dev/shipped";
       var refreshBtn = document.getElementById("refreshBtn");
       if (refreshBtn) {
         refreshBtn.addEventListener("click", function () {
@@ -1192,6 +1238,8 @@
         var fDateEl = document.getElementById("fDate");
         if (fDateEl && !fDateEl.value) fDateEl.value = isoDate(TODAY);
         if (fDateEl && dataLoaded) fDateEl.value = isoDate(TODAY);
+        var sDateEl = document.getElementById("sDate");
+        if (sDateEl && !sDateEl.value) sDateEl.value = isoDate(TODAY);
       }
 
       function fetchJson(url) {
@@ -1701,6 +1749,47 @@
         document.getElementById("fDate").value = isoDate(TODAY);
         render();
         showToast(platform + " · " + fmt(dt) + " added to the worksheet.", true);
+      });
+
+      // Manual shipped count — POSTs to the Worker, which stores it in
+      // manual-shipped.json and rebuilds, so the count lands in the
+      // shipped-per-day table on every device. A manual count wins
+      // over the packed-post total for that channel + date.
+      document.getElementById("shippedForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var platform = document.getElementById("sPlatform").value;
+        var dateVal = document.getElementById("sDate").value;
+        var pkgs = parseInt(document.getElementById("sPkgs").value, 10);
+        var note = document.getElementById("sNote").value.trim();
+        if (!dateVal || isNaN(pkgs) || pkgs < 0) {
+          showToast("Enter a date and a package count.", true);
+          return;
+        }
+        var btn = e.target.querySelector("button[type=submit]");
+        btn.disabled = true;
+        btn.textContent = "Adding…";
+        fetch(WORKER_SHIPPED_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ platform: platform, date: dateVal, pkgs: pkgs, note: note })
+        }).then(function (res) {
+          if (res.status === 202) {
+            showToast(platform + " · " + dateVal + " — " + pkgs + " packages added. It will show in the table after the next rebuild.", true);
+            e.target.reset();
+            document.getElementById("sDate").value = isoDate(TODAY);
+            return;
+          }
+          if (res.status === 429) {
+            showToast("The server is busy — try again in a few minutes.", true);
+            return;
+          }
+          throw new Error("shipped failed: " + res.status);
+        }).catch(function () {
+          showToast("Could not reach the server — the count was not saved.", true);
+        }).finally(function () {
+          btn.disabled = false;
+          btn.textContent = "Add shipped count";
+        });
       });
 
       // Packed log CSV — one row per cleared show, for the morning report

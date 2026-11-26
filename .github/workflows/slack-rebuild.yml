@@ -111,6 +111,52 @@ jobs:
           EOF
           git add completed-shows.json
 
+      - name: Add a manual shipped count
+        # The tracker page's manual shipped-count form POSTs to the
+        # Worker /shipped endpoint, which dispatches with
+        # action:"add_shipped" + platform/date/pkgs/note. Append that
+        # count to manual-shipped.json (dedup by platform+date, latest
+        # wins) so the rebuild below folds it into shippedPerDay — a
+        # manual count wins over the packed-post total for that
+        # channel + date. Normal Slack pushes have no action field
+        # and skip this.
+        if: github.event_name == 'repository_dispatch' && github.event.client_payload.action == 'add_shipped'
+        env:
+          AS_PLATFORM: ${{ github.event.client_payload.platform }}
+          AS_DATE: ${{ github.event.client_payload.date }}
+          AS_PKGS: ${{ github.event.client_payload.pkgs }}
+          AS_NOTE: ${{ github.event.client_payload.note }}
+        run: |
+          python3 - <<'EOF'
+          import json, os, re
+          platform = os.environ["AS_PLATFORM"]
+          date = os.environ["AS_DATE"]
+          pkgs = os.environ.get("AS_PKGS", "")
+          note = os.environ.get("AS_NOTE", "") or ""
+          if not platform or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
+              raise SystemExit(f"bad add-shipped payload: {platform!r} {date!r}")
+          try:
+              pkgs = int(pkgs)
+          except (TypeError, ValueError):
+              raise SystemExit(f"bad add-shipped pkgs: {pkgs!r}")
+          if pkgs < 0:
+              raise SystemExit(f"bad add-shipped pkgs: {pkgs}")
+          path = "manual-shipped.json"
+          try:
+              entries = json.load(open(path))
+          except FileNotFoundError:
+              entries = []
+          # Dedup by platform+date: a newer manual count replaces the old one.
+          entries = [e for e in entries
+                     if not (e.get("platform") == platform and e.get("date") == date)]
+          entries.append({"date": date, "note": note, "pkgs": pkgs, "platform": platform})
+          with open(path, "w") as f:
+              json.dump(entries, f, indent=1, ensure_ascii=False)
+              f.write("\n")
+          print(f"manual shipped: {platform} {date} = {pkgs} pkgs")
+          EOF
+          git add manual-shipped.json
+
       - name: Rebuild tracker data from Slack
         run: |
           if [ ! -f slack-data/ops.json ] && [ ! -f slack-data/packed.json ]; then
@@ -147,7 +193,7 @@ jobs:
         run: |
           git config user.name "show-tracker-slack"
           git config user.email "show-tracker-slack@users.noreply.github.com"
-          git add show-tracker-data.json completed-shows.json
+          git add show-tracker-data.json completed-shows.json manual-shipped.json
           [ -d slack-data ] && git add slack-data
           if git diff --cached --quiet; then
             echo "No change — nothing to commit."

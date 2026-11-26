@@ -327,6 +327,78 @@ def parse_packed_posts(packed_messages, sp):
     return packed, unknown
 
 
+def overlay_manual_shipped(existing, manual, now):
+    """Overlay manual shipped counts onto the preserved shippedPerDay table.
+
+    existing: the shippedPerDay dict carried over from the current data
+    file (built by the report builder from packed posts / snapshots —
+    its per-source method is not something the rebuild re-derives).
+    manual: list of {platform, date, pkgs, note} from manual-shipped.json.
+    now: current datetime (EST).
+
+    A manual count wins over the existing value for that platform+date.
+    If the manual date falls outside the table's week, the table's week
+    is left alone (the count is recorded in manual-shipped.json and
+    will apply when its week comes around). Returns the updated table.
+    Manual entries in the current week are noted in the notes list.
+    """
+    if not isinstance(existing, dict):
+        return existing
+    channels = existing.get("channels") or {}
+    days = existing.get("days") or []
+    week_start = existing.get("weekStart")
+    week_end = existing.get("weekEnd")
+    if not week_start or not week_end or not days:
+        return existing
+    # Map each day label back to its ISO date via the week range.
+    try:
+        monday = datetime.strptime(week_start, "%Y-%m-%d").date()
+        sunday = datetime.strptime(week_end, "%Y-%m-%d").date()
+    except (TypeError, ValueError):
+        return existing
+    if (sunday - monday).days != 6:
+        return existing
+    week_dates = [(monday + timedelta(days=i)).isoformat() for i in range(7)]
+    changed = False
+    notes = list(existing.get("notes") or [])
+    for e in manual or []:
+        platform = e.get("platform")
+        date = e.get("date")
+        pkgs = e.get("pkgs")
+        if platform not in channels:
+            continue
+        if not isinstance(pkgs, int) or pkgs < 0:
+            continue
+        if date not in week_dates:
+            continue
+        idx = week_dates.index(date)
+        row = channels.get(platform)
+        if not isinstance(row, list) or len(row) != 7:
+            continue
+        if row[idx] == pkgs:
+            continue
+        row[idx] = pkgs
+        changed = True
+        note = e.get("note") or ""
+        label = f"{platform} {date}: {pkgs} pkgs, added by hand."
+        if note:
+            label += f" ({note})"
+        if label not in notes:
+            notes.append(label)
+    if changed:
+        # Recompute the day totals from the (now overlaid) channels.
+        day_totals = []
+        for i in range(7):
+            vals = [channels[p][i] for p in channels
+                    if isinstance(channels.get(p), list)
+                    and len(channels[p]) == 7
+                    and channels[p][i] is not None]
+            day_totals.append(sum(vals) if vals else None)
+        existing["totals"] = day_totals
+        existing["notes"] = notes
+    return existing
+
+
 def parse_ops_posts(ops_messages):
     """Parse #breaking-ops pic posts into
     [(platform, show_date, session, end_iso)].
@@ -791,6 +863,38 @@ def main():
     for line in report:
         print("  " + line)
     print(f"NEW: {len(data['shows'])} shows")
+
+    # Manual shipped counts: overlay manual-shipped.json onto the
+    # preserved shippedPerDay table (manual wins for that
+    # channel+date). The table itself is NOT recomputed from packed
+    # posts here — it is built by the report builder from packed
+    # posts / snapshots, and a from-scratch recompute by either
+    # show date or post date gives different numbers than the table
+    # Patrick reports from (Nov 25 packed posts carry a big backlog
+    # of Nov 19-24 shows, so post-date attribution inflates Wed;
+    # show-date attribution disagrees with the table's Tue Footy
+    # 100). The manual form is the sanctioned fix for gaps
+    # (e.g. Main Wed, blank because WN-OG posts were once unmapped).
+    manual = []
+    for cand in (os.path.join(
+                     os.path.dirname(os.path.abspath(args.in_path)),
+                     "manual-shipped.json"),
+                 "manual-shipped.json"):
+        if os.path.exists(cand):
+            try:
+                with open(cand, encoding="utf-8") as f:
+                    manual = json.load(f)
+                print(f"manual shipped counts: {len(manual)} from {cand}")
+            except Exception as e:
+                print(f"WARN: manual-shipped.json unreadable ({cand}): {e}")
+            break
+    if manual and data.get("shippedPerDay"):
+        data["shippedPerDay"] = overlay_manual_shipped(
+            data["shippedPerDay"], manual, now)
+        print(f"shippedPerDay: overlaid {len(manual)} manual counts, "
+              f"week {data['shippedPerDay'].get('weekStart')} to "
+              f"{data['shippedPerDay'].get('weekEnd')}, "
+              f"totals {data['shippedPerDay'].get('totals')}")
 
     # Premier medallions: premier.json (next to the --in file) is the
     # source of record for the On-Time Scan % per channel. The rebuild
