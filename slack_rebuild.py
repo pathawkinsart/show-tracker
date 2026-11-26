@@ -122,6 +122,10 @@ OPS_CODE_MAP = [
     ("WTH2", "Fanatics Baseball"),       # WTH2 / Wth 2 — after FLFB so "WTH FL FB 2B" is Blitz
     ("FLWTH2", "Fanatics Baseball"),
     ("FLMLB", "Fanatics Baseball"),
+    # CARDSHOP above ICE: ICE is a bare substring and fires inside body
+    # words ("notice", "price") — a Card Shop post with notes mis-mapped
+    # to Whatnot Ice on 2026-11-26. Specific codes before general ones.
+    ("CARDSHOP", "Whatnot Card Shop"),
     ("ICE", "Whatnot Ice"),
     ("WNHK", "Whatnot Ice"),
     ("TTCARDSHOP", "TikTok Card Shop"),
@@ -129,7 +133,6 @@ OPS_CODE_MAP = [
     ("TIKTOK", "TikTok Card Shop"),
     ("FOOTY", "Whatnot Footy"),
     ("WNSC", "Whatnot Footy"),
-    ("CARDSHOP", "Whatnot Card Shop"),
 ]
 
 _MONTHS = {"JAN": 1, "FEB": 2, "MAR": 3, "APR": 4, "MAY": 5, "JUN": 6,
