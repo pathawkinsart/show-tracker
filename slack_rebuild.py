@@ -106,6 +106,7 @@ COLUMN_TO_PLATFORM = {
 # before CARDSHOP, FL-FB before WTH2).
 OPS_CODE_MAP = [
     ("FLPK", "Fanatics Evolution"),      # WTH-FL-PK
+    ("PKFL", "Fanatics Evolution"),      # WTH-PK-FL (same show, code reversed)
     ("POKE", "Fanatics Evolution"),
     ("WNENT", "Whatnot Galaxy"),         # WTH WN ENT (Galaxy day show)
     ("WNET", "Whatnot Galaxy"),          # WTH WN ET (same show, no N)
@@ -114,6 +115,7 @@ OPS_CODE_MAP = [
     ("JAMZ", "Fanatics Jamz"),           # "FL JAMZ" in title/body
     ("FLFB", "Fanatics Blitz"),          # WTH FL FB / FL-FB02
     ("FB02", "Fanatics Blitz"),
+    ("FLBL", "Fanatics Blitz"),           # WTH FL BL (same show, BL for Blitz)
     ("REPACK", "Fanatics Repack"),
     ("FLRP", "Fanatics Repack"),          # WTH FL RP
     ("WTH4", "Fanatics Repack"),
@@ -131,6 +133,7 @@ OPS_CODE_MAP = [
     ("TTCARDSHOP", "TikTok Card Shop"),
     ("TTCS", "TikTok Card Shop"),         # WTH TT CS
     ("TIKTOK", "TikTok Card Shop"),
+    ("WTHTT", "TikTok Card Shop"),        # WTH TT / WTH TT PP / WTH TT Studio — bare TT, WTH-anchored so it cannot fire inside body words
     ("FOOTY", "Whatnot Footy"),
     ("WNSC", "Whatnot Footy"),
 ]
