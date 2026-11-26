@@ -10,10 +10,9 @@
     "Whatnot Footy": "2026-11-25T18:19:00",
     "Whatnot Galaxy": "2026-11-25T18:13:00",
     "Whatnot Ice": "2026-11-25T22:40:29",
-    "Whatnot Main": "2026-11-24T11:29:38",
     "eBay Live": "2026-11-26T02:12:00"
   },
-  "generatedAt": "2026-11-26T14:07:52-05:00",
+  "generatedAt": "2026-11-26T14:21:22-05:00",
   "noPost": [],
   "premier": {
     "bar": 95,
@@ -304,49 +303,9 @@
       "platform": "Whatnot Ice"
     },
     {
-      "date": "2026-11-24",
-      "end": "2026-11-24T11:29:38",
-      "id": 16,
-      "note": "",
-      "part": "A",
-      "platform": "Whatnot Main"
-    },
-    {
-      "date": "2026-11-24",
-      "end": "2026-11-24T18:08:00",
-      "id": 17,
-      "note": "",
-      "part": "B",
-      "platform": "Whatnot Main"
-    },
-    {
-      "date": "2026-11-24",
-      "end": "2026-11-25T01:57:00",
-      "id": 18,
-      "note": "",
-      "part": "C",
-      "platform": "Whatnot Main"
-    },
-    {
-      "date": "2026-11-25",
-      "end": "2026-11-25T18:36:00",
-      "id": 19,
-      "note": "",
-      "part": "A",
-      "platform": "Whatnot Main"
-    },
-    {
-      "date": "2026-11-25",
-      "end": "2026-11-26T02:44:00",
-      "id": 20,
-      "note": "",
-      "part": "B",
-      "platform": "Whatnot Main"
-    },
-    {
       "date": "2026-11-25",
       "end": "2026-11-26T02:12:00",
-      "id": 21,
+      "id": 16,
       "note": "",
       "platform": "eBay Live"
     }
