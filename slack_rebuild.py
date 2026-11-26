@@ -382,27 +382,32 @@ def parse_ops_posts(ops_messages):
         # otherwise read the B in "FL FB"; else a letter attached
         # to the date ("11/23B"); else a letter attached to the code
         # token ("WTH1A", "Wth 2a", "WTH2B").
+        # TITLE ONLY: the session letter lives in the first line.
+        # The body is notes — a note like "picked a number" contains
+        # a standalone "A" that hijacked the session and relabelled
+        # a C show as A (Main 11/24 "WTH1C" lost its C show).
         upper = text.upper()
-        if "NIGHT" in upper:
+        title = text.split("\n")[0].strip().upper()
+        if "NIGHT" in title:
             session = "B"
         else:
-            tokens = re.findall(r"\b([ABC])\b", upper)
+            tokens = re.findall(r"\b([ABC])\b", title)
             if tokens:
                 session = tokens[0]
             else:
-                m1b = re.search(r"([ABC])\d{1,2}[/\-]\d{1,2}", upper)
+                m1b = re.search(r"([ABC])\d{1,2}[/\-]\d{1,2}", title)
                 if m1b:
                     session = m1b.group(1)
                 else:
-                    m2 = re.search(r"\d{1,2}[/\-]\d{1,2}([ABC])\b", upper)
+                    m2 = re.search(r"\d{1,2}[/\-]\d{1,2}([ABC])\b", title)
                     if m2:
                         session = m2.group(1)
                     else:
-                        m2b = re.search(r"\d([ABC])[\s\-]*\d{1,2}[/\-]\d{1,2}", upper)
+                        m2b = re.search(r"\d([ABC])[\s\-]*\d{1,2}[/\-]\d{1,2}", title)
                         if m2b:
                             session = m2b.group(1)
                         else:
-                            m3 = re.search(r"\b(?:WTH|FL|WN)[\s\-]*[A-Z0-9]*([ABC])\b", upper)
+                            m3 = re.search(r"\b(?:WTH|FL|WN)[\s\-]*[A-Z0-9]*([ABC])\b", title)
                             session = m3.group(1) if m3 else ""
         # Platform from the normalized title.
         norm = re.sub(r"[\s\-]+", "", upper)
