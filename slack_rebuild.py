@@ -493,21 +493,26 @@ def parse_ops_posts(ops_messages):
             continue
         parsed.append((platform, show_date.isoformat(), session,
                        post_dt.strftime("%Y-%m-%dT%H:%M:%S")))
-    # MLB (Fanatics Baseball) is ONE long show per day: the "A" pic in
-    # the evening and the "B" pic in the early morning are the same
-    # show, not two sessions. The Bins worksheet is one
-    # WTH2_YYYYMMDD_A.xlsx per day (no B file). Merge MLB A+B into a
-    # single entry per date, part "A", end = latest (when the long
-    # show actually ended). Other channels keep their A/B split.
-    mlb_by_date = {}
+    # MLB (Fanatics Baseball) and Pokemon (Fanatics Evolution) are
+    # ONE long show per day: the "A" pic in the evening and the "B"
+    # pic in the early morning are the same show, not two sessions.
+    # MLB proof: the Bins worksheet is one WTH2_YYYYMMDD_A.xlsx per
+    # day (no B file). Pokemon: Patrick, Nov 26 — "pokemon is always
+    # one longe show." Merge A+B into a single entry per date, part
+    # "A", end = latest (when the long show actually ended). Other
+    # channels keep their A/B split. Blitz is NOT merged — Patrick
+    # confirmed Nov 26 there was a B show (two shows, A and B).
+    one_show = {"Fanatics Baseball", "Fanatics Evolution"}
+    merged_by_date = {}
     other = []
     for platform, date, part, end in parsed:
-        if platform == "Fanatics Baseball":
-            if date not in mlb_by_date or end > mlb_by_date[date][3]:
-                mlb_by_date[date] = (platform, date, "A", end)
+        if platform in one_show:
+            key = (platform, date)
+            if key not in merged_by_date or end > merged_by_date[key][3]:
+                merged_by_date[key] = (platform, date, "A", end)
         else:
             other.append((platform, date, part, end))
-    parsed = other + sorted(mlb_by_date.values())
+    parsed = other + sorted(merged_by_date.values())
     return parsed, skipped
 
 
