@@ -13,7 +13,7 @@
     "Whatnot Main": "2026-11-24T11:29:38",
     "eBay Live": "2026-11-26T02:12:00"
   },
-  "generatedAt": "2026-11-26T08:47:15-05:00",
+  "generatedAt": "2026-11-26T08:47:31-05:00",
   "noPost": [],
   "premier": {
     "bar": 95,
@@ -286,7 +286,8 @@
       "end": "2026-11-20T00:58:00",
       "id": 13,
       "note": "",
-      "platform": "TikTok Card Shop"
+      "platform": "TikTok Card Shop",
+      "skipped": true
     },
     {
       "date": "2026-11-25",

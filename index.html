@@ -483,6 +483,11 @@
       }
       .date-chip.psa { border-color: var(--psa); }
       .date-chip.psa-part { border-color: var(--psa); border-style: dashed; }
+      .date-chip .skip-tag {
+        font-size: 10px; font-weight: 800; letter-spacing: .1em; line-height: 1.6;
+        color: var(--amber); display: flex; align-items: center; gap: 3px;
+      }
+      .date-chip.skipped { border-color: var(--amber); }
       .psa-note {
         margin-top: 11px; font-size: 14px; font-weight: 500; color: var(--ink-2);
         display: flex; gap: 8px; align-items: flex-start;
@@ -1506,12 +1511,14 @@
             var letter = letterFor(show);
             var chip = document.createElement("button");
             chip.type = "button";
-            chip.className = "date-chip" + (show.psa ? " psa" : "");
+            chip.className = "date-chip" + (show.psa ? " psa" : "") + (show.skipped ? " skipped" : "");
             var aria = "Mark the " + chan + " show from " + fmt(show.date) + (letter ? " (show " + letter + ")" : "") + " packed";
             if (show.psa) aria += " — this show is a PSA grading show";
+            if (show.skipped) aria += " — looks skipped: a later show on this channel is already packed, but there is no packed post for this one";
             chip.setAttribute("aria-label", aria);
             chip.innerHTML = '<span class="dow">' + DOW[show.date.getDay()] + '</span><span class="dnum">' + MON[show.date.getMonth()] + " " + show.date.getDate() + (letter ? " " + letter : "") + '</span>' +
-              (show.psa ? '<span class="psa-tag">' + PSA_SHIELD + "PSA</span>" : "");
+              (show.psa ? '<span class="psa-tag">' + PSA_SHIELD + "PSA</span>" : "") +
+              (show.skipped ? '<span class="skip-tag">SKIPPED?</span>' : "");
             chip.addEventListener("click", function () { packShow(show, chip); });
             chips.appendChild(chip);
           });

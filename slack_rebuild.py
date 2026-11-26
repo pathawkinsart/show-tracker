@@ -441,6 +441,28 @@ def is_named_by_packed(packed_keys, platform, date, part):
     return False
 
 
+def is_skipped(platform, date, part, packed_keys, completed):
+    """True when a show looks skipped: the team packs in order, so if
+    a LATER show on the same channel is already shipped (packed post
+    or Patrick-confirmed complete), this earlier show must have been
+    packed too — the team just never posted for it. A show is NOT
+    flagged when no later show on its channel has shipped yet (it may
+    simply not be packed yet). Display-only; never removes a show."""
+    for (p, d, s) in packed_keys:
+        if p != platform:
+            continue
+        if d > date:
+            return True
+        # Same date, later session: if B is packed but A is not, A
+        # was skipped (the team packs A before B).
+        if d == date and s and part and s > part:
+            return True
+    for (p, d) in completed:
+        if p == platform and d > date:
+            return True
+    return False
+
+
 REGULAR_DAYS = 4  # a channel that ran >=4 of the last 7 days "usually" runs
 
 
@@ -610,6 +632,18 @@ def rebuild(current, packed_keys, ops_shows, ops_psa, now, completed):
     kept.sort(key=lambda x: (x["platform"], x["date"], x["end"]))
     for i, s in enumerate(kept, start=1):
         s["id"] = i
+
+    # Skipped-show flag: the team packs in order, so a show whose
+    # LATER sibling on the same channel is already shipped, but
+    # which has no packed post of its own, was almost certainly
+    # packed without being posted. Flag it for Patrick; the flag is
+    # display-only and never removes a show.
+    for s in kept:
+        if is_skipped(s["platform"], s["date"], s.get("part", ""),
+                      packed_keys, completed):
+            s["skipped"] = True
+            report.append(f"FLAG skipped: {s['platform']} {s['date']} "
+                          f"part={s.get('part') or '-'}")
 
     channel_ends = {}
     for s in kept:
