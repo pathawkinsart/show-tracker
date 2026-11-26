@@ -10,15 +10,11 @@
     "Whatnot Footy": "2026-11-25T18:19:00",
     "Whatnot Galaxy": "2026-11-25T18:13:00",
     "Whatnot Ice": "2026-11-25T22:40:29",
-    "Whatnot Main": "2026-11-24T11:29:38"
+    "Whatnot Main": "2026-11-24T11:29:38",
+    "eBay Live": "2026-11-26T02:12:00"
   },
-  "generatedAt": "2026-11-26T08:20:17-05:00",
-  "noPost": [
-    {
-      "date": "2026-11-25",
-      "platform": "eBay Live"
-    }
-  ],
+  "generatedAt": "2026-11-26T08:23:44-05:00",
+  "noPost": [],
   "premier": {
     "bar": 95,
     "channels": {
@@ -376,6 +372,13 @@
       "note": "",
       "part": "B",
       "platform": "Whatnot Main"
+    },
+    {
+      "date": "2026-11-25",
+      "end": "2026-11-26T02:12:00",
+      "id": 25,
+      "note": "",
+      "platform": "eBay Live"
     }
   ],
   "slaRules": {

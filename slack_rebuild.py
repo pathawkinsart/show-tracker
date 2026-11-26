@@ -347,8 +347,20 @@ def parse_ops_posts(ops_messages):
         # skips tokens that cannot be a date (break numbers).
         show_date = extract_show_date(text, post_dt)
         if show_date is None:
-            skipped.append(("no date in text", text[:80]))
-            continue
+            # No date in the text. If the post still names a known
+            # channel it is a show pic — a show happened. The show
+            # started the day before when posted after midnight
+            # (a 2 AM post is the prior day's show); otherwise it
+            # is the post day's show. Anything that names no known
+            # channel is chatter and stays skipped.
+            norm0 = re.sub(r"[\s\-]+", "", text.upper())
+            if not any(code in norm0 for code, _ in OPS_CODE_MAP):
+                skipped.append(("no date in text", text[:80]))
+                continue
+            if post_dt.hour < 6:
+                show_date = post_dt.date() - timedelta(days=1)
+            else:
+                show_date = post_dt.date()
         # Night shows are posted after midnight with the prior day's date
         # in the text; if the text date is in the future vs the post date,
         # it is last year's show (Dec/Jan boundary) — nudge back a year.
