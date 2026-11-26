@@ -938,6 +938,11 @@
       function d(y, m, day) { return new Date(y, m, day); }
       function fmt(date) { return DOW[date.getDay()] + ", " + MON[date.getMonth()] + " " + date.getDate(); }
       function fmtShort(date) { return MON[date.getMonth()] + " " + date.getDate(); }
+      function dateISO(date) {
+        var m = ("0" + (date.getMonth() + 1)).slice(-2);
+        var dd = ("0" + date.getDate()).slice(-2);
+        return date.getFullYear() + "-" + m + "-" + dd;
+      }
       function daysBetween(a, b) { return Math.round((b - a) / 86400000); }
       function sameDay(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
 
@@ -988,6 +993,7 @@
       // Nothing to do with the work PC. At most one rebuild per
       // 5 minutes (the Worker answers "already checking" in between).
       var WORKER_UPDATE_URL = "https://show-tracker-slack.phawkins0001.workers.dev/update";
+      var WORKER_COMPLETE_URL = "https://show-tracker-slack.phawkins0001.workers.dev/complete";
       var refreshBtn = document.getElementById("refreshBtn");
       if (refreshBtn) {
         refreshBtn.addEventListener("click", function () {
@@ -1596,6 +1602,25 @@
           var saved = loadPackedKeys();
           saved[packedKeyFor(show)] = packed[show.id].toISOString();
           savePackedKeys(saved);
+          // Tell the server too: the Worker appends this show to
+          // completed-shows.json and rebuilds, so the removal sticks
+          // on every device. The local hide above is instant; this
+          // makes it permanent. If the call fails, the local tap
+          // still holds on this device.
+          fetch(WORKER_COMPLETE_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ platform: show.platform, date: dateISO(show.date), part: show.part || "" })
+          }).then(function (res) {
+            if (res.status === 202) return;
+            if (res.status === 429) {
+              showToast("Packed on this device — the server is busy, so it may come back on other devices. Tap again in a few minutes.", true);
+              return;
+            }
+            throw new Error("complete failed: " + res.status);
+          }).catch(function () {
+            showToast("Packed on this device — could not reach the server, so it may come back on other devices.", true);
+          });
           lastPackedIds = [show.id];
           // Full re-render so every count moves at once — channel
           // card counts, SLA re-anchored to the next oldest show

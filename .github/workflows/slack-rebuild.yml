@@ -74,6 +74,43 @@ jobs:
           fi
           python3 slack_fetch.py --out-dir slack-data --days 8
 
+      - name: Mark a show complete (tap-to-pack button)
+        # The tracker page's tap-to-pack button POSTs to the Worker
+        # /complete endpoint, which dispatches with
+        # action:"mark_complete" + platform/date/part. Append that
+        # show to completed-shows.json (dedup by platform+date) so
+        # the rebuild below takes it off and it never comes back.
+        # Normal Slack pushes have no action field and skip this.
+        if: github.event_name == 'repository_dispatch' && github.event.client_payload.action == 'mark_complete'
+        env:
+          MC_PLATFORM: ${{ github.event.client_payload.platform }}
+          MC_DATE: ${{ github.event.client_payload.date }}
+          MC_PART: ${{ github.event.client_payload.part }}
+        run: |
+          python3 - <<'EOF'
+          import json, os, re
+          platform = os.environ["MC_PLATFORM"]
+          date = os.environ["MC_DATE"]
+          part = os.environ.get("MC_PART", "") or ""
+          if not platform or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
+              raise SystemExit(f"bad mark-complete payload: {platform!r} {date!r}")
+          path = "completed-shows.json"
+          try:
+              entries = json.load(open(path))
+          except FileNotFoundError:
+              entries = []
+          if any(e.get("platform") == platform and e.get("date") == date for e in entries):
+              print(f"already complete: {platform} {date} - skipping")
+          else:
+              note = f"{platform} {date}" + (f" show {part}" if part else "") + ", marked complete from tracker"
+              entries.append({"date": date, "note": note, "packed": None, "platform": platform})
+              with open(path, "w") as f:
+                  json.dump(entries, f, indent=1, ensure_ascii=False)
+                  f.write("\n")
+              print(f"marked complete: {platform} {date}" + (f" part {part}" if part else ""))
+          EOF
+          git add completed-shows.json
+
       - name: Rebuild tracker data from Slack
         run: |
           if [ ! -f slack-data/ops.json ] && [ ! -f slack-data/packed.json ]; then
@@ -110,7 +147,7 @@ jobs:
         run: |
           git config user.name "show-tracker-slack"
           git config user.email "show-tracker-slack@users.noreply.github.com"
-          git add show-tracker-data.json
+          git add show-tracker-data.json completed-shows.json
           [ -d slack-data ] && git add slack-data
           if git diff --cached --quiet; then
             echo "No change — nothing to commit."
