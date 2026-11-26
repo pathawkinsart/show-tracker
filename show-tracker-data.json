@@ -11,14 +11,26 @@
     "Whatnot Ice": "2026-11-24T02:00:14",
     "Whatnot Main": "2026-11-24T11:29:38"
   },
-  "generatedAt": "2026-11-25T23:37:38-05:00",
+  "generatedAt": "2026-11-26T00:06:21-05:00",
   "noPost": [
     {
-      "date": "2026-11-24",
+      "date": "2026-11-25",
+      "platform": "Whatnot Card Shop"
+    },
+    {
+      "date": "2026-11-25",
+      "platform": "Whatnot Ice"
+    },
+    {
+      "date": "2026-11-25",
+      "platform": "Fanatics Repack"
+    },
+    {
+      "date": "2026-11-25",
       "platform": "eBay Live"
     },
     {
-      "date": "2026-11-24",
+      "date": "2026-11-25",
       "platform": "TikTok Card Shop"
     }
   ],
@@ -387,6 +399,6 @@
       "hours": 168
     }
   },
-  "today": "2026-11-25",
+  "today": "2026-11-26",
   "version": 1
 }
