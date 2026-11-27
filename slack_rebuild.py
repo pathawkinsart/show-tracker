@@ -28,10 +28,13 @@ THE MODEL:
     off, and are never resurrected by a later ops pic.
   * Show objects carry ONLY: platform, date, end, id, note — plus
     `part` (the A/B/C session letter, from the ops pic; the page
-    needs it to label session chips) and `psa` (display flag for
+    needs it to label session chips), `psa` (display flag for
     the "Free PSA Grading" badge; carried from the existing show,
-    or set when an ops pic title mentions PSA). NO pkgs, NO total,
-    NO shipped on show objects. Shipped counts live ONLY in the
+    or set when an ops pic title mentions PSA), and `verified`
+    (display flag overlaid from verified-shows.json — True means
+    the show's worksheet WorkingBreaks tab is filled in, ready to
+    pack; False means not verified yet; None means no check has
+    run for it yet). NO pkgs, NO total, NO shipped on show objects. Shipped counts live ONLY in the
     shipped-per-day table, which this script preserves verbatim
     and never recomputes.
   * The in-house show list persists in show-tracker-data.json
@@ -399,6 +402,46 @@ def overlay_manual_shipped(existing, manual, now):
     return existing
 
 
+def show_verified_key(platform, date, part):
+    """Key into verified-shows.json: "<platform>|<YYYY-MM-DD>|<part>".
+    Same (platform, date, part) triple the rebuild keys shows by;
+    part is "" when the show has no session letter."""
+    return "|".join([platform, date, part or ""])
+
+
+def load_verified_shows(in_path):
+    """Load verified-shows.json (next to the --in file, else CWD).
+
+    Returns ({key: True/False}, checked_at). Entries with any other
+    value are dropped (treated as not checked). A missing or
+    unreadable file means "nothing checked yet" — never a failure,
+    same as the premier block: the page shows grey "Not checked"
+    until the first check lands."""
+    verified = {}
+    checked_at = None
+    for cand in (os.path.join(
+                     os.path.dirname(os.path.abspath(in_path)),
+                     "verified-shows.json"),
+                 "verified-shows.json"):
+        if not os.path.exists(cand):
+            continue
+        try:
+            with open(cand, encoding="utf-8") as f:
+                raw = json.load(f)
+            checked_at = raw.get("checked_at")
+            shows = raw.get("shows") or {}
+            for key, val in shows.items():
+                if val is True or val is False:
+                    verified[key] = val
+            print(f"verified shows: {len(verified)} entries from {cand}"
+                  + (f" (checked {checked_at})" if checked_at else
+                     " (never checked)"))
+        except Exception as e:
+            print(f"WARN: verified-shows.json unreadable ({cand}): {e}")
+        break
+    return verified, checked_at
+
+
 def parse_ops_posts(ops_messages):
     """Parse #breaking-ops pic posts into
     [(platform, show_date, session, end_iso)].
@@ -595,7 +638,8 @@ def missing_yesterday_flags(ops_shows, now):
     return flags
 
 
-def rebuild(current, packed_keys, ops_shows, ops_psa, now, completed):
+def rebuild(current, packed_keys, ops_shows, ops_psa, now, completed,
+            verified=None):
     """Apply the pure-Slack model. Returns (new_data, report_lines).
 
     packed_keys: set of (platform, date, session) named by packed posts.
@@ -603,6 +647,9 @@ def rebuild(current, packed_keys, ops_shows, ops_psa, now, completed):
     ops_psa:     set of (platform, date, part) whose ops pic title
                  mentions PSA (display flag for the page's PSA badge).
     completed:   set of (platform, date) Patrick confirmed complete.
+    verified:    {show key: True/False} from verified-shows.json
+                 (None = no entry yet). Overlaid onto each kept show
+                 as `verified`; display-only, never removes a show.
 
     A show comes off when a packed post names it, or when it is in
     completed-shows.json. Nothing else removes a show. New shows
@@ -742,6 +789,19 @@ def rebuild(current, packed_keys, ops_shows, ops_psa, now, completed):
             report.append(f"FLAG skipped: {s['platform']} {s['date']} "
                           f"part={s.get('part') or '-'}")
 
+    # Verification badge (Patrick, Nov 27): verified-shows.json is
+    # overlaid onto each in-house show as `verified` — True means
+    # the show's worksheet WorkingBreaks tab is filled in (ready to
+    # pack), False means not verified yet, None means no check has
+    # run for it yet. A missing key is None, never False: an
+    # unchecked show must not show red. Display-only; never
+    # removes a show, and never feeds the Slack-only shipped model.
+    verified = verified or {}
+    for s in kept:
+        s["verified"] = verified.get(
+            show_verified_key(s["platform"], s["date"],
+                              s.get("part", "")))
+
     channel_ends = {}
     for s in kept:
         ch = s["platform"]
@@ -863,8 +923,15 @@ def main():
             print(f"confirmed completions: {len(completed)} from {cand}")
             break
 
+    # Verification badge: verified-shows.json (next to the --in file)
+    # holds the WorkingBreaks check results, keyed
+    # "<platform>|<YYYY-MM-DD>|<part>". Loaded here and overlaid
+    # onto show objects by rebuild(); a missing file or missing key
+    # is simply "not checked yet" — never a failure, never red.
+    verified, verified_checked_at = load_verified_shows(args.in_path)
+
     data, report = rebuild(current, packed_keys, ops_shows, ops_psa,
-                           now, completed)
+                           now, completed, verified)
     for line in report:
         print("  " + line)
     print(f"NEW: {len(data['shows'])} shows")

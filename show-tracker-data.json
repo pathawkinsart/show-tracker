@@ -12,7 +12,7 @@
     "Whatnot Main": "2026-11-27T02:09:22",
     "eBay Live": "2026-11-27T01:53:11"
   },
-  "generatedAt": "2026-11-27T07:42:09-05:00",
+  "generatedAt": "2026-11-27T07:44:59-05:00",
   "noPost": [
     {
       "date": "2026-11-26",
@@ -198,7 +198,8 @@
       "id": 1,
       "note": "",
       "part": "A",
-      "platform": "Fanatics Baseball"
+      "platform": "Fanatics Baseball",
+      "verified": null
     },
     {
       "date": "2026-11-25",
@@ -206,7 +207,8 @@
       "id": 2,
       "note": "",
       "part": "A",
-      "platform": "Fanatics Blitz"
+      "platform": "Fanatics Blitz",
+      "verified": null
     },
     {
       "date": "2026-11-25",
@@ -214,7 +216,8 @@
       "id": 3,
       "note": "",
       "part": "B",
-      "platform": "Fanatics Blitz"
+      "platform": "Fanatics Blitz",
+      "verified": null
     },
     {
       "date": "2026-11-26",
@@ -222,7 +225,8 @@
       "id": 4,
       "note": "",
       "part": "A",
-      "platform": "Fanatics Blitz"
+      "platform": "Fanatics Blitz",
+      "verified": null
     },
     {
       "date": "2026-11-26",
@@ -230,7 +234,8 @@
       "id": 5,
       "note": "",
       "part": "B",
-      "platform": "Fanatics Blitz"
+      "platform": "Fanatics Blitz",
+      "verified": null
     },
     {
       "date": "2026-11-25",
@@ -238,7 +243,8 @@
       "id": 6,
       "note": "",
       "part": "A",
-      "platform": "Fanatics Evolution"
+      "platform": "Fanatics Evolution",
+      "verified": null
     },
     {
       "date": "2026-11-26",
@@ -246,7 +252,8 @@
       "id": 7,
       "note": "",
       "part": "A",
-      "platform": "Fanatics Evolution"
+      "platform": "Fanatics Evolution",
+      "verified": null
     },
     {
       "date": "2026-11-25",
@@ -254,7 +261,8 @@
       "id": 8,
       "note": "",
       "part": "A",
-      "platform": "Fanatics Jamz"
+      "platform": "Fanatics Jamz",
+      "verified": null
     },
     {
       "date": "2026-11-26",
@@ -262,7 +270,8 @@
       "id": 9,
       "note": "",
       "part": "A",
-      "platform": "Fanatics Jamz"
+      "platform": "Fanatics Jamz",
+      "verified": null
     },
     {
       "date": "2026-11-24",
@@ -270,35 +279,40 @@
       "id": 10,
       "note": "",
       "part": "B",
-      "platform": "Fanatics Repack"
+      "platform": "Fanatics Repack",
+      "verified": null
     },
     {
       "date": "2026-11-25",
       "end": "2026-11-25T23:47:53",
       "id": 11,
       "note": "",
-      "platform": "Fanatics Repack"
+      "platform": "Fanatics Repack",
+      "verified": null
     },
     {
       "date": "2026-11-26",
       "end": "2026-11-27T00:46:19",
       "id": 12,
       "note": "",
-      "platform": "Fanatics Repack"
+      "platform": "Fanatics Repack",
+      "verified": null
     },
     {
       "date": "2026-11-25",
       "end": "2026-11-26T03:04:00",
       "id": 13,
       "note": "",
-      "platform": "TikTok Card Shop"
+      "platform": "TikTok Card Shop",
+      "verified": null
     },
     {
       "date": "2026-11-26",
       "end": "2026-11-27T05:25:21",
       "id": 14,
       "note": "",
-      "platform": "TikTok Card Shop"
+      "platform": "TikTok Card Shop",
+      "verified": null
     },
     {
       "date": "2026-11-26",
@@ -306,7 +320,8 @@
       "id": 15,
       "note": "",
       "part": "A",
-      "platform": "Whatnot Footy"
+      "platform": "Whatnot Footy",
+      "verified": null
     },
     {
       "date": "2026-11-26",
@@ -314,7 +329,8 @@
       "id": 16,
       "note": "",
       "part": "B",
-      "platform": "Whatnot Footy"
+      "platform": "Whatnot Footy",
+      "verified": null
     },
     {
       "date": "2026-11-26",
@@ -322,7 +338,8 @@
       "id": 17,
       "note": "",
       "part": "A",
-      "platform": "Whatnot Galaxy"
+      "platform": "Whatnot Galaxy",
+      "verified": null
     },
     {
       "date": "2026-11-26",
@@ -330,21 +347,24 @@
       "id": 18,
       "note": "",
       "part": "B",
-      "platform": "Whatnot Galaxy"
+      "platform": "Whatnot Galaxy",
+      "verified": null
     },
     {
       "date": "2026-11-25",
       "end": "2026-11-25T22:40:29",
       "id": 19,
       "note": "",
-      "platform": "Whatnot Ice"
+      "platform": "Whatnot Ice",
+      "verified": null
     },
     {
       "date": "2026-11-26",
       "end": "2026-11-27T02:19:42",
       "id": 20,
       "note": "",
-      "platform": "Whatnot Ice"
+      "platform": "Whatnot Ice",
+      "verified": null
     },
     {
       "date": "2026-11-26",
@@ -352,14 +372,16 @@
       "id": 21,
       "note": "",
       "part": "B",
-      "platform": "Whatnot Main"
+      "platform": "Whatnot Main",
+      "verified": null
     },
     {
       "date": "2026-11-26",
       "end": "2026-11-27T01:53:11",
       "id": 22,
       "note": "",
-      "platform": "eBay Live"
+      "platform": "eBay Live",
+      "verified": null
     }
   ],
   "slaRules": {

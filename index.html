@@ -488,6 +488,22 @@
         color: var(--amber); display: flex; align-items: center; gap: 3px;
       }
       .date-chip.skipped { border-color: var(--amber); }
+      /* Verification badge (Patrick, Nov 27): V glyph on each show
+         chip — green = worksheet verified, ready to pack; red =
+         checked and not verified yet; grey ? = no check run yet. */
+      .date-chip .verify-badge {
+        font-size: 10px; font-weight: 800; letter-spacing: .05em; line-height: 1.6;
+        display: flex; align-items: center; gap: 3px;
+      }
+      .date-chip .verify-badge.v-yes { color: var(--green); }
+      .date-chip .verify-badge.v-no { color: var(--red); }
+      .date-chip .verify-badge.v-unknown { color: var(--ink-3); }
+      .verify-legend {
+        font-size: 13px; color: var(--ink-2); margin: 0 0 12px;
+      }
+      .verify-legend .v-yes { color: var(--green); font-weight: 800; }
+      .verify-legend .v-no { color: var(--red); font-weight: 800; }
+      .verify-legend .v-unknown { color: var(--ink-3); font-weight: 800; }
       .psa-note {
         margin-top: 11px; font-size: 14px; font-weight: 500; color: var(--ink-2);
         display: flex; gap: 8px; align-items: flex-start;
@@ -657,6 +673,7 @@
         <h2>Still in house</h2>
         <span class="count" id="inhouseCount"></span>
       </div>
+      <p class="verify-legend"><span class="v-yes">&#10003; Verified</span> = worksheet checked, ready to pack &nbsp;&middot;&nbsp; <span class="v-no">&#10003; Not verified</span> = not verified yet &nbsp;&middot;&nbsp; <span class="v-unknown">? Not checked</span> = no check run yet</p>
       <div class="show-list" id="showList"></div>
       <div class="empty hidden" id="allClear">
         <p class="big">All clear — nothing in house</p>
@@ -1563,10 +1580,23 @@
             var aria = "Mark the " + chan + " show from " + fmt(show.date) + (letter ? " (show " + letter + ")" : "") + " packed";
             if (show.psa) aria += " — this show is a PSA grading show";
             if (show.skipped) aria += " — looks skipped: a later show on this channel is already packed, but there is no packed post for this one";
+            // Verification badge (Patrick, Nov 27): green V = the
+            // worksheet's WorkingBreaks tab is filled in, ready to
+            // pack; red V = checked and not verified yet; grey ? =
+            // no check has run for this show yet (never red for
+            // unchecked — an absent `verified` field reads unknown).
+            if (show.verified === true) aria += " — verified, ready to pack";
+            else if (show.verified === false) aria += " — not verified yet";
+            else aria += " — verification not checked yet";
             chip.setAttribute("aria-label", aria);
             chip.innerHTML = '<span class="dow">' + DOW[show.date.getDay()] + '</span><span class="dnum">' + MON[show.date.getMonth()] + " " + show.date.getDate() + (letter ? " " + letter : "") + '</span>' +
               (show.psa ? '<span class="psa-tag">' + PSA_SHIELD + "PSA</span>" : "") +
-              (show.skipped ? '<span class="skip-tag">SKIPPED?</span>' : "");
+              (show.skipped ? '<span class="skip-tag">SKIPPED?</span>' : "") +
+              (show.verified === true
+                ? '<span class="verify-badge v-yes" title="Verified — worksheet checked, ready to pack">&#10003; Verified</span>'
+                : show.verified === false
+                  ? '<span class="verify-badge v-no" title="Not verified yet — the worksheet has not been checked">&#10003; Not verified</span>'
+                  : '<span class="verify-badge v-unknown" title="Not checked yet — no verification check has run for this show">? Not checked</span>');
             chip.addEventListener("click", function () { packShow(show, chip); });
             chips.appendChild(chip);
           });
