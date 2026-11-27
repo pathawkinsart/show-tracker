@@ -1,6 +1,6 @@
 {
   "channel": "C0C19E8SQ58",
-  "fetched_at": "2026-11-27T18:18:22-05:00",
+  "fetched_at": "2026-11-27T18:34:30-05:00",
   "messages": [
     {
       "ts": "1795068780",
@@ -1175,6 +1175,20 @@
       "ts": "1795821081",
       "post_date": "2026-11-27",
       "text": "WTH WN ENT A 11/27",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795821926",
+      "post_date": "2026-11-27",
+      "text": "WTH-FL-PK-B 11/27",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795822217",
+      "post_date": "2026-11-27",
+      "text": "WTH FOOTY A 11/27",
       "subtype": null,
       "user": ""
     }
