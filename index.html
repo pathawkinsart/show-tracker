@@ -492,7 +492,7 @@
          chip — green = worksheet verified, ready to pack; red =
          checked and not verified yet; grey ? = no check run yet. */
       .date-chip .verify-badge {
-        font-size: 10px; font-weight: 800; letter-spacing: .05em; line-height: 1.6;
+        font-size: 13px; font-weight: 800; letter-spacing: .05em; line-height: 1.6;
         display: flex; align-items: center; gap: 3px;
       }
       .date-chip .verify-badge.v-yes { color: var(--green); }
@@ -1230,7 +1230,13 @@
             end: parseDateTime(raw.end),
             note: raw.note || "",
             psa: !!raw.psa,
-            part: raw.part || ""
+            part: raw.part || "",
+            // Verification flag (Patrick, Nov 27): MUST be copied through —
+            // without this line every chip rendered "? Not checked" no
+            // matter what the data file said, because show.verified was
+            // always undefined. true = verified, false = checked and not
+            // verified, null = no check run yet.
+            verified: (typeof raw.verified === "boolean" ? raw.verified : null)
           });
         });
         shows = parsed.concat(localAdds);
@@ -1493,9 +1499,17 @@
               '</div>' +
               (isUnderConstruction
                 ? '<div class="sla under-construction"><div class="val">Under construction</div><div class="lbl">Coming soon</div></div>'
-                : '<div class="sla current"><div class="val">Current</div><div class="lbl">All caught up</div></div>');
+                : '');
             cTop.querySelector(".show-name").textContent = chan;
             cTop.querySelector(".chan-count").textContent = isUnderConstruction ? "Coming soon — no shows yet" : packedForChan ? ("All " + totalForChan + (totalForChan === 1 ? " show" : " shows") + " packed & cleared · 0 in house") : "0 shows in house";
+            // Premier medallion in the top row (Patrick, Nov 27): the old
+            // "Current / All caught up" pill lived here and the medallion
+            // was never rendered on current cards at all. The green check
+            // in the "Nothing in house" banner below already says the
+            // channel is current, so the pill is gone and the medallion
+            // takes its place for Whatnot channels.
+            var cBadge = premierBadge(chan);
+            if (cBadge) cTop.appendChild(cBadge);
             cCard.appendChild(cTop);
             var banner = document.createElement("div");
             if (isUnderConstruction) {
