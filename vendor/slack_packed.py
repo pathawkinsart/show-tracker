@@ -104,7 +104,8 @@ ECOMM_TO_COLUMN = {
 }
 
 # A carrier word (or "pkgs" / "local") after a number.
-_CARRIER = r"(?:USPS|UPS|FEDEX|FEDEX|LOCAL|PKGS?)"
+# "World Ship" is the international carrier, first seen Nov 25, 2026.
+_CARRIER = r"(?:USPS|UPS|FEDEX|LOCAL|PKGS?|WORLD\s*SHIP)"
 # "43 USPS", "43USPS", "119USPS,1UPS", "158 USPS".
 _PKGS_RE = re.compile(r"(\d+)\s*" + _CARRIER, re.IGNORECASE)
 # "SHOW: FL-MLB", "Show: EBAY LIVE", "SHOW:EBAY LIVE", "SHOW:FL-BK".
