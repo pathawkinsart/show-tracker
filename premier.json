@@ -18,7 +18,7 @@
     },
     "Whatnot Ice": {
       "defectFree": 99.9,
-      "onTimeScan": 53.8,
+      "onTimeScan": 56.2,
       "status": "not qualifying"
     },
     "Whatnot Main": {
@@ -28,7 +28,7 @@
     }
   },
   "period": "Sep 1 – Nov 30, 2026",
-  "source": "Whatnot Premier Shop pages, re-read Nov 27, 2026 from Patrick’s signed-in seller profiles. Main (wethehobby) 99.8% on-time / 99.9% defect-free, earned — unchanged from Nov 25. Card Shop (wethehobby_cardshop) 99.3% / 99.5%, earned — unchanged from Nov 25. Footy (wethehobby_footy) 97.6% / 99.8%, earned — was 97.5% on Nov 25. Galaxy (wethehobby_galaxy) 94.5% / 99.8%, not qualifying — was 94.4% on Nov 25. Ice still Nov 20 values (53.8%) — its profile window could not be read Nov 27. Premier is evaluated monthly on a rolling 3-month window; the next judgement is Dec 1, 2026. Update this file when the Premier Shop page is re-read and rebuild the tracker data. Projection values (Ice countdown, Galaxy gap) come from the verified model in ~/workspace/whatnot-premier-calibration/ice-premier-countdown.md — re-run ice_projection.py when the fresh Ice read lands.",
+  "source": "Whatnot Premier Shop pages, re-read Nov 27, 2026 from Patrick’s signed-in seller profiles. Main (wethehobby) 99.8% on-time / 99.9% defect-free, earned — unchanged from Nov 25. Card Shop (wethehobby_cardshop) 99.3% / 99.5%, earned — unchanged from Nov 25. Footy (wethehobby_footy) 97.6% / 99.8%, earned — was 97.5% on Nov 25. Galaxy (wethehobby_galaxy) 94.5% / 99.8%, not qualifying — was 94.4% on Nov 25. Ice 56.2% / 99.9%, not qualifying — fresh read Nov 27 from Patrick (was 53.8% on Nov 20); Nov 21–27 marginal backed out at 75.1% on-time, but November overall is only ~58%, so Feb 1, 2027 is no longer reachable — Mar 1, 2027 is the first evaluation Ice can pass. Premier is evaluated monthly on a rolling 3-month window; the next judgement is Dec 1, 2026. Update this file when the Premier Shop page is re-read and rebuild the tracker data. Projection values (Ice countdown, Galaxy gap) come from the verified model in ~/workspace/whatnot-premier-calibration/ice-premier-countdown.md — re-run ice_projection.py when the fresh Ice read lands.",
   "projection": {
     "Whatnot Galaxy": {
       "evaluation": "2026-12-01",
@@ -43,16 +43,15 @@
       "channelStart": "2026-10-07",
       "deadline": "2027-01-05",
       "deadlineLabel": "90-day mark",
-      "evaluation": "2027-02-01",
+      "evaluation": "2027-03-01",
       "evaluationLabel": "First evaluation Ice can pass",
-      "fallback": "2027-03-01",
-      "fallbackNeed": 97,
-      "novRate": null,
-      "rate": 53.8,
-      "rateAsOf": "2026-11-20",
-      "rateStale": true,
-      "windowLateAllowed": 456,
-      "windowShort": "Nov–Jan"
+      "novMarginal": 75.1,
+      "novRate": 58.4,
+      "rate": 56.2,
+      "rateAsOf": "2026-11-27",
+      "rateStale": false,
+      "windowLateAllowed": 446,
+      "windowShort": "Dec–Feb"
     }
   }
 }

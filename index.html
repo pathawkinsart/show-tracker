@@ -985,7 +985,11 @@
           if (j.windowLateAllowed && j.windowShort) ev += " · only " + j.windowLateAllowed + " late allowed (" + j.windowShort + ")";
           html += "<div>" + ev + "</div>";
         }
-        if (typeof j.breakEvenNov === "number") {
+        if (typeof j.novRate === "number") {
+          html += "<div>Nov on-time rate: ~" + j.novRate.toFixed(0) + "%" +
+            (typeof j.novMarginal === "number" ? " (Nov 21–27 ran " + j.novMarginal.toFixed(0) + "%)" : "") +
+            " — Feb 1, 2027 no longer possible</div>";
+        } else if (typeof j.breakEvenNov === "number") {
           html += "<div>Nov on-time rate: unknown — needs ≥" + j.breakEvenNov.toFixed(1) +
             "% for " + fmtDay(parseDay(j.evaluation)) + " to be possible</div>";
         }

@@ -12,7 +12,7 @@
     "Whatnot Main": "2026-11-27T02:09:22",
     "eBay Live": "2026-11-27T01:53:11"
   },
-  "generatedAt": "2026-11-27T13:02:11-05:00",
+  "generatedAt": "2026-11-27T13:11:48-05:00",
   "noPost": [
     {
       "date": "2026-11-26",
@@ -39,7 +39,7 @@
       },
       "Whatnot Ice": {
         "defectFree": 99.9,
-        "onTimeScan": 53.8,
+        "onTimeScan": 56.2,
         "status": "not qualifying"
       },
       "Whatnot Main": {
@@ -63,19 +63,18 @@
         "channelStart": "2026-10-07",
         "deadline": "2027-01-05",
         "deadlineLabel": "90-day mark",
-        "evaluation": "2027-02-01",
+        "evaluation": "2027-03-01",
         "evaluationLabel": "First evaluation Ice can pass",
-        "fallback": "2027-03-01",
-        "fallbackNeed": 97,
-        "novRate": null,
-        "rate": 53.8,
-        "rateAsOf": "2026-11-20",
-        "rateStale": true,
-        "windowLateAllowed": 456,
-        "windowShort": "Nov\u2013Jan"
+        "novMarginal": 75.1,
+        "novRate": 58.4,
+        "rate": 56.2,
+        "rateAsOf": "2026-11-27",
+        "rateStale": false,
+        "windowLateAllowed": 446,
+        "windowShort": "Dec\u2013Feb"
       }
     },
-    "source": "Whatnot Premier Shop pages, re-read Nov 27, 2026 from Patrick\u2019s signed-in seller profiles. Main (wethehobby) 99.8% on-time / 99.9% defect-free, earned \u2014 unchanged from Nov 25. Card Shop (wethehobby_cardshop) 99.3% / 99.5%, earned \u2014 unchanged from Nov 25. Footy (wethehobby_footy) 97.6% / 99.8%, earned \u2014 was 97.5% on Nov 25. Galaxy (wethehobby_galaxy) 94.5% / 99.8%, not qualifying \u2014 was 94.4% on Nov 25. Ice still Nov 20 values (53.8%) \u2014 its profile window could not be read Nov 27. Premier is evaluated monthly on a rolling 3-month window; the next judgement is Dec 1, 2026. Update this file when the Premier Shop page is re-read and rebuild the tracker data. Projection values (Ice countdown, Galaxy gap) come from the verified model in ~/workspace/whatnot-premier-calibration/ice-premier-countdown.md \u2014 re-run ice_projection.py when the fresh Ice read lands."
+    "source": "Whatnot Premier Shop pages, re-read Nov 27, 2026 from Patrick\u2019s signed-in seller profiles. Main (wethehobby) 99.8% on-time / 99.9% defect-free, earned \u2014 unchanged from Nov 25. Card Shop (wethehobby_cardshop) 99.3% / 99.5%, earned \u2014 unchanged from Nov 25. Footy (wethehobby_footy) 97.6% / 99.8%, earned \u2014 was 97.5% on Nov 25. Galaxy (wethehobby_galaxy) 94.5% / 99.8%, not qualifying \u2014 was 94.4% on Nov 25. Ice 56.2% / 99.9%, not qualifying \u2014 fresh read Nov 27 from Patrick (was 53.8% on Nov 20); Nov 21\u201327 marginal backed out at 75.1% on-time, but November overall is only ~58%, so Feb 1, 2027 is no longer reachable \u2014 Mar 1, 2027 is the first evaluation Ice can pass. Premier is evaluated monthly on a rolling 3-month window; the next judgement is Dec 1, 2026. Update this file when the Premier Shop page is re-read and rebuild the tracker data. Projection values (Ice countdown, Galaxy gap) come from the verified model in ~/workspace/whatnot-premier-calibration/ice-premier-countdown.md \u2014 re-run ice_projection.py when the fresh Ice read lands."
   },
   "shippedHistory": {
     "2026-11-16": {
