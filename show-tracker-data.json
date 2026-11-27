@@ -4,14 +4,14 @@
     "Fanatics Blitz": "2026-11-25T18:40:00",
     "Fanatics Jamz": "2026-11-26T19:09:40",
     "Fanatics Repack": "2026-11-25T02:20:52",
-    "TikTok Card Shop": "2026-11-26T03:04:00",
+    "TikTok Card Shop": "2026-11-27T05:25:21",
     "Whatnot Footy": "2026-11-26T18:46:16",
-    "Whatnot Galaxy": "2026-11-26T18:06:52",
+    "Whatnot Galaxy": "2026-11-27T03:21:52",
     "Whatnot Ice": "2026-11-25T22:40:29",
     "Whatnot Main": "2026-11-27T02:09:22",
     "eBay Live": "2026-11-27T01:53:11"
   },
-  "generatedAt": "2026-11-27T15:18:12-05:00",
+  "generatedAt": "2026-11-27T15:23:25-05:00",
   "noPost": [
     {
       "date": "2026-11-26",
@@ -265,7 +265,7 @@
           170,
           159,
           null,
-          null,
+          84,
           null,
           null
         ],
@@ -292,7 +292,7 @@
           59,
           53,
           159,
-          null,
+          124,
           null,
           null
         ],
@@ -342,7 +342,7 @@
         2261,
         3005,
         1708,
-        363,
+        571,
         null,
         null
       ],
@@ -402,7 +402,7 @@
         170,
         159,
         null,
-        null,
+        84,
         null,
         null
       ],
@@ -429,7 +429,7 @@
         59,
         53,
         159,
-        null,
+        124,
         null,
         null
       ],
@@ -479,7 +479,7 @@
       2261,
       3005,
       1708,
-      363,
+      571,
       null,
       null
     ],
@@ -576,17 +576,9 @@
       "verified": false
     },
     {
-      "date": "2026-11-25",
-      "end": "2026-11-26T03:04:00",
-      "id": 11,
-      "note": "",
-      "platform": "TikTok Card Shop",
-      "verified": true
-    },
-    {
       "date": "2026-11-26",
       "end": "2026-11-27T05:25:21",
-      "id": 12,
+      "id": 11,
       "note": "",
       "platform": "TikTok Card Shop",
       "verified": false
@@ -594,7 +586,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-26T18:46:16",
-      "id": 13,
+      "id": 12,
       "note": "",
       "part": "A",
       "platform": "Whatnot Footy",
@@ -603,7 +595,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T03:08:07",
-      "id": 14,
+      "id": 13,
       "note": "",
       "part": "B",
       "platform": "Whatnot Footy",
@@ -611,17 +603,8 @@
     },
     {
       "date": "2026-11-26",
-      "end": "2026-11-26T18:06:52",
-      "id": 15,
-      "note": "",
-      "part": "A",
-      "platform": "Whatnot Galaxy",
-      "verified": true
-    },
-    {
-      "date": "2026-11-26",
       "end": "2026-11-27T03:21:52",
-      "id": 16,
+      "id": 14,
       "note": "",
       "part": "B",
       "platform": "Whatnot Galaxy",
@@ -630,7 +613,7 @@
     {
       "date": "2026-11-25",
       "end": "2026-11-25T22:40:29",
-      "id": 17,
+      "id": 15,
       "note": "",
       "platform": "Whatnot Ice",
       "verified": true
@@ -638,7 +621,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T02:19:42",
-      "id": 18,
+      "id": 16,
       "note": "",
       "platform": "Whatnot Ice",
       "verified": false
@@ -646,7 +629,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T02:09:22",
-      "id": 19,
+      "id": 17,
       "note": "",
       "part": "B",
       "platform": "Whatnot Main",
@@ -655,7 +638,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T01:53:11",
-      "id": 20,
+      "id": 18,
       "note": "",
       "platform": "eBay Live",
       "verified": false
