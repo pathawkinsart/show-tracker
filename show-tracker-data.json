@@ -11,7 +11,7 @@
     "Whatnot Main": "2026-11-27T02:09:22",
     "eBay Live": "2026-11-27T01:53:11"
   },
-  "generatedAt": "2026-11-27T03:06:47-05:00",
+  "generatedAt": "2026-11-27T03:11:40-05:00",
   "noPost": [
     {
       "date": "2026-11-26",
@@ -302,8 +302,16 @@
     },
     {
       "date": "2026-11-26",
-      "end": "2026-11-26T18:06:52",
+      "end": "2026-11-27T03:08:07",
       "id": 14,
+      "note": "",
+      "part": "B",
+      "platform": "Whatnot Footy"
+    },
+    {
+      "date": "2026-11-26",
+      "end": "2026-11-26T18:06:52",
+      "id": 15,
       "note": "",
       "part": "A",
       "platform": "Whatnot Galaxy"
@@ -311,21 +319,21 @@
     {
       "date": "2026-11-25",
       "end": "2026-11-25T22:40:29",
-      "id": 15,
-      "note": "",
-      "platform": "Whatnot Ice"
-    },
-    {
-      "date": "2026-11-26",
-      "end": "2026-11-27T02:19:42",
       "id": 16,
       "note": "",
       "platform": "Whatnot Ice"
     },
     {
       "date": "2026-11-26",
-      "end": "2026-11-27T02:09:22",
+      "end": "2026-11-27T02:19:42",
       "id": 17,
+      "note": "",
+      "platform": "Whatnot Ice"
+    },
+    {
+      "date": "2026-11-26",
+      "end": "2026-11-27T02:09:22",
+      "id": 18,
       "note": "",
       "part": "B",
       "platform": "Whatnot Main"
@@ -333,7 +341,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T01:53:11",
-      "id": 18,
+      "id": 19,
       "note": "",
       "platform": "eBay Live"
     }
