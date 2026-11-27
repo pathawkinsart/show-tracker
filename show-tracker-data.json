@@ -11,15 +11,11 @@
     "Whatnot Main": "2026-11-27T02:09:22",
     "eBay Live": "2026-11-27T01:53:11"
   },
-  "generatedAt": "2026-11-27T02:19:03-05:00",
+  "generatedAt": "2026-11-27T02:24:58-05:00",
   "noPost": [
     {
       "date": "2026-11-26",
       "platform": "Whatnot Card Shop"
-    },
-    {
-      "date": "2026-11-26",
-      "platform": "Whatnot Ice"
     },
     {
       "date": "2026-11-26",
@@ -321,8 +317,15 @@
     },
     {
       "date": "2026-11-26",
-      "end": "2026-11-27T02:09:22",
+      "end": "2026-11-27T02:19:42",
       "id": 16,
+      "note": "",
+      "platform": "Whatnot Ice"
+    },
+    {
+      "date": "2026-11-26",
+      "end": "2026-11-27T02:09:22",
+      "id": 17,
       "note": "",
       "part": "B",
       "platform": "Whatnot Main"
@@ -330,7 +333,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T01:53:11",
-      "id": 17,
+      "id": 18,
       "note": "",
       "platform": "eBay Live"
     }
