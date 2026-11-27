@@ -12,7 +12,7 @@
     "Whatnot Main": "2026-11-27T02:09:22",
     "eBay Live": "2026-11-27T01:53:11"
   },
-  "generatedAt": "2026-11-27T08:29:33-05:00",
+  "generatedAt": "2026-11-27T08:32:05-05:00",
   "noPost": [
     {
       "date": "2026-11-26",
@@ -54,109 +54,109 @@
   "shippedPerDay": {
     "channels": {
       "Fanatics Baseball": [
-        148,
-        203,
-        173,
         null,
+        530,
+        null,
+        376,
         null,
         null,
         null
       ],
       "Fanatics Blitz": [
-        245,
+        675,
+        501,
+        1065,
         248,
-        null,
-        null,
         null,
         null,
         null
       ],
       "Fanatics Evolution": [
-        86,
-        89,
-        null,
+        84,
+        165,
+        175,
         null,
         null,
         null,
         null
       ],
       "Fanatics Jamz": [
+        298,
         168,
         149,
-        null,
         null,
         null,
         null,
         null
       ],
       "Fanatics Repack": [
-        77,
         null,
         null,
+        292,
         null,
         null,
         null,
         null
       ],
       "TikTok Card Shop": [
-        97,
-        62,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "Whatnot Card Shop": [
-        114,
-        152,
-        126,
-        null,
-        null,
-        null,
-        null
-      ],
-      "Whatnot Footy": [
-        100,
-        112,
-        191,
-        null,
-        null,
-        null,
-        null
-      ],
-      "Whatnot Galaxy": [
-        59,
-        53,
+        96,
+        170,
         159,
         null,
         null,
         null,
         null
       ],
-      "Whatnot Ice": [
-        96,
-        95,
+      "Whatnot Card Shop": [
+        248,
+        101,
+        266,
+        126,
         null,
+        null,
+        null
+      ],
+      "Whatnot Footy": [
+        254,
+        100,
+        112,
+        191,
+        null,
+        null,
+        null
+      ],
+      "Whatnot Galaxy": [
+        49,
+        59,
+        53,
+        159,
+        null,
+        null,
+        null
+      ],
+      "Whatnot Ice": [
+        null,
+        76,
+        464,
         null,
         null,
         null,
         null
       ],
       "Whatnot Main": [
+        359,
+        337,
         220,
-        317,
-        241,
-        null,
+        558,
         null,
         null,
         null
       ],
       "eBay Live": [
+        139,
         54,
         50,
         50,
-        null,
         null,
         null,
         null
@@ -172,14 +172,14 @@
       "Sun 11/29"
     ],
     "notes": [
-      "Shipped counts are from Slack packed posts (#breaking-shipping-updates), bucketed by the show date in each post. A blank cell means no packed post has named a show for that channel and day yet (blank, not zero).",
-      "From Nov 27, 2026 the table is built from packed posts only \u2014 the Nov 23 SLA snapshot deltas for Whatnot are retired (Patrick's call, Nov 27)."
+      "Shipped counts are from Slack packed posts (#breaking-shipping-updates), bucketed by the day the pack was posted. A blank cell means no packed post was made for that channel that day yet (blank, not zero).",
+      "From Nov 27, 2026 the table counts by pack day (Patrick's call, Nov 27) and is built from packed posts only \u2014 the Nov 23 SLA snapshot deltas for Whatnot are retired."
     ],
     "totals": [
-      1464,
-      1530,
-      940,
-      null,
+      2202,
+      2261,
+      3005,
+      1708,
       null,
       null,
       null

@@ -269,10 +269,32 @@ def parse_packed_posts(packed_messages, sp):
     names) to take shows off the tracker; the counts build the
     shipped-per-day table (Patrick, Nov 27 — packed posts for
     everything). The counts are never used to compute a remainder
-    or a removal test."""
+    or a removal test.
+
+    Also returns packed_by_post: {(platform, post_date): pkgs} for
+    the shipped-per-day table, which counts by PACK DAY (Patrick,
+    Nov 27). A show re-posted counts ONCE, on its LATEST post's
+    date, at the latest post's count — never summed across posts.
+    (In the current data no show is posted twice, so the rule is
+    untested against a real duplicate; it is the sanctioned rule
+    for when one appears.)
+    """
     packed = {}
+    best_post = {}  # show key -> (post_date, ts, total), latest wins
     unknown = []
     for m in packed_messages:
+        # Pack day: the message's post_date (the day the pack was
+        # posted); fall back to the timestamp's EST date.
+        post_date = m.get("post_date")
+        try:
+            post_ts = float(m.get("ts", 0))
+        except (TypeError, ValueError):
+            post_ts = 0.0
+        if not post_date:
+            try:
+                post_date = datetime.fromtimestamp(post_ts, EST).date().isoformat()
+            except (TypeError, ValueError, OverflowError):
+                post_date = None
         text = m.get("text", "")
         for sm in sp._SHOW_RE.finditer(text):
             code_raw = sm.group(1)
@@ -333,26 +355,42 @@ def parse_packed_posts(packed_messages, sp):
             # Duplicates (same show re-posted) report the same packages
             # twice — take the max, never the sum.
             packed[key] = max(packed.get(key, 0), total)
-    return packed, unknown
+            # Pack-day table: same show re-posted counts once, on the
+            # LATEST post's date at the latest post's count.
+            if post_date:
+                prev = best_post.get(key)
+                if prev is None or (post_date, post_ts) > (prev[0], prev[1]):
+                    best_post[key] = (post_date, post_ts, total)
+                elif (post_date, post_ts) == (prev[0], prev[1]) and total > prev[2]:
+                    best_post[key] = (post_date, post_ts, total)
+    packed_by_post = {}
+    for (platform, _show_date, _session), (pdate, _ts, total) in best_post.items():
+        pk = (platform, pdate)
+        packed_by_post[pk] = packed_by_post.get(pk, 0) + total
+    return packed, packed_by_post, unknown
 
 
-def compute_shipped_per_day(packed, now):
-    """Build the shipped-per-day table from packed posts ONLY.
+def compute_shipped_per_day(packed_by_post, now):
+    """Build the shipped-per-day table from packed posts ONLY,
+    bucketed by PACK DAY (the day the pack was posted).
 
-    packed: {(platform, show_date, session): pkgs} from
-    parse_packed_posts (duplicate posts of the same show+session
-    already deduped by max). Bucketed by the DATE line inside the
-    post (the SHOW date), never the post date — Patrick, Nov 27:
-    packed posts for everything, no more SLA snapshot deltas for
-    Whatnot. (The retired builder bucketed by post date, which is
-    why its numbers disagree with this table: a Nov 25 post
-    naming Nov 21-23 shows landed on Nov 25 there, and on
-    Nov 21-23 here.)
+    packed_by_post: {(platform, post_date): pkgs} from
+    parse_packed_posts — each show counted once, on its latest
+    post's date. Patrick, Nov 27: a day's column counts what was
+    PACKED that day. This matches the weekly Excel report, which
+    also buckets by post date, and it is why the retired builder's
+    post-date numbers agree with this table while the show-date
+    version (Nov 27 morning) did not: a Nov 26 post naming Nov 24-25
+    shows lands on Nov 26 here.
+
+    Posts made before the week's Monday do not count. A post naming
+    older shows (backlog) lands on the post day — correct under
+    pack-day semantics, not a bug.
 
     The week is the Mon-Sun week containing `now`. Days after today
     are null (they have not happened yet). A day with no packed post
-    naming a show for a channel is null (blank, not zero): the show
-    has not been packed yet, or it never ran.
+    for a channel is null (blank, not zero): nothing was packed for
+    that channel that day.
 
     Sessions A/B/C for the same channel+day are summed; a
     session-less key (FL-FB02, a second Blitz show that day) is a
@@ -368,9 +406,7 @@ def compute_shipped_per_day(packed, now):
             if day > today:
                 vals.append(None)
                 continue
-            iso = day.isoformat()
-            keys = [k for k in packed if k[0] == ch and k[1] == iso]
-            vals.append(sum(packed[k] for k in keys) if keys else None)
+            vals.append(packed_by_post.get((ch, day.isoformat())))
         channels[ch] = vals
     totals = []
     for i, day in enumerate(week_days):
@@ -382,12 +418,12 @@ def compute_shipped_per_day(packed, now):
         totals.append(sum(vals) if vals else None)
     notes = [
         "Shipped counts are from Slack packed posts "
-        "(#breaking-shipping-updates), bucketed by the show date in "
-        "each post. A blank cell means no packed post has named a "
-        "show for that channel and day yet (blank, not zero).",
-        "From Nov 27, 2026 the table is built from packed posts only "
-        "— the Nov 23 SLA snapshot deltas for Whatnot are retired "
-        "(Patrick's call, Nov 27).",
+        "(#breaking-shipping-updates), bucketed by the day the pack "
+        "was posted. A blank cell means no packed post was made for "
+        "that channel that day yet (blank, not zero).",
+        "From Nov 27, 2026 the table counts by pack day (Patrick's "
+        "call, Nov 27) and is built from packed posts only — the "
+        "Nov 23 SLA snapshot deltas for Whatnot are retired.",
     ]
     return {
         "weekStart": week_days[0].isoformat(),
@@ -967,8 +1003,9 @@ def main():
           f"packed: {len(packed_messages)} messages")
 
     sp = load_slack_packed_parser(args.slack_parser_dir)
-    packed, unknown = parse_packed_posts(packed_messages, sp)
-    print(f"packed posts parsed: {len(packed)} show keys")
+    packed, packed_by_post, unknown = parse_packed_posts(packed_messages, sp)
+    print(f"packed posts parsed: {len(packed)} show keys, "
+          f"{len(packed_by_post)} pack-day cells")
     for u in unknown:
         print(f"  WARN packed skipped: {u[0]} {u[1]!r} pkgs={u[2]}")
     packed_keys = set(packed.keys())
@@ -1025,11 +1062,12 @@ def main():
     print(f"NEW: {len(data['shows'])} shows")
 
     # Shipped-per-day table: recomputed fresh from the packed posts
-    # on every rebuild (Patrick, Nov 27 — packed posts for everything,
-    # no more SLA snapshot deltas for Whatnot). The manual overlay
-    # below still applies on top (manual wins for that channel+date).
-    data["shippedPerDay"] = compute_shipped_per_day(packed, now)
-    print(f"shippedPerDay: computed from packed posts, week "
+    # on every rebuild, bucketed by PACK DAY (Patrick, Nov 27 — a
+    # day's column counts what was packed that day). The manual
+    # overlay below still applies on top (manual wins for that
+    # channel+date).
+    data["shippedPerDay"] = compute_shipped_per_day(packed_by_post, now)
+    print(f"shippedPerDay: computed from packed posts (pack day), week "
           f"{data['shippedPerDay']['weekStart']} to "
           f"{data['shippedPerDay']['weekEnd']}, "
           f"totals {data['shippedPerDay']['totals']}")

@@ -1,7 +1,7 @@
 [
  {
-  "date": "2026-11-23",
-  "note": "WN-OG 115+105 (Nov 23 shows; date corrected Nov 27 — was filed under Nov 25, the post date)",
+  "date": "2026-11-25",
+  "note": "WN-OG 115+105 (Nov 23 shows; posted Nov 25 — pack-day table, so it belongs on the post date. Computed Nov 25 Main is also 220, so this entry is a no-op. Nov 23 computed Main is 359 from the Nov 23 post and is untouched.)",
   "pkgs": 220,
   "platform": "Whatnot Main"
  }
