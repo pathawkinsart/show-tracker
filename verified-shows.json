@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-27T07:47:10-05:00",
+  "checked_at": "2026-11-27T07:48:32-05:00",
   "shows": {
     "Fanatics Blitz|2026-11-25|A": true,
     "Fanatics Evolution|2026-11-25|A": true,
@@ -16,6 +16,11 @@
     "Fanatics Repack|2026-11-26|": false,
     "TikTok Card Shop|2026-11-26|": false,
     "Whatnot Footy|2026-11-26|B": false,
-    "eBay Live|2026-11-26|": false
+    "eBay Live|2026-11-26|": false,
+    "Whatnot Ice|2026-11-25|": true,
+    "Whatnot Ice|2026-11-26|": false,
+    "Whatnot Galaxy|2026-11-26|A": true,
+    "Whatnot Galaxy|2026-11-26|B": false,
+    "Whatnot Main|2026-11-26|B": false
   }
 }
