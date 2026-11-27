@@ -1,6 +1,6 @@
 {
   "channel": "C0C19E8SQ58",
-  "fetched_at": "2026-11-26T19:06:15-05:00",
+  "fetched_at": "2026-11-26T19:11:58.174239-05:00",
   "messages": [
     {
       "ts": "1794983738",
@@ -1210,6 +1210,20 @@
       "ts": "1795736760",
       "post_date": "2026-11-26",
       "text": "WTH FOOTY A 11/26",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795738180",
+      "post_date": "2026-11-26",
+      "text": "WTH FL BK 11/26 A",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795738189",
+      "post_date": "2026-11-26",
+      "text": "Cards in teambags need top loaders and sleeves",
       "subtype": null,
       "user": ""
     }
