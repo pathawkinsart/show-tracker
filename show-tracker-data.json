@@ -8,14 +8,11 @@
     "Whatnot Footy": "2026-11-26T18:46:16",
     "Whatnot Galaxy": "2026-11-26T18:06:52",
     "Whatnot Ice": "2026-11-25T22:40:29",
+    "Whatnot Main": "2026-11-27T02:09:22",
     "eBay Live": "2026-11-27T01:53:11"
   },
-  "generatedAt": "2026-11-27T02:10:31-05:00",
+  "generatedAt": "2026-11-27T02:14:37-05:00",
   "noPost": [
-    {
-      "date": "2026-11-26",
-      "platform": "Whatnot Main"
-    },
     {
       "date": "2026-11-26",
       "platform": "Whatnot Card Shop"
@@ -324,8 +321,16 @@
     },
     {
       "date": "2026-11-26",
-      "end": "2026-11-27T01:53:11",
+      "end": "2026-11-27T02:09:22",
       "id": 16,
+      "note": "",
+      "part": "B",
+      "platform": "Whatnot Main"
+    },
+    {
+      "date": "2026-11-26",
+      "end": "2026-11-27T01:53:11",
+      "id": 17,
       "note": "",
       "platform": "eBay Live"
     }
