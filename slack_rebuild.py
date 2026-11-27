@@ -35,8 +35,10 @@ THE MODEL:
     the show's worksheet WorkingBreaks tab is filled in, ready to
     pack; False means not verified yet; None means no check has
     run for it yet). NO pkgs, NO total, NO shipped on show objects. Shipped counts live ONLY in the
-    shipped-per-day table, which this script preserves verbatim
-    and never recomputes.
+    shipped-per-day table, which this script RECOMPUTES from the
+    packed posts on every rebuild (Patrick, Nov 27: packed posts
+    for everything — the old SLA-snapshot table is retired).
+    A manual-shipped.json entry still wins for its channel+day.
   * The in-house show list persists in show-tracker-data.json
     across runs. Ops posts only ADD new shows and update end
     times; packed posts and completed-shows.json only REMOVE
@@ -56,9 +58,11 @@ block to a show date and session. The #breaking-ops title parser
 is heuristic (free-text titles); unparseable posts are logged and
 skipped, never crash the build.
 
-shippedPerDay / slaRules / premier / version and any other
-top-level keys are preserved verbatim — the rebuild only touches
-the in-house show list (shows, channelEnds, today, generatedAt).
+shippedPerDay is RECOMPUTED from the packed posts on every rebuild
+(see compute_shipped_per_day); slaRules / premier / version and any
+other top-level keys are preserved verbatim — the rebuild touches
+the in-house show list (shows, channelEnds, today, generatedAt)
+and the shipped-per-day table.
 
 Validation: the output must parse, have 1-200 shows, unique ids,
 and every show must have date/end/platform. On any validation
@@ -261,9 +265,11 @@ def parse_packed_posts(packed_messages, sp):
     carrier totals; adds the DATE line (show date + session letter)
     that slack_packed itself does not return.
 
-    The pure-Slack model only needs the KEYS (which shows a packed
-    post names); the counts are returned for logging and are never
-    used to compute a total, a remainder, or a removal test."""
+    The pure-Slack model needs the KEYS (which shows a packed post
+    names) to take shows off the tracker; the counts build the
+    shipped-per-day table (Patrick, Nov 27 — packed posts for
+    everything). The counts are never used to compute a remainder
+    or a removal test."""
     packed = {}
     unknown = []
     for m in packed_messages:
@@ -330,12 +336,75 @@ def parse_packed_posts(packed_messages, sp):
     return packed, unknown
 
 
-def overlay_manual_shipped(existing, manual, now):
-    """Overlay manual shipped counts onto the preserved shippedPerDay table.
+def compute_shipped_per_day(packed, now):
+    """Build the shipped-per-day table from packed posts ONLY.
 
-    existing: the shippedPerDay dict carried over from the current data
-    file (built by the report builder from packed posts / snapshots —
-    its per-source method is not something the rebuild re-derives).
+    packed: {(platform, show_date, session): pkgs} from
+    parse_packed_posts (duplicate posts of the same show+session
+    already deduped by max). Bucketed by the DATE line inside the
+    post (the SHOW date), never the post date — Patrick, Nov 27:
+    packed posts for everything, no more SLA snapshot deltas for
+    Whatnot. (The retired builder bucketed by post date, which is
+    why its numbers disagree with this table: a Nov 25 post
+    naming Nov 21-23 shows landed on Nov 25 there, and on
+    Nov 21-23 here.)
+
+    The week is the Mon-Sun week containing `now`. Days after today
+    are null (they have not happened yet). A day with no packed post
+    naming a show for a channel is null (blank, not zero): the show
+    has not been packed yet, or it never ran.
+
+    Sessions A/B/C for the same channel+day are summed; a
+    session-less key (FL-FB02, a second Blitz show that day) is a
+    separate show and is summed too.
+    """
+    today = now.date()
+    monday = today - timedelta(days=today.weekday())
+    week_days = [monday + timedelta(days=i) for i in range(7)]
+    channels = {}
+    for ch in PLATFORMS:
+        vals = []
+        for day in week_days:
+            if day > today:
+                vals.append(None)
+                continue
+            iso = day.isoformat()
+            keys = [k for k in packed if k[0] == ch and k[1] == iso]
+            vals.append(sum(packed[k] for k in keys) if keys else None)
+        channels[ch] = vals
+    totals = []
+    for i, day in enumerate(week_days):
+        if day > today:
+            totals.append(None)
+            continue
+        vals = [channels[ch][i] for ch in PLATFORMS
+                if channels[ch][i] is not None]
+        totals.append(sum(vals) if vals else None)
+    notes = [
+        "Shipped counts are from Slack packed posts "
+        "(#breaking-shipping-updates), bucketed by the show date in "
+        "each post. A blank cell means no packed post has named a "
+        "show for that channel and day yet (blank, not zero).",
+        "From Nov 27, 2026 the table is built from packed posts only "
+        "— the Nov 23 SLA snapshot deltas for Whatnot are retired "
+        "(Patrick's call, Nov 27).",
+    ]
+    return {
+        "weekStart": week_days[0].isoformat(),
+        "weekEnd": week_days[6].isoformat(),
+        "days": [d.strftime("%a %m/%d") for d in week_days],
+        "channels": channels,
+        "totals": totals,
+        "notes": notes,
+    }
+
+
+def overlay_manual_shipped(existing, manual, now):
+    """Overlay manual shipped counts onto the shippedPerDay table.
+
+    existing: the shippedPerDay dict freshly computed from the
+    packed posts by compute_shipped_per_day (manual entries are the
+    sanctioned fix for gaps the packed posts cannot fill).
     manual: list of {platform, date, pkgs, note} from manual-shipped.json.
     now: current datetime (EST).
 
@@ -834,6 +903,25 @@ def validate(data):
         ids.add(s.get("id"))
     if not data.get("slaRules"):
         raise ValueError("slaRules missing — refusing to write")
+    spd = data.get("shippedPerDay")
+    if spd is not None:
+        channels = spd.get("channels") or {}
+        for ch, vals in channels.items():
+            if not isinstance(vals, list) or len(vals) != 7:
+                raise ValueError(f"shippedPerDay {ch}: not 7 cells")
+            for v in vals:
+                if v is not None and (not isinstance(v, int) or v < 0):
+                    raise ValueError(f"shippedPerDay {ch}: bad cell {v!r}")
+        totals = spd.get("totals")
+        if not isinstance(totals, list) or len(totals) != 7:
+            raise ValueError("shippedPerDay totals: not 7 cells")
+        for i in range(7):
+            vals = [channels[ch][i] for ch in channels
+                    if channels[ch][i] is not None]
+            expect = sum(vals) if vals else None
+            if totals[i] != expect:
+                raise ValueError(
+                    f"shippedPerDay totals[{i}] {totals[i]} != {expect}")
     for f in data.get("noPost", []):
         if not f.get("platform") or not f.get("date"):
             raise ValueError(f"bad noPost flag: {f!r}")
@@ -936,17 +1024,19 @@ def main():
         print("  " + line)
     print(f"NEW: {len(data['shows'])} shows")
 
+    # Shipped-per-day table: recomputed fresh from the packed posts
+    # on every rebuild (Patrick, Nov 27 — packed posts for everything,
+    # no more SLA snapshot deltas for Whatnot). The manual overlay
+    # below still applies on top (manual wins for that channel+date).
+    data["shippedPerDay"] = compute_shipped_per_day(packed, now)
+    print(f"shippedPerDay: computed from packed posts, week "
+          f"{data['shippedPerDay']['weekStart']} to "
+          f"{data['shippedPerDay']['weekEnd']}, "
+          f"totals {data['shippedPerDay']['totals']}")
+
     # Manual shipped counts: overlay manual-shipped.json onto the
-    # preserved shippedPerDay table (manual wins for that
-    # channel+date). The table itself is NOT recomputed from packed
-    # posts here — it is built by the report builder from packed
-    # posts / snapshots, and a from-scratch recompute by either
-    # show date or post date gives different numbers than the table
-    # Patrick reports from (Nov 25 packed posts carry a big backlog
-    # of Nov 19-24 shows, so post-date attribution inflates Wed;
-    # show-date attribution disagrees with the table's Tue Footy
-    # 100). The manual form is the sanctioned fix for gaps
-    # (e.g. Main Wed, blank because WN-OG posts were once unmapped).
+    # freshly computed shippedPerDay table (manual wins for that
+    # channel+date).
     manual = []
     for cand in (os.path.join(
                      os.path.dirname(os.path.abspath(args.in_path)),
