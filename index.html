@@ -217,6 +217,28 @@
       }
       .premier-badge svg { display: block; width: 100%; height: 100%; }
 
+      /* ---------- Premier countdown (Ice + Galaxy only) ----------
+         A compact block under the medallion: current %, days left to
+         the deadline/evaluation, and what it takes to hit the 95%
+         bar. The numbers come from the data file's premier.projection
+         map (premier.json, verified model in
+         ~/workspace/whatnot-premier-calibration/); a channel with no
+         projection entry shows nothing. */
+      .premier-countdown {
+        margin-top: 12px;
+        border: 1px solid #E9B949;
+        border-left: 4px solid #E9B949;
+        background: rgba(233, 185, 73, 0.08);
+        border-radius: 8px;
+        padding: 9px 12px;
+        font-size: 13.5px;
+        line-height: 1.5;
+        color: var(--ink-2);
+      }
+      .premier-countdown .pc-title { font-weight: 700; color: var(--ink); font-size: 14px; }
+      .premier-countdown .pc-key { color: var(--ink); font-weight: 700; }
+      .premier-countdown .pc-stale { color: var(--red); font-weight: 700; }
+
       /* ---------- Channel is current (nothing in house) ---------- */
       .sla.current { background: var(--green); color: #ffffff; }
       @media (prefers-color-scheme: dark) { .sla.current { background: var(--green-soft); color: var(--green); border: 1.5px solid var(--green); } }
@@ -856,7 +878,9 @@
       // file's premier map when it loads. Per-account On-Time Scan %
       // for the current evaluation period, against the 95% bar.
       // { period, bar, channels: { "Whatnot Footy": { onTimeScan,
-      // defectFree, status } } }. A channel with no entry shows no badge.
+      // defectFree, status } }, projection: { "Whatnot Ice": {...} } }.
+      // A channel with no entry shows no badge; the projection map
+      // (Ice + Galaxy only) drives the countdown blocks below.
       var PREMIER = null;
       function premierBadge(chan) {
         if (!PREMIER || !PREMIER.channels) return null;
@@ -900,6 +924,61 @@
           " (bar " + bar + "%), " + (PREMIER.period || "") +
           ". Defect-Free " + (typeof p.defectFree === "number" ? p.defectFree.toFixed(1) + "%" : "—") +
           ". Status: " + (p.status || "—") + ".";
+        return el;
+      }
+      // Premier countdown (Ice + Galaxy only, Patrick Nov 27): a
+      // compact block under the medallion showing what it takes to
+      // hit the 95% bar. Reads PREMIER.projection[chan] from the
+      // data file; days left are computed live from today's date so
+      // the block stays right without a rebuild. A channel with no
+      // projection entry shows nothing — the earned channels are
+      // untouched.
+      function premierCountdown(chan) {
+        if (!PREMIER || !PREMIER.projection) return null;
+        var j = PREMIER.projection[chan];
+        if (!j || typeof j.rate !== "number") return null;
+        function parseDay(s) {
+          var p = String(s).split("-");
+          return new Date(+p[0], +p[1] - 1, +p[2]);
+        }
+        function fmtDay(d) {
+          return MON[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+        }
+        function daysLeft(s) {
+          var now = new Date();
+          var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+          return Math.round((parseDay(s).getTime() - today.getTime()) / 86400000);
+        }
+        function daysText(n) {
+          if (n < 0) return "passed";
+          if (n === 0) return "today";
+          if (n === 1) return "1 day left";
+          return n + " days left";
+        }
+        var el = document.createElement("div");
+        el.className = "premier-countdown";
+        var html = '<div class="pc-title">Premier countdown — 95% bar</div>';
+        html += "<div>" + j.rate.toFixed(1) + "% on-time · read " + fmtDay(parseDay(j.rateAsOf)) +
+          (j.rateStale ? ' <span class="pc-stale">(stale)</span>' : "") + "</div>";
+        if (j.deadline) {
+          html += "<div>" + (j.deadlineLabel || "Deadline") + " " + fmtDay(parseDay(j.deadline)) +
+            ' · <span class="pc-key">' + daysText(daysLeft(j.deadline)) + "</span></div>";
+        }
+        if (j.evaluation) {
+          var ev = (j.evaluationLabel || "Evaluation") + " " + fmtDay(parseDay(j.evaluation)) +
+            ' · <span class="pc-key">' + daysText(daysLeft(j.evaluation)) + "</span>";
+          if (typeof j.gapPts === "number") ev += ' · <span class="pc-key">' + j.gapPts.toFixed(1) + " pts short</span>";
+          if (j.windowLateAllowed && j.windowShort) ev += " · only " + j.windowLateAllowed + " late allowed (" + j.windowShort + ")";
+          html += "<div>" + ev + "</div>";
+        }
+        if (typeof j.breakEvenNov === "number") {
+          html += "<div>Nov on-time rate: unknown — needs ≥" + j.breakEvenNov.toFixed(1) +
+            "% for " + fmtDay(parseDay(j.evaluation)) + " to be possible</div>";
+        }
+        if (j.fallback) {
+          html += "<div>Fallback " + fmtDay(parseDay(j.fallback)) + " — needs ~" + j.fallbackNeed + "% forward from Dec</div>";
+        }
+        el.innerHTML = html;
         return el;
       }
       // Channel-level end times from the file, used only as a fallback
@@ -1511,6 +1590,8 @@
             var cBadge = premierBadge(chan);
             if (cBadge) cTop.appendChild(cBadge);
             cCard.appendChild(cTop);
+            var cCount = premierCountdown(chan);
+            if (cCount) cCard.appendChild(cCount);
             var banner = document.createElement("div");
             if (isUnderConstruction) {
               banner.className = "under-construction-banner";
@@ -1573,6 +1654,8 @@
           var pBadge = premierBadge(chan);
           if (pBadge) top.appendChild(pBadge);
           card.appendChild(top);
+          var pCount = premierCountdown(chan);
+          if (pCount) card.appendChild(pCount);
           showList.appendChild(card);
           // A single row of chips — one per show. When a channel ran
           // more than one show on a date, each gets its own chip
