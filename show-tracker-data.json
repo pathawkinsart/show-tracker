@@ -12,7 +12,7 @@
     "Whatnot Main": "2026-11-27T02:09:22",
     "eBay Live": "2026-11-27T01:53:11"
   },
-  "generatedAt": "2026-11-27T09:02:45-05:00",
+  "generatedAt": "2026-11-27T09:08:26-05:00",
   "noPost": [
     {
       "date": "2026-11-26",
@@ -34,7 +34,7 @@
       },
       "Whatnot Galaxy": {
         "defectFree": 99.8,
-        "onTimeScan": 94.4,
+        "onTimeScan": 94.5,
         "status": "not qualifying"
       },
       "Whatnot Ice": {
@@ -49,7 +49,7 @@
       }
     },
     "period": "Sep 1 \u2013 Nov 30, 2026",
-    "source": "Whatnot Premier Shop page per account. Main re-read Nov 25, 2026 (99.8% on-time, 99.9% defect-free, earned \u2014 unchanged from Nov 20). Galaxy re-read Nov 25, 2026 (94.4% on-time, 99.8% defect-free, not qualifying \u2014 was 94.3% on Nov 20). Card Shop re-read Nov 25, 2026 (99.3% on-time, 99.5% defect-free, earned \u2014 unchanged from Nov 20). Footy re-read Nov 25, 2026 (97.5% on-time, 99.8% defect-free, earned \u2014 was 97.3% on Nov 20). Ice still Nov 20 values. Premier is evaluated monthly on a rolling 3-month window; the next judgement is Dec 1, 2026. Update this file when the Premier Shop page is re-read and rebuild the tracker data."
+    "source": "Whatnot Premier Shop page per account. Main re-read Nov 25, 2026 (99.8% on-time, 99.9% defect-free, earned \u2014 unchanged from Nov 20). Galaxy re-read Nov 27, 2026 (94.5% on-time, 99.8% defect-free, not qualifying \u2014 was 94.4% on Nov 25) from Patrick\u2019s screenshot of the Premier page. Card Shop re-read Nov 25, 2026 (99.3% on-time, 99.5% defect-free, earned \u2014 unchanged from Nov 20). Footy re-read Nov 25, 2026 (97.5% on-time, 99.8% defect-free, earned \u2014 was 97.3% on Nov 20). Ice still Nov 20 values. Premier is evaluated monthly on a rolling 3-month window; the next judgement is Dec 1, 2026. Update this file when the Premier Shop page is re-read and rebuild the tracker data."
   },
   "shippedPerDay": {
     "channels": {
