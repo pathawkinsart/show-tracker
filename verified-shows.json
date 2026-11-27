@@ -1,1 +1,21 @@
-{"checked_at":null,"shows":{}}
+{
+  "checked_at": "2026-11-27T07:47:10-05:00",
+  "shows": {
+    "Fanatics Blitz|2026-11-25|A": true,
+    "Fanatics Evolution|2026-11-25|A": true,
+    "Fanatics Jamz|2026-11-25|A": true,
+    "Fanatics Repack|2026-11-25|": true,
+    "TikTok Card Shop|2026-11-25|": true,
+    "Whatnot Footy|2026-11-26|A": true,
+    "Fanatics Baseball|2026-11-26|A": false,
+    "Fanatics Blitz|2026-11-25|B": false,
+    "Fanatics Blitz|2026-11-26|A": false,
+    "Fanatics Blitz|2026-11-26|B": false,
+    "Fanatics Evolution|2026-11-26|A": false,
+    "Fanatics Jamz|2026-11-26|A": false,
+    "Fanatics Repack|2026-11-26|": false,
+    "TikTok Card Shop|2026-11-26|": false,
+    "Whatnot Footy|2026-11-26|B": false,
+    "eBay Live|2026-11-26|": false
+  }
+}
