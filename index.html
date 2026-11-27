@@ -177,6 +177,11 @@
       @media (prefers-color-scheme: dark) { .section-head h2 { color: var(--ink); } }
       .section-head .count { font-size: 14px; color: #a7afb8; font-weight: 600; white-space: nowrap; }
       @media (prefers-color-scheme: dark) { .section-head .count { color: var(--ink-3); } }
+      .section-head .week-sel {
+        font: inherit; font-size: 14px; font-weight: 600; padding: 6px 8px;
+        border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink);
+        cursor: pointer; max-width: 100%;
+      }
 
       .show-list { display: flex; flex-direction: column; gap: 12px; }
 
@@ -788,6 +793,7 @@
       <!-- Shipped per day -->
       <div class="section-head">
         <h2>Shipped packages per channel per day</h2>
+        <select id="shippedWeekSel" class="week-sel" aria-label="Week"></select>
         <span class="count" id="shippedWeek"></span>
       </div>
 
@@ -1442,13 +1448,60 @@
         return true;
       }
 
+      // Shipped week picker (Patrick, Nov 27): every week's table is
+      // saved in lastGoodData.shippedHistory, keyed by weekStart, so
+      // past weeks can be looked back at. The dropdown defaults to
+      // the newest week; the choice survives the 5-minute refreshes
+      // (only a page load resets it). The KPI above stays on the
+      // current week regardless of the picker.
+      var selectedShippedWeek = null;
+      var shippedWeekKeysCache = "";
+      function shippedWeekKeys() {
+        var hist = lastGoodData && lastGoodData.shippedHistory;
+        var keys = hist ? Object.keys(hist).sort() : [];
+        var cur = lastGoodData && lastGoodData.shippedPerDay;
+        if (cur && cur.weekStart && keys.indexOf(cur.weekStart) === -1) keys.push(cur.weekStart);
+        keys.sort();
+        return keys;
+      }
+      function shippedWeekTable(weekStart) {
+        var hist = lastGoodData && lastGoodData.shippedHistory;
+        if (hist && hist[weekStart]) return hist[weekStart];
+        var cur = lastGoodData && lastGoodData.shippedPerDay;
+        if (cur && cur.weekStart === weekStart) return cur;
+        return null;
+      }
+      function displayedShipped() {
+        var keys = shippedWeekKeys();
+        if (!keys.length) return lastGoodData && lastGoodData.shippedPerDay;
+        if (!selectedShippedWeek || keys.indexOf(selectedShippedWeek) === -1) selectedShippedWeek = keys[keys.length - 1];
+        return shippedWeekTable(selectedShippedWeek) || (lastGoodData && lastGoodData.shippedPerDay);
+      }
+
       // Shipped per day — visible table at the bottom of the page,
-      // from lastGoodData.shippedPerDay (same data the Excel
+      // from the week the picker shows (same data the Excel
       // export uses). Re-renders with every data refresh, so it
       // stays current on the 5-minute re-check. Blank cells are
       // missing data, never invented numbers.
       function renderShipped() {
-        var spd = lastGoodData && lastGoodData.shippedPerDay;
+        var sel = document.getElementById("shippedWeekSel");
+        if (sel) {
+          var keys = shippedWeekKeys();
+          var sig = keys.join("|");
+          if (sig !== shippedWeekKeysCache) {
+            shippedWeekKeysCache = sig;
+            var opts = "";
+            keys.forEach(function (k) {
+              var tab = shippedWeekTable(k);
+              var label = (tab && tab.days) ? tab.days[0] + " – " + tab.days[tab.days.length - 1] : k;
+              opts += '<option value="' + k + '"' + (k === selectedShippedWeek ? ' selected' : '') + '>' + label + '</option>';
+            });
+            sel.innerHTML = opts;
+            sel.onchange = function () { selectedShippedWeek = sel.value; renderShipped(); };
+          }
+        }
+        var spd = displayedShipped();
+        if (sel && selectedShippedWeek) sel.value = selectedShippedWeek;
         var wrap = document.getElementById("shippedWrap");
         var none = document.getElementById("noShipped");
         var weekEl = document.getElementById("shippedWeek");
@@ -1956,7 +2009,7 @@
       // unreachable the button says so plainly instead of failing
       // silently.
       document.getElementById("exportShipped").addEventListener("click", function () {
-        var spd = lastGoodData && lastGoodData.shippedPerDay;
+        var spd = displayedShipped();
         if (!spd || !spd.days || !spd.channels) { showToast("No shipped data yet — nothing to export.", true); return; }
         var btn = this;
         function buildXlsx() {

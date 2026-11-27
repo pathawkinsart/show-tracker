@@ -216,9 +216,12 @@ def extract_show_date(text, post_dt):
 # DATE line inside a packed post: "DATE: 11/20", "DATE: 11/21 B",
 # "DATE: 11/17/2026 A", "Date: 11/21/26" (2-digit year — Caleb
 # Jordan's posts use MM/DD/YY; normalized to 20YY in the parser).
-# Separators may be slashes or dashes ("DATE: 11-21-26").
+# Separators may be slashes or dashes ("DATE: 11-21-26"). The session
+# letter may also ride directly on the day with no separator
+# ("DATE: 11/17A" — Ethan Kryger, Nov 18; dropped until Nov 27
+# because the old pattern required a separator before the letter).
 _PACKED_DATE_RE = re.compile(
-    r"^DATE\s*:\s*(\d{1,2})[/\-](\d{1,2})(?:[/\-](\d{4}|\d{2}))?(?:[\s/\-]+([ABC]))?\s*$",
+    r"^DATE\s*:\s*(\d{1,2})[/\-](\d{1,2})(?:[/\-](\d{4}|\d{2}))?(?:[\s/\-]*([ABC]))?\s*$",
     re.IGNORECASE | re.MULTILINE)
 
 
@@ -958,6 +961,33 @@ def validate(data):
             if totals[i] != expect:
                 raise ValueError(
                     f"shippedPerDay totals[{i}] {totals[i]} != {expect}")
+    hist = data.get("shippedHistory")
+    if hist is not None:
+        if not isinstance(hist, dict):
+            raise ValueError("shippedHistory: not an object")
+        for wk, tab in hist.items():
+            if not isinstance(tab, dict) or not tab.get("weekStart"):
+                raise ValueError(f"shippedHistory {wk}: bad week")
+            hchs = tab.get("channels") or {}
+            for ch, vals in hchs.items():
+                if not isinstance(vals, list) or len(vals) != 7:
+                    raise ValueError(
+                        f"shippedHistory {wk} {ch}: not 7 cells")
+                for v in vals:
+                    if v is not None and (not isinstance(v, int) or v < 0):
+                        raise ValueError(
+                            f"shippedHistory {wk} {ch}: bad cell {v!r}")
+            htot = tab.get("totals")
+            if not isinstance(htot, list) or len(htot) != 7:
+                raise ValueError(f"shippedHistory {wk}: totals not 7 cells")
+            for i in range(7):
+                vals = [hchs[ch][i] for ch in hchs
+                        if hchs[ch][i] is not None]
+                expect = sum(vals) if vals else None
+                if htot[i] != expect:
+                    raise ValueError(
+                        f"shippedHistory {wk}: totals[{i}] {htot[i]} "
+                        f"!= {expect}")
     for f in data.get("noPost", []):
         if not f.get("platform") or not f.get("date"):
             raise ValueError(f"bad noPost flag: {f!r}")
@@ -1095,6 +1125,23 @@ def main():
               f"week {data['shippedPerDay'].get('weekStart')} to "
               f"{data['shippedPerDay'].get('weekEnd')}, "
               f"totals {data['shippedPerDay'].get('totals')}")
+
+    # Shipped history (Patrick, Nov 27): save every week's table so
+    # past weeks can be looked back at from the page's week dropdown.
+    # The current week's table — post-overlay, exactly what the page
+    # shows — is upserted by weekStart; older weeks are never touched
+    # or deleted, so seeded weeks (e.g. last week, built from the same
+    # packed posts) survive rebuilds untouched. rebuild() starts from
+    # a copy of the current file, so the history carried in it is
+    # preserved here; a missing or damaged block starts fresh.
+    hist = data.get("shippedHistory")
+    if not isinstance(hist, dict):
+        hist = {}
+    if data.get("shippedPerDay"):
+        hist[data["shippedPerDay"]["weekStart"]] = data["shippedPerDay"]
+    data["shippedHistory"] = hist
+    print(f"shippedHistory: {len(hist)} week(s) saved "
+          f"({', '.join(sorted(hist))})")
 
     # Premier medallions: premier.json (next to the --in file) is the
     # source of record for the On-Time Scan % per channel. The rebuild

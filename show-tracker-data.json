@@ -12,7 +12,7 @@
     "Whatnot Main": "2026-11-27T02:09:22",
     "eBay Live": "2026-11-27T01:53:11"
   },
-  "generatedAt": "2026-11-27T12:04:54-05:00",
+  "generatedAt": "2026-11-27T12:13:10-05:00",
   "noPost": [
     {
       "date": "2026-11-26",
@@ -76,6 +76,281 @@
       }
     },
     "source": "Whatnot Premier Shop pages, re-read Nov 27, 2026 from Patrick\u2019s signed-in seller profiles. Main (wethehobby) 99.8% on-time / 99.9% defect-free, earned \u2014 unchanged from Nov 25. Card Shop (wethehobby_cardshop) 99.3% / 99.5%, earned \u2014 unchanged from Nov 25. Footy (wethehobby_footy) 97.6% / 99.8%, earned \u2014 was 97.5% on Nov 25. Galaxy (wethehobby_galaxy) 94.5% / 99.8%, not qualifying \u2014 was 94.4% on Nov 25. Ice still Nov 20 values (53.8%) \u2014 its profile window could not be read Nov 27. Premier is evaluated monthly on a rolling 3-month window; the next judgement is Dec 1, 2026. Update this file when the Premier Shop page is re-read and rebuild the tracker data. Projection values (Ice countdown, Galaxy gap) come from the verified model in ~/workspace/whatnot-premier-calibration/ice-premier-countdown.md \u2014 re-run ice_projection.py when the fresh Ice read lands."
+  },
+  "shippedHistory": {
+    "2026-11-16": {
+      "channels": {
+        "Fanatics Baseball": [
+          309,
+          null,
+          476,
+          180,
+          null,
+          null,
+          null
+        ],
+        "Fanatics Blitz": [
+          308,
+          229,
+          188,
+          89,
+          null,
+          null,
+          null
+        ],
+        "Fanatics Evolution": [
+          295,
+          158,
+          260,
+          79,
+          null,
+          null,
+          null
+        ],
+        "Fanatics Jamz": [
+          128,
+          102,
+          388,
+          447,
+          null,
+          147,
+          null
+        ],
+        "Fanatics Repack": [
+          71,
+          74,
+          187,
+          84,
+          null,
+          null,
+          null
+        ],
+        "TikTok Card Shop": [
+          142,
+          195,
+          59,
+          null,
+          null,
+          null,
+          null
+        ],
+        "Whatnot Card Shop": [
+          null,
+          578,
+          119,
+          null,
+          null,
+          null,
+          null
+        ],
+        "Whatnot Footy": [
+          349,
+          169,
+          137,
+          196,
+          229,
+          222,
+          null
+        ],
+        "Whatnot Galaxy": [
+          172,
+          177,
+          222,
+          205,
+          null,
+          null,
+          null
+        ],
+        "Whatnot Ice": [
+          63,
+          63,
+          89,
+          205,
+          null,
+          null,
+          null
+        ],
+        "Whatnot Main": [
+          628,
+          212,
+          287,
+          302,
+          null,
+          null,
+          null
+        ],
+        "eBay Live": [
+          33,
+          39,
+          110,
+          101,
+          92,
+          null,
+          null
+        ]
+      },
+      "days": [
+        "Mon 11/16",
+        "Tue 11/17",
+        "Wed 11/18",
+        "Thu 11/19",
+        "Fri 11/20",
+        "Sat 11/21",
+        "Sun 11/22"
+      ],
+      "notes": [
+        "Shipped counts are from Slack packed posts (#breaking-shipping-updates), bucketed by the day the pack was posted. A blank cell means no packed post was made for that channel that day yet (blank, not zero).",
+        "From Nov 27, 2026 the table counts by pack day (Patrick's call, Nov 27) and is built from packed posts only \u2014 the Nov 23 SLA snapshot deltas for Whatnot are retired.",
+        "Week of Nov 16-22 rebuilt Nov 27 from the packed posts: the Nov 16-19 posts were read back once (the 8-day sync window had already rolled past them) and combined with the surviving Nov 20-21 posts through the same parser as the live table \u2014 same pack-day method, same latest-post-wins rule."
+      ],
+      "totals": [
+        2498,
+        1996,
+        2522,
+        1888,
+        321,
+        369,
+        null
+      ],
+      "weekEnd": "2026-11-22",
+      "weekStart": "2026-11-16"
+    },
+    "2026-11-23": {
+      "channels": {
+        "Fanatics Baseball": [
+          null,
+          530,
+          null,
+          376,
+          null,
+          null,
+          null
+        ],
+        "Fanatics Blitz": [
+          675,
+          501,
+          1065,
+          248,
+          null,
+          null,
+          null
+        ],
+        "Fanatics Evolution": [
+          84,
+          165,
+          175,
+          null,
+          null,
+          null,
+          null
+        ],
+        "Fanatics Jamz": [
+          298,
+          168,
+          149,
+          null,
+          null,
+          null,
+          null
+        ],
+        "Fanatics Repack": [
+          null,
+          null,
+          292,
+          null,
+          null,
+          null,
+          null
+        ],
+        "TikTok Card Shop": [
+          96,
+          170,
+          159,
+          null,
+          null,
+          null,
+          null
+        ],
+        "Whatnot Card Shop": [
+          248,
+          101,
+          266,
+          126,
+          null,
+          null,
+          null
+        ],
+        "Whatnot Footy": [
+          254,
+          100,
+          112,
+          191,
+          null,
+          null,
+          null
+        ],
+        "Whatnot Galaxy": [
+          49,
+          59,
+          53,
+          159,
+          null,
+          null,
+          null
+        ],
+        "Whatnot Ice": [
+          null,
+          76,
+          464,
+          null,
+          null,
+          null,
+          null
+        ],
+        "Whatnot Main": [
+          359,
+          337,
+          220,
+          558,
+          null,
+          null,
+          null
+        ],
+        "eBay Live": [
+          139,
+          54,
+          50,
+          50,
+          null,
+          null,
+          null
+        ]
+      },
+      "days": [
+        "Mon 11/23",
+        "Tue 11/24",
+        "Wed 11/25",
+        "Thu 11/26",
+        "Fri 11/27",
+        "Sat 11/28",
+        "Sun 11/29"
+      ],
+      "notes": [
+        "Shipped counts are from Slack packed posts (#breaking-shipping-updates), bucketed by the day the pack was posted. A blank cell means no packed post was made for that channel that day yet (blank, not zero).",
+        "From Nov 27, 2026 the table counts by pack day (Patrick's call, Nov 27) and is built from packed posts only \u2014 the Nov 23 SLA snapshot deltas for Whatnot are retired."
+      ],
+      "totals": [
+        2202,
+        2261,
+        3005,
+        1708,
+        null,
+        null,
+        null
+      ],
+      "weekEnd": "2026-11-29",
+      "weekStart": "2026-11-23"
+    }
   },
   "shippedPerDay": {
     "channels": {
