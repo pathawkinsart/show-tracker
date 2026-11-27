@@ -1,154 +1,7 @@
 {
   "channel": "C0C19E8SQ58",
-  "fetched_at": "2026-11-27T00:08:46.771746-05:00",
+  "fetched_at": "2026-11-27T00:54:15.917492-05:00",
   "messages": [
-    {
-      "ts": "1794983738",
-      "post_date": "2026-11-18",
-      "text": "WTH FL RP 11/17",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1794984677",
-      "post_date": "2026-11-18",
-      "text": "WTH1C 11/17",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1794985603",
-      "post_date": "2026-11-18",
-      "text": "WTH EBAY 11/17",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1794985620",
-      "post_date": "2026-11-18",
-      "text": "NOTE BREAK #1117-4\nMIAMI MARLINS SPOT belongs to amarillas98\nWe corrected before we ripped, the spot was filled with the username of the user who traded before.",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1794986340",
-      "post_date": "2026-11-18",
-      "text": "WTH FL BK B 11/17",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1794987420",
-      "post_date": "2026-11-18",
-      "text": "WTH-WN-ICE 11/17",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1794987660",
-      "post_date": "2026-11-18",
-      "text": "WTH TT CS 11/17\nPlease note I bought this alpha from user manny, the last item i bought on stream never made it to m",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1794989340",
-      "post_date": "2026-11-18",
-      "text": "WTH FL FB 2B 11/17",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1794990000",
-      "post_date": "2026-11-18",
-      "text": "WTH FOOTY B 11/17",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1794990060",
-      "post_date": "2026-11-18",
-      "text": "WTH CARD SHOP 11/17",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1794991500",
-      "post_date": "2026-11-18",
-      "text": "Wth2B 11/17",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1794991980",
-      "post_date": "2026-11-18",
-      "text": "WTH-FL-PL-B 11/17",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795021560",
-      "post_date": "2026-11-18",
-      "text": "WTH1-A 11/18",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795040940",
-      "post_date": "2026-11-18",
-      "text": "WTH FOOTY A 11/18",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795042920",
-      "post_date": "2026-11-18",
-      "text": "WTH-PK-FL-A\n11/18",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795043400",
-      "post_date": "2026-11-18",
-      "text": "WTH FL FB 2A",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795043880",
-      "post_date": "2026-11-18",
-      "text": "WTH1B 11/18",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795044480",
-      "post_date": "2026-11-18",
-      "text": "WTH GALAXY DAY 11/18",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795046580",
-      "post_date": "2026-11-18",
-      "text": "WTH-2A 11/18\nBreak:267 and 268 were both listed with tack #1118-3 but the titles are slightly different with the first one titled 2x 2026 Topps Cosmic Chrome Hobby Auction and the second the duplicate one is 2x 2026 Topps",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795046760",
-      "post_date": "2026-11-18",
-      "text": "WTH-BK-FL-A\nFL JAMZ 11/18 AM",
-      "subtype": null,
-      "user": ""
-    },
-    {
-      "ts": "1795047600",
-      "post_date": "2026-11-18",
-      "text": "WTH CARDSHOP 11/18 day show",
-      "subtype": null,
-      "user": ""
-    },
     {
       "ts": "1795068780",
       "post_date": "2026-11-19",
@@ -304,6 +157,13 @@
       "user": ""
     },
     {
+      "ts": "1795154732",
+      "post_date": "2026-11-20",
+      "text": "WTH TT 11/19",
+      "subtype": null,
+      "user": ""
+    },
+    {
       "ts": "1795155000",
       "post_date": "2026-11-20",
       "text": "WTH TT PP 11/19",
@@ -437,6 +297,13 @@
       "user": ""
     },
     {
+      "ts": "1795224014",
+      "post_date": "2026-11-20",
+      "text": "WTH FL FB 2A",
+      "subtype": null,
+      "user": ""
+    },
+    {
       "ts": "1795232400",
       "post_date": "2026-11-20",
       "text": "WTH-2A 11/20",
@@ -566,6 +433,13 @@
       "ts": "1795304520",
       "post_date": "2026-11-21",
       "text": "WTH-FL-PK-A 11/17",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795305751",
+      "post_date": "2026-11-21",
+      "text": "WTH FL BK 2A",
       "subtype": null,
       "user": ""
     },
