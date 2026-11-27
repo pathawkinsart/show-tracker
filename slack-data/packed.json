@@ -1,6 +1,6 @@
 {
   "channel": "G0C1YNLJXBJ",
-  "fetched_at": "2026-11-27T15:48:22-05:00",
+  "fetched_at": "2026-11-27T15:56:52-05:00",
   "messages": [
     {
       "ts": "1795212388",
@@ -272,6 +272,13 @@
       "ts": "1795812273",
       "post_date": "2026-11-27",
       "text": "SHOW: WN-HK\nDATE: 11/25/2026\nPKGS: 144 USPS\n\nSHOW: WTH4\nDATE: 11/24/2026\nPKGS: 83 USPS\n\nSHOW: WTH4\nDATE: 11/25/2026\nPKGS: 80 USPS",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795812835",
+      "post_date": "2026-11-27",
+      "text": "Show: FL-FB\nDate: 11/25/2026\nPkgs: 260 USPS, 0 UPS, 1 FEDEX",
       "subtype": null,
       "user": ""
     }
