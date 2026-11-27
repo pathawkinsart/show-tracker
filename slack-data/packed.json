@@ -1,6 +1,6 @@
 {
   "channel": "G0C1YNLJXBJ",
-  "fetched_at": "2026-11-27T15:10:35-05:00",
+  "fetched_at": "2026-11-27T15:17:49-05:00",
   "messages": [
     {
       "ts": "1795212388",
@@ -251,6 +251,13 @@
       "ts": "1795809509",
       "post_date": "2026-11-27",
       "text": "SHOW: FL-POKE\nDATE: 11/25/2026\nPKGS: 136 USPS\nSHOW: FL-POKE\nDATE: 11/26/2026\nPKGS: 119 USPS",
+      "subtype": null,
+      "user": ""
+    },
+    {
+      "ts": "1795809919",
+      "post_date": "2026-11-27",
+      "text": "E-Commerce: Walmart\nDate: 11/27\nPkgs: 22 pkgs\nE-Commerce: Best Buy\nDate: 11/27\nPkgs: 200 pkgs",
       "subtype": null,
       "user": ""
     }
