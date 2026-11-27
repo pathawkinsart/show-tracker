@@ -228,10 +228,15 @@
         margin-top: 12px;
         border: 1px solid #E9B949;
         border-left: 4px solid #E9B949;
-        /* Solid surface, not translucent: the art cards carry a busy
-           background picture behind this block, and a translucent
-           fill lets the artwork wash the text out. */
+        /* Frosted glass (Patrick, Nov 27): a translucent, lighter
+           fill with the artwork blurred behind it, so the text
+           stays readable while the card art shows through softly.
+           Solid surface kept as the fallback for browsers without
+           backdrop-filter. */
         background: var(--surface);
+        background: color-mix(in srgb, var(--surface) 72%, transparent);
+        backdrop-filter: blur(12px) saturate(1.25);
+        -webkit-backdrop-filter: blur(12px) saturate(1.25);
         border-radius: 8px;
         padding: 9px 12px;
         font-size: 13.5px;
