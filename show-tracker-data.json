@@ -11,7 +11,7 @@
     "Whatnot Main": "2026-11-27T02:09:22",
     "eBay Live": "2026-11-27T01:53:11"
   },
-  "generatedAt": "2026-11-27T05:23:18-05:00",
+  "generatedAt": "2026-11-27T05:28:03-05:00",
   "noPost": [
     {
       "date": "2026-11-26",
@@ -20,10 +20,6 @@
     {
       "date": "2026-11-26",
       "platform": "Fanatics Baseball"
-    },
-    {
-      "date": "2026-11-26",
-      "platform": "TikTok Card Shop"
     }
   ],
   "premier": {
@@ -294,8 +290,15 @@
     },
     {
       "date": "2026-11-26",
-      "end": "2026-11-26T18:46:16",
+      "end": "2026-11-27T05:25:21",
       "id": 13,
+      "note": "",
+      "platform": "TikTok Card Shop"
+    },
+    {
+      "date": "2026-11-26",
+      "end": "2026-11-26T18:46:16",
+      "id": 14,
       "note": "",
       "part": "A",
       "platform": "Whatnot Footy"
@@ -303,7 +306,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T03:08:07",
-      "id": 14,
+      "id": 15,
       "note": "",
       "part": "B",
       "platform": "Whatnot Footy"
@@ -311,7 +314,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-26T18:06:52",
-      "id": 15,
+      "id": 16,
       "note": "",
       "part": "A",
       "platform": "Whatnot Galaxy"
@@ -319,7 +322,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T03:21:52",
-      "id": 16,
+      "id": 17,
       "note": "",
       "part": "B",
       "platform": "Whatnot Galaxy"
@@ -327,21 +330,21 @@
     {
       "date": "2026-11-25",
       "end": "2026-11-25T22:40:29",
-      "id": 17,
-      "note": "",
-      "platform": "Whatnot Ice"
-    },
-    {
-      "date": "2026-11-26",
-      "end": "2026-11-27T02:19:42",
       "id": 18,
       "note": "",
       "platform": "Whatnot Ice"
     },
     {
       "date": "2026-11-26",
-      "end": "2026-11-27T02:09:22",
+      "end": "2026-11-27T02:19:42",
       "id": 19,
+      "note": "",
+      "platform": "Whatnot Ice"
+    },
+    {
+      "date": "2026-11-26",
+      "end": "2026-11-27T02:09:22",
+      "id": 20,
       "note": "",
       "part": "B",
       "platform": "Whatnot Main"
@@ -349,7 +352,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T01:53:11",
-      "id": 20,
+      "id": 21,
       "note": "",
       "platform": "eBay Live"
     }
