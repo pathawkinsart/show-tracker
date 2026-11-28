@@ -13,7 +13,7 @@
     "Whatnot Main": "2026-11-27T02:09:22",
     "eBay Live": "2026-11-27T01:53:11"
   },
-  "generatedAt": "2026-11-28T04:08:24-05:00",
+  "generatedAt": "2026-11-28T04:18:43-05:00",
   "noPost": [
     {
       "date": "2026-11-27",
@@ -605,8 +605,17 @@
     },
     {
       "date": "2026-11-27",
-      "end": "2026-11-27T18:11:21",
+      "end": "2026-11-28T04:12:24",
       "id": 14,
+      "note": "",
+      "part": "B",
+      "platform": "Whatnot Footy",
+      "verified": null
+    },
+    {
+      "date": "2026-11-27",
+      "end": "2026-11-27T18:11:21",
+      "id": 15,
       "note": "",
       "part": "A",
       "platform": "Whatnot Galaxy",
@@ -615,7 +624,7 @@
     {
       "date": "2026-11-27",
       "end": "2026-11-28T02:43:36",
-      "id": 15,
+      "id": 16,
       "note": "",
       "part": "B",
       "platform": "Whatnot Galaxy",
@@ -624,7 +633,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T02:19:42",
-      "id": 16,
+      "id": 17,
       "note": "",
       "platform": "Whatnot Ice",
       "verified": false
@@ -632,7 +641,7 @@
     {
       "date": "2026-11-27",
       "end": "2026-11-28T03:03:13",
-      "id": 17,
+      "id": 18,
       "note": "",
       "platform": "Whatnot Ice",
       "verified": null
@@ -640,7 +649,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T02:09:22",
-      "id": 18,
+      "id": 19,
       "note": "",
       "part": "B",
       "platform": "Whatnot Main",
@@ -649,7 +658,7 @@
     {
       "date": "2026-11-27",
       "end": "2026-11-27T18:49:00",
-      "id": 19,
+      "id": 20,
       "note": "",
       "part": "B",
       "platform": "Whatnot Main",
@@ -658,7 +667,7 @@
     {
       "date": "2026-11-27",
       "end": "2026-11-28T01:55:00",
-      "id": 20,
+      "id": 21,
       "note": "",
       "part": "C",
       "platform": "Whatnot Main",
@@ -667,7 +676,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T01:53:11",
-      "id": 21,
+      "id": 22,
       "note": "",
       "platform": "eBay Live",
       "verified": false
@@ -675,7 +684,7 @@
     {
       "date": "2026-11-27",
       "end": "2026-11-28T02:38:00",
-      "id": 22,
+      "id": 23,
       "note": "",
       "platform": "eBay Live",
       "verified": null
