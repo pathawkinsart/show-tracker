@@ -1,6 +1,6 @@
 {
  "channel": "C0C19E8SQ58",
- "fetched_at": "2026-11-28T00:07:06.084271-05:00",
+ "fetched_at": "2026-11-28T02:02:40.125266-05:00",
  "messages": [
   {
    "ts": "1795154700",
@@ -1077,6 +1077,13 @@
    "ts": "1795825119",
    "post_date": "2026-11-27",
    "text": "WTH-2A 11/27\nPlease note in Personal Purchase for MikeLowrey he would like Ben Rice /10 sent to grading and JJ WEATHERHOLT /10 sent to grading highlighted in yellow on sheet and noted on sticky note on card!!",
+   "subtype": null,
+   "user": ""
+  },
+  {
+   "ts": "1795848060",
+   "post_date": "2026-11-28",
+   "text": "WTH-FL-PK 11/27 B",
    "subtype": null,
    "user": ""
   }
