@@ -6,18 +6,15 @@
     "Fanatics Jamz": "2026-11-26T19:09:40",
     "Fanatics Repack": "2026-11-27T00:46:19",
     "TikTok Card Shop": "2026-11-27T05:25:21",
+    "Whatnot Card Shop": "2026-11-28T03:32:51",
     "Whatnot Footy": "2026-11-27T18:30:17",
     "Whatnot Galaxy": "2026-11-27T18:11:21",
     "Whatnot Ice": "2026-11-27T02:19:42",
     "Whatnot Main": "2026-11-27T02:09:22",
     "eBay Live": "2026-11-27T01:53:11"
   },
-  "generatedAt": "2026-11-28T03:33:08-05:00",
+  "generatedAt": "2026-11-28T03:39:20-05:00",
   "noPost": [
-    {
-      "date": "2026-11-27",
-      "platform": "Whatnot Card Shop"
-    },
     {
       "date": "2026-11-27",
       "platform": "Fanatics Repack"
@@ -590,8 +587,17 @@
     },
     {
       "date": "2026-11-27",
-      "end": "2026-11-27T18:30:17",
+      "end": "2026-11-28T03:32:51",
       "id": 12,
+      "note": "",
+      "part": "B",
+      "platform": "Whatnot Card Shop",
+      "verified": null
+    },
+    {
+      "date": "2026-11-27",
+      "end": "2026-11-27T18:30:17",
+      "id": 13,
       "note": "",
       "part": "A",
       "platform": "Whatnot Footy",
@@ -600,7 +606,7 @@
     {
       "date": "2026-11-27",
       "end": "2026-11-27T18:11:21",
-      "id": 13,
+      "id": 14,
       "note": "",
       "part": "A",
       "platform": "Whatnot Galaxy",
@@ -609,7 +615,7 @@
     {
       "date": "2026-11-27",
       "end": "2026-11-28T02:43:36",
-      "id": 14,
+      "id": 15,
       "note": "",
       "part": "B",
       "platform": "Whatnot Galaxy",
@@ -618,7 +624,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T02:19:42",
-      "id": 15,
+      "id": 16,
       "note": "",
       "platform": "Whatnot Ice",
       "verified": false
@@ -626,7 +632,7 @@
     {
       "date": "2026-11-27",
       "end": "2026-11-28T03:03:13",
-      "id": 16,
+      "id": 17,
       "note": "",
       "platform": "Whatnot Ice",
       "verified": null
@@ -634,7 +640,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T02:09:22",
-      "id": 17,
+      "id": 18,
       "note": "",
       "part": "B",
       "platform": "Whatnot Main",
@@ -643,7 +649,7 @@
     {
       "date": "2026-11-27",
       "end": "2026-11-27T18:49:00",
-      "id": 18,
+      "id": 19,
       "note": "",
       "part": "B",
       "platform": "Whatnot Main",
@@ -652,7 +658,7 @@
     {
       "date": "2026-11-27",
       "end": "2026-11-28T01:55:00",
-      "id": 19,
+      "id": 20,
       "note": "",
       "part": "C",
       "platform": "Whatnot Main",
@@ -661,7 +667,7 @@
     {
       "date": "2026-11-26",
       "end": "2026-11-27T01:53:11",
-      "id": 20,
+      "id": 21,
       "note": "",
       "platform": "eBay Live",
       "verified": false
@@ -669,7 +675,7 @@
     {
       "date": "2026-11-27",
       "end": "2026-11-28T02:38:00",
-      "id": 21,
+      "id": 22,
       "note": "",
       "platform": "eBay Live",
       "verified": null
