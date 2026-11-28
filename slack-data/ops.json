@@ -1,6 +1,6 @@
 {
  "channel": "C0C19E8SQ58",
- "fetched_at": "2026-11-28T04:08:24-05:00",
+ "fetched_at": "2026-11-28T04:18:04-05:00",
  "messages": [
   {
    "ts": "1795154700",
@@ -1133,6 +1133,27 @@
    "ts": "1795854771",
    "post_date": "2026-11-28",
    "text": "WTH CARD SHOP 11/27 Day + Night",
+   "subtype": null,
+   "user": ""
+  },
+  {
+   "ts": "1795856930",
+   "post_date": "2026-11-28",
+   "text": "Wth2b 11/27",
+   "subtype": null,
+   "user": ""
+  },
+  {
+   "ts": "1795857144",
+   "post_date": "2026-11-28",
+   "text": "WTH FOOTY 11/27 B",
+   "subtype": null,
+   "user": ""
+  },
+  {
+   "ts": "1795857322",
+   "post_date": "2026-11-28",
+   "text": "WTH FL BK A 11/27 B (Break 307 had boxes/slabs on the wheel, so those will be in different bins)",
    "subtype": null,
    "user": ""
   }
