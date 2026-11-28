@@ -1,6 +1,6 @@
 {
  "channel": "C0C19E8SQ58",
- "fetched_at": "2026-11-28T03:33:01-05:00",
+ "fetched_at": "2026-11-28T03:38:49-05:00",
  "messages": [
   {
    "ts": "1795154700",
@@ -1126,6 +1126,13 @@
    "ts": "1795852993",
    "post_date": "2026-11-28",
    "text": "WTH-WN-ICE 11/27",
+   "subtype": null,
+   "user": ""
+  },
+  {
+   "ts": "1795854771",
+   "post_date": "2026-11-28",
+   "text": "WTH CARD SHOP 11/27 Day + Night",
    "subtype": null,
    "user": ""
   }
